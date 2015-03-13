@@ -367,7 +367,7 @@ reqTerminateメソッドには引数が存在しません。paramsをnullオブ�
 
 ### itemInfoValueType
 
-イベントのタイプです。任意のタイプを各イベントに設定して下さい。
+アイテムのタイプです。任意のタイプを各イベントに設定して下さい。
 
 |タイプ|解説|
 |:-----|:---|
@@ -375,4 +375,3 @@ reqTerminateメソッドには引数が存在しません。paramsをnullオブ�
 |FLOAT  |float型 |
 |INTEGER|int型   |
 |STRING |string型|
-
