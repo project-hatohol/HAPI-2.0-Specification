@@ -220,6 +220,10 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |numSuccess     |number |Yes|-|正の整数|HAPが起動してから更新に成功した回数| 
 |numFailure     |number |Yes|-|正の整数|HAPが起動してから更新に失敗した回数|
 
+```
+{"jsonrpc":"2.0", "method":"sendArmInfo", "params":{"1":{"running":true, "status":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}}}
+```
+
 ### sendAllTrigger(notification)
 
 **params**
