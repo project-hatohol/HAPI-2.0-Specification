@@ -5,14 +5,23 @@
 HAPはJSON-RPC 2.0を用い、Hatoholサーバーと通信を行います。
 JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.org/specification)をお読みください。
 
+ ![overview](overview.png)
+
  - 現在、Hatoholはutf-8を標準的な文字コードとし、作成されています。utf-8を使用することを推奨します。
- - リクエスト・レスポンスで使用するIDには、十分なランダム性が必要。
- - HAPの時刻フォーマットはyyyyMMDDHHmmss.nsのstring型。
- - 小数点以下の時刻については省くことが出来ます。また、小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合、または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。
- - JSON-RPCにはバッチリクエストという、複数のリクエストを同時に送信する文法も存在しますが、Hatoholはこの文法を用いたリクエストには対応していません。
+ - リクエスト・レスポンスで使用するIDには、十分な(十分とは？)ランダム性が必要。
+- JSON-RPCにはバッチリクエストという、複数のリクエストを同時に送信する文法も存在しますが、Hatoholはこの文法を用いたリクエストには対応していません。
  - number型の値には正の整数を用いてください。浮動小数点数や負の整数を用いることは出来ません。
  - 通信の方向がHAP -> SRVとなっているコマンド内のnumber型の範囲は0~2147483647。 
  - オブジェクトの名前として各要素のID、値としてそのIDに対応している各値を更にオブジェクト形式で記述してください。ここに記述するIDはユニークである必要があります。
+
+## データ型定義
+
+|名前|内部的な型|解説|
+|:---|:---------|:---|
+|timestamp|string|HAPの時刻フォーマットはyyyyMMDDHHmmss.nsです。小数点以下の時刻については省くことが出来ます。また、小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合、または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
+|uint|number|IDなどのマイナスの値や浮動小数点以下の値を入れてはいけない変数を示しています。また値の範囲は0~21474836です|
+|info|string|本来string型には文字数制限はありません。ですがHatoholで用いる場合はHAP->SRVの通信方向では65535byte以内、SRV->HAPの通信方向では255文字以内の制限がそれぞれあります|
+|boolean|true, false|true or falseを指定し、その値の真偽を示します|
 
 ## コマンド一覧
 
@@ -46,19 +55,26 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 **result**
 
+オブジェクトの名前：サーバーID
+
+オブジェクトの値：
+
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
-|serveId|number|Yes|-|正の整数|監視対象のサーバーID|
-|hostName|string|Yes|-|65535byte以内|監視対象のホスト名|
-|type|number|Yes|-|0-4|監視サーバーの種類 [[一覧](#user-content-serverType)]|
-|ipAddress|string|Yes|-|IPV4, IPV6の取りうる値|監視サーバーのIPアドレス|
-|nickName|string|Yes|-|65535byte以内|監視サーバーのニックネーム|
-|userName|string|Yes|-|65535byte以内|監視サーバーのユーザーネーム|
-|password|string|Yes|-|65535byte以内|監視サーバーのパスワード|
-|dbName|string|Yes|-|65535byte以内|監視対象のデータベースのパスワード|
-|port|number|Yes|-|0~65535|監視サーバーのポート|
+|hostName          |string|Yes|-|65535byte以内|監視対象のホスト名|
+|type              |number|Yes|-|0-4|監視サーバーの種類 [[一覧](#user-content-serverType)]|
+|ipAddress         |string|Yes|-||監視サーバーのIPアドレス。RFC791(IPv4),RFC2460(IPv6)で定義されている範囲の値を入れることができる|
+|nickName          |string|Yes|-|65535byte以内|監視サーバーのニックネーム|
+|userName          |string|Yes|-|65535byte以内|監視サーバーのユーザーネーム|
+|password          |string|Yes|-|65535byte以内|監視サーバーのパスワード|
+|dbName            |string|Yes|-|65535byte以内|監視対象のデータベースのパスワード。登録の際にdbNameが必要ない場合は「""」を送信してください。|
+|port              |number|Yes|-|0~65535|監視サーバーのポート|
 |pollingIntervalSec|number|Yes|-|正の整数|ポーリングを行う間隔|
-|retryIntervalSec|number|Yes|-|正の整数|ポーリングが失敗した場合、リトライを行うまでの間隔|
+|retryIntervalSec  |number|Yes|-|正の整数|ポーリングが失敗した場合、リトライを行うまでの間隔|
+
+```
+{"jsonrpc":"2.0", "method":"getMonitoringServerInfo", "params":{"1":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10}}}
+```
 
 ### getTimestampOfLastTrigger(method)
 
@@ -252,14 +268,14 @@ reqFetchItemsメソッドには引数が存在しません。paramsをnullオブ
 
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
-|serverId|number|Yes|-|正の整数|アイテムが所属するサーバーのID|
-|hostId|number|Yes|-|正の整数|アイテムが所属するホストのID|
-|brief|string|Yes|-|255文字以内|各アイテムの概要|
-|lastValueTime|string|Yes|-|255文字以内|各アイテムが最後に更新された時間|
-|lastValue|string|Yes|-|255文字以内|各アイテムが最後に更新された際の値|
-|prevValue|string|Yes|-|255文字以内|各アイテムが最後に更新される前の値|
-|itemGroupName|string|Yes|-|255文字以内|アイテムをグループ分けしたもの<br>任意のグループ名をご使用ください|
-|unit|string|Yes|-|255文字以内|valueの単位|
+|serverId     |number|Yes|-|正の整数   |アイテムが所属するサーバーのID|
+|hostId       |number|Yes|-|正の整 数  |アイテムが所属するホストのID|
+|brief        |string|Yes|-|65535byte以内|各アイテムの概要|
+|lastValueTime|string|Yes|-|65535byte以内|各アイテムが最後に更新された時間|
+|lastValue    |string|Yes|-|65535byte以内|各アイテムが最後に更新された際の値|
+|prevValue    |string|Yes|-|65535byte以内|各アイテムが最後に更新される前の値|
+|itemGroupName|string|Yes|-|65535byte以内|アイテムをグループ分けしたもの<br>任意のグループ名をご使用ください|
+|unit         |string|Yes|-|65535byte以内|valueの単位|
 
 ### reqTerminate(notification)
 
@@ -280,22 +296,22 @@ reqTerminateメソッドには引数が存在しません。paramsをnullオブ�
 |hostId   |string|Yes|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
 |itemId   |number|Yes|-|正の整数   |ヒストリーのアイテムID|
 |valueType|string|Yes|-|255文字以内|取得したヒストリーのアイテムタイプ [[一覧](#user-content-itemValueType)]|
-|beginTime|string|Yes|-|255文字以内|ヒストリー取得の始点時間を指定します|
-|endTime  |string|Yes|-|255文字以内|ヒストリー取得の終点時間を指定します|
+|beginTime|string|Yes|-|255文字以内|ヒストリー取得域の始点時間を指定します|
+|endTime  |string|Yes|-|255文字以内|ヒストリー取得域の終点時間を指定します|
 
 **result**
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |itemId|number|Yes|-|正の整数   |ヒストリーのアイテムID|
-|value |string|Yes|-|255文字以内|clock時点でのアイテムの値|
-|clock |string|Yes|-|255文字以内|このヒストリーでの時刻|
+|value |string|Yes|-|65535byte以内|clock時点でのアイテムの値|
+|clock |string|Yes|-|65535byte以内|このヒストリーの値が記録された時刻|
 
 ### reqFetchTriggers(method)
 
 **params**
 
-  reqFetchTriggersメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
+reqFetchTriggersメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
 
 **result**
 
@@ -331,6 +347,16 @@ reqTerminateメソッドには引数が存在しません。paramsをnullオブ�
 |INIT   |初期状態。まだ通信を行っていない|
 |OK     |通信に成功している|
 |FAILURE|通信に失敗している|
+
+### serverType
+
+|名前|値 |
+|:---|:--|
+|Zabbix|0|
+|Nagios|1|
+|Zabbix(HAPI)|2|
+|JSON(HAPI)|3|
+|Ceilometer|4|
 
 ### triggerSeverity
 
