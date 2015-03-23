@@ -7,7 +7,7 @@
 HAPはJSON-RPC 2.0を用い、Hatoholサーバーと通信を行います。
 JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.org/specification)をお読みください。
 
- ![overview](overview.png)
+ ![overview](hapi_overview.png)
 
  - 現在、Hatoholはutf-8を標準的な文字コードとし、作成されています。utf-8を使用することを推奨します。
  - リクエスト・レスポンスで使用するIDには、十分な(十分とは？)ランダム性が必要。
