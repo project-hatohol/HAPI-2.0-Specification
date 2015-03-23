@@ -1,5 +1,7 @@
 # HAP(Hatohol Arm Plugin)
 
+※シーケンス図をどっかに描く
+
 ## 概要
 
 HAPはJSON-RPC 2.0を用い、Hatoholサーバーと通信を行います。
@@ -16,11 +18,9 @@ JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.or
 
 ## データ型定義
 
-|名前|内部的な型|解説|
+|名前|JSON型|解説|
 |:---|:---------|:---|
-|timestamp|string|HAPの時刻フォーマットはyyyyMMDDHHmmss.nsです。小数点以下の時刻については省くことが出来ます。また、小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合、または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
-|uint|number|IDなどのマイナスの値や浮動小数点以下の値を入れてはいけない変数を示しています。また値の範囲は0~21474836です|
-|info|string|本来string型には文字数制限はありません。ですがHatoholで用いる場合はHAP->SRVの通信方向では65535byte以内、SRV->HAPの通信方向では255文字以内の制限がそれぞれあります|
+|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省くことが出来ます。また、小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合、または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
 |boolean|true, false|true or falseを指定し、その値の真偽を示します|
 
 ## コマンド一覧
@@ -28,7 +28,6 @@ JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.or
 |コマンド名               |解説|HAP -> SRV|SRV -> HAP|メソッドタイプ|
 |:------------------------|:---|:--------:|:--------:|:-------------:|
 |[getMonitoringServerInfo](#user-content-getMonitoringServerInfo)|監視サーバーの接続情報やポーリング間隔等を取得します|Yes|-|method|
-|[getTimestampOfLastTrigger](#user-content-getTimestampOfLastTrigger)|Hatoholサーバーに保存されている最新トリガーのタイムスタンプを取得します|Yes|-|method|
 |[getLastEventId](#user-content-getLastEventId)|Hatoholサーバーに保存されている最新イベントのIDを取得します|Yes|-|method|
 |[getTimeOfLastEvent](#user-content-getTimeOfLastEvent)|Hatoholサーバーに保存されている最新イベントの発生時間を取得します|Yes|-|method|
 |[getIfHostsChanged](#user-content-getIfHostsChanged)|直前のsendHostsによってHatoholサーバー内のホスト情報が変更の真偽を取得します|Yes|-|method|
@@ -55,38 +54,22 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 **result**
 
-オブジェクトの名前：サーバーID
-
-オブジェクトの値：
-
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
-|hostName          |string|Yes|-|65535byte以内|監視対象のホスト名|
+|serverId          |number|Yes|-|正の整数|監視サーバーのserverId|
+|url               |string|Yes|-|65535byte以内|監視サーバーのURL [[解説](#user-content-serverType)]|
 |type              |number|Yes|-|0-4|監視サーバーの種類 [[一覧](#user-content-serverType)]|
-|ipAddress         |string|Yes|-||監視サーバーのIPアドレス。RFC791(IPv4),RFC2460(IPv6)で定義されている範囲の値を入れることができる|
 |nickName          |string|Yes|-|65535byte以内|監視サーバーのニックネーム|
 |userName          |string|Yes|-|65535byte以内|監視サーバーのユーザーネーム|
 |password          |string|Yes|-|65535byte以内|監視サーバーのパスワード|
 |dbName            |string|Yes|-|65535byte以内|監視対象のデータベースのパスワード。登録の際にdbNameが必要ない場合は「""」を送信してください。|
-|port              |number|Yes|-|0~65535|監視サーバーのポート|
 |pollingIntervalSec|number|Yes|-|正の整数|ポーリングを行う間隔|
 |retryIntervalSec  |number|Yes|-|正の整数|ポーリングが失敗した場合、リトライを行うまでの間隔|
+|extra             |string|Yes|-|プラグイン固有の情報|
 
 ```
-{"jsonrpc":"2.0", "method":"getMonitoringServerInfo", "params":{"1":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10}}}
+{"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10}, "id":1}
 ```
-
-### getTimestampOfLastTrigger(method)
-
-**params**
-
-getTimestampOfLastTriggerメソッドには引数が存在しません。nullオブジェクトとしてparamsを送信してください。
-
-**result**
-
-|名前|型 |Mandatory|デフォルト値|値の範囲|解説|
-|:---|:--|:-------:|:----------:|:------:|:---|
-|timestampOfLastTrigger|string|Yes|-|65535byte以内|最後に更新されたトリガーのタイムスタンプ|
 
 ### getLastEventId(method)
 
@@ -98,7 +81,12 @@ getLastEventIdメソッドには引数が存在しません。nullオブジェ�
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|lastEventId|number|Yes|-|65535byte以内|Hatoholサーバー内に保存されているイベントの中の最新のイベントID|
+|lastEventId|number|Yes|-|65535byte以内|Hatoholサーバーに保存されている最新イベントのID|
+
+```
+{"jsonrpc":"2.0", "result":{"lastEventId":1}, "id":1}
+
+```
 
 ### getLastTimeOfEvent(method)
 
@@ -112,9 +100,16 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|lastTimeOfEvent|number|Yes|-|65535byte以内|Hatoholサーバーに保存されている最新イベントの発生時間を取得します|
+|lastTimeOfEvent|timestamp|Yes|-|-|Hatoholサーバーに保存されている最新イベントのタイムスタンプ|
+
+```
+{"jsonrpc":"2.0", "result":{"lastTimeOfEvent":1}, "id":1}
+```
 
 ### getIfHostsChanged(method)
+
+ホスト増減も自分で管理
+ラストトリガーは廃止
 
 **params**
 
@@ -200,6 +195,10 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |brief       |string|Yes|-|65535byte以内|イベントの説明。Web上に表示される情報|
 |extendedInfo|string|Yes|-|65535byte以内|briefには書いていない追加の情報を記述できます|
 
+```
+{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{"running":true, "status":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
+```
+
 ### sendHapSelfTriggers(notification)
 
 **params**
@@ -220,24 +219,45 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 
 ### sendArmInfo(notification)
 
+情報の取得処理が行われるたびに送信することを標準的な動作とするが、それ以外の状況で送信してもよい。最小間隔は１秒（MUST）、最大間隔はgetMonitoringServerInfoで取得したポーリング時間の2倍（SHOULD）とする。
+
+```
+
+SRV                             HAP
+ |    Initiation                 |
+ |------------------------------>|
+ |                               |
+ | getMonitoringServerInfo       |
+ |<------------------------------|
+ | Response(polling sec, etc...) |
+ |------------------------------>|
+ |                           |   |
+ |                           |   |
+ |                  polling sec  |
+ |                           |   |
+ |    Host,Trigget,Event     |   |
+ |<------------------------------|
+ |           sendArmInfo         |
+ |<------------------------------|
+ |                           |   |
+ |                  polling sec  |
+ |                           |   |
+
+```
+
 **params**
-
-オブジェクトの名前：サーバーID
-
-オブジェクトの値：
 
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:---------:|:----------:|:------:|:---|
-|running        |boolean|Yes|-|-|HAPが動作ステータス。<br>trueであれば正常に動作中、falseであるならば異常が発生している|
-|status         |string |Yes|-|-|最後のポーリングリザルト [[一覧](#user-content-armInfoStatus)]|
-|failureReason  |string |Yes|-|65535byte以内|更新が失敗した理由| 
-|lastSuccessTime|string |Yes|-|65535byte以内|最後に更新が成功した時刻|
-|lastFailureTime|string |Yes|-|65535byte以内|最後に更新が失敗した時刻|
-|numSuccess     |number |Yes|-|正の整数|HAPが起動してから更新に成功した回数| 
-|numFailure     |number |Yes|-|正の整数|HAPが起動してから更新に失敗した回数|
+|lastStatus         |string |Yes|-|-|最新のポーリング結果 [[一覧](#user-content-armInfoStatus)]|
+|failureReason  |string |Yes|-|65535byte以内|情報取得が失敗した理由|
+|lastSuccessTime|timestamp |Yes|-|-|最後に情報取得が成功した時刻|
+|lastFailureTime|timestamp |Yes|-|-|最後に情報取得が失敗した時刻|
+|numSuccess     |number |Yes|-|正の整数|HAPが起動してから情報取得に成功した回数|
+|numFailure     |number |Yes|-|正の整数|HAPが起動してから情報取得に失敗した回数|
 
 ```
-{"jsonrpc":"2.0", "method":"sendArmInfo", "params":{"1":{"running":true, "status":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}}}
+{"jsonrpc":"2.0", "method":"sendArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
 ```
 
 ### sendAllTrigger(notification)
@@ -327,16 +347,15 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 
 ## エラーコード
 
-リクエストに成功した場合は送信したリクエストに対応したresultが、
-リクエストに失敗した場合はresultではなくerrorが返ってきます。
+リクエストに成功した場合、送信したリクエストに対応したresultオブジェクト返されます。
+リクエストに失敗した場合、resultオブジェクトではなくerrorオブジェクトが返されます。
 このセクションではこのエラーコードを解説します。
 
-|エラーコード|解説|
-|:-----------|:---|
-|OK                  |エラーが発生せずに無事リクエストが受け入れられ、レスポンスが返ってきたことを表す|
-|NOT_FOUND_QUEUE_ADDR|設定したIPアドレス先にAMQP broakerのキューが存在しない|
-|UNAVAILABLE_HAP     |HAPプロセスがHatoholサーバーに受け入れられていません|
-|UNKNOWN             |原因不明のエラーが起こっています|
+※各メソッド定義後に埋めていく
+
+|code|message|meaning|
+|:--|:-------|:---|
+|1  |Unknown error|原因不明のエラーが起こっています|
 
 ## 表
 
@@ -344,13 +363,15 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 
 |ステータス|解説|
 |:---------|:---|
-|INIT   |初期状態。まだ通信を行っていない|
-|OK     |通信に成功している|
-|FAILURE|通信に失敗している|
+|"INIT"   |初期状態。まだ通信を行っていない|
+|"OK"     |通信に成功している|
+|"FAILURE"|通信に失敗している|
 
 ### serverType
 
-|名前|値 |
+※URLは別途
+
+|名前|UUID|URL|
 |:---|:--|
 |Zabbix|0|
 |Nagios|1|
