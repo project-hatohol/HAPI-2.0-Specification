@@ -31,14 +31,12 @@ JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.or
 |[getLastEventId](#user-content-getLastEventId)|Hatoholサーバーに保存されている最新イベントのIDを取得します|Yes|-|method|
 |[getLastEventTime](#user-content-getLastEventTime)|Hatoholサーバーに保存されている最新イベントの発生時間を取得します|Yes|-|method|
 |[getIfHostsChanged](#user-content-getIfHostsChanged)|直前のsendHostsによってHatoholサーバー内のホスト情報が変更の真偽を取得します|Yes|-|method|
-|[sendUpdatedTriggers](#user-content-sendUpdatedTriggers)|アップデートされたトリガーをHatoholサーバーに送信します|Yes|-|notification|
 |[sendHosts](#user-content-sendHosts)|監視サーバーが監視しているホスト一覧をHatoholサーバーに送信します|Yes|-|notification|
 |[sendHostGroupElements](#user-content-sendHostGroupElements)|ホストのホストグループ所属情報をHatoholサーバーに送信します|Yes|-|notification|
 |[sendHostGroups](#user-content-sendHostGroups)|ホストグループの情報をHatoholサーバーに送信します|Yes|-|notification|
-|[sendUpdatedEvents](#user-content-sendUpadtedEvents)|アップデートされたイベントをHatoholサーバーに送信します|Yes|-|notification|
-|[sendHapSelfTriggers](#user-content-sendHapSelfTriggers)|HAP自身のトリガーをHatoholサーバーに送信します|Yes|-|notification|
+|[sendUpdatedEvents](#user-content-sendUpdatedEvents)|アップデートされたイベントをHatoholサーバーに送信します|Yes|-|notification|
 |[sendArmInfo](#user-content-sendArmInfo)|HAPの接続情報をHatoholサーバーに送信します|Yes|-|notification|
-|[sendAllTriggers](#user-content-sendAllTrigges)|全てのトリガーをHatoholサーバーに送信します|Yes|-|notification|
+|[sendTriggers](#user-content-sendTrigges)|トリガーをHatoholサーバーに送信します。送信するトリガーはオプションで指定することが出来ます|Yes|-|notification|
 |[reqFetchItems](#user-content-reqFetchItems)|HatoholサーバーからHAPへアイテム一覧取得のリクエストを送信します|-|Yes|method|
 |[reqTerminate](#user-content-reqTerminate)|HAPとHatoholサーバーとの接続を終了させます|-|Yes|method|
 |[reqFetchHistory](#user-content-reqFetchHistory)|HatoholサーバーからHAPへヒストリー一覧取得のリクエストを送信します|-|Yes|method|
@@ -121,7 +119,7 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |:---|:--|:-------:|:----------:|:------:|:---|
 |type|boolean|Yes|-|-|監視サーバーが監視しているホストが変更されたかを判断します|
 
-### sendUpdatedTriggers(notification)
+### sendTriggers(notification)
 
 **params**
 
@@ -131,6 +129,7 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
+|option        |string|Yes|-|-            |トリガーオプション [[一覧](#user-content-triggerOption)]|
 |status        |number|Yes|-|正の整数     |トリガーのステータス [[一覧](#user-content-triggerStatus)]|
 |severity      |number|Yes|-|正の整数     |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
 |lastChangeTime|string|Yes|-|65535byte以内|トリガーが最後に更新された時間|
@@ -138,6 +137,10 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |hostName      |string|Yes|-|65535byte以内|トリガーが所属するサーバーのホスト名|
 |brief         |string|Yes|-|65535byte以内|トリガーの概要|
 |extendedInfo  |string|Yes|-|65535byte以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
+
+```
+{"jsonrpc":"2.0", "method":"sendTriggers", "params":{{"1",{"option":"UPDATED", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}}},"id":1}
+```
 
 ### sendHosts(notification)
 
@@ -150,6 +153,10 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |hostName|string|Yes|-|65535byte以内|監視サーバーが監視しているホスト名|
+
+```
+{"jsonrpc":"2.0","method":"sendHosts", "params":{{"1":"exampleHostName1"},{"2":"exampleHostName2"}}}
+```
 
 ### sendHostGroupElements(notification)
 
@@ -196,26 +203,8 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |extendedInfo|string|Yes|-|65535byte以内|briefには書いていない追加の情報を記述できます|
 
 ```
-{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{{"1",{"running":true, "status":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}}}, "id":1}
+{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{{"1",{"time":"201503231513, "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}}},"id":1}
 ```
-
-### sendHapSelfTriggers(notification)
-
-**params**
-
-名前：サーバーID
-
-値：
-
-|名前         |型|Mandatory|デフォルト値|値の範囲|解説|
-|:------------|:----|:----:|:----------:|:------:|:---|
-|status        |number|Yes|-|正の整数     |トリガーのステータス[[一覧](#user-content-triggerStatus)]|
-|severity      |number|Yes|-|正の整数     |トリガーの種別|
-|lastChangeTime|string|Yes|-|65535byte以内|トリガーが最後に更新された時間|
-|hostId        |number|Yes|-|正の整数     |監視サーバー内で設定されているホストID|
-|hostName      |string|Yes|-|65535byte以内|トリガーが所属するサーバーのホスト名|
-|brief         |string|Yes|-|65535byte以内|トリガーの概要|
-|extendedInfo  |string|Yes|-|65535byte以内|briefには書いていない追加情報を記述することができます|
 
 ### sendArmInfo(notification)
 
@@ -263,24 +252,6 @@ SRV                             HAP
 ```
 {"jsonrpc":"2.0", "method":"sendArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
 ```
-
-### sendAllTrigger(notification)
-
-**params**
-
-名前：サーバーID
-
-値：
-
-|名前         |型|Mandatory|デフォルト値|値の範囲|解説|
-|:------------|:----|:----:|:----------:|:------:|:---|
-|status        |number|Yes|-|正の整数     |トリガーのステータス [[一覧](user-content-triggerStatus)]|
-|severity      |number|Yes|-|正の整数     |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
-|lastChangeTime|string|Yes|-|65535byte以内|トリガーが最後に更新された時間|
-|hostId        |number|Yes|-|正の整数     |監視サーバー内設定されているホストID|
-|hostName      |string|Yes|-|65535byte以内|トリガーが所属するサーバーのホスト名|
-|brief         |string|Yes|-|65535byte以内|トリガーの概要|
-|extendedInfo  |string|Yes|-|65535byte以内|briefには書いていない追加情報を記述することができます|
 
 ### reqFetchItems(method)
 
@@ -405,6 +376,14 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 |OK     |通信に成功している|
 |PROBLEM|通信に失敗している|
 |UNKNOWN|状態不明|
+
+### triggerOption
+
+|種類|解説|
+|:---------|:---|
+|"ALL"    |全てのトリガーを送信する|
+|"UPDATED"|アップデートされたトリガーのみ送信する|
+|"SELF"   |HAP自身のトリガーを送信する|
 
 ### eventType
 
