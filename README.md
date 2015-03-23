@@ -29,7 +29,7 @@ JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.or
 |:------------------------|:---|:--------:|:--------:|:-------------:|
 |[getMonitoringServerInfo](#user-content-getMonitoringServerInfo)|監視サーバーの接続情報やポーリング間隔等を取得します|Yes|-|method|
 |[getLastEventId](#user-content-getLastEventId)|Hatoholサーバーに保存されている最新イベントのIDを取得します|Yes|-|method|
-|[getTimeOfLastEvent](#user-content-getTimeOfLastEvent)|Hatoholサーバーに保存されている最新イベントの発生時間を取得します|Yes|-|method|
+|[getLastEventTime](#user-content-getLastEventTime)|Hatoholサーバーに保存されている最新イベントの発生時間を取得します|Yes|-|method|
 |[getIfHostsChanged](#user-content-getIfHostsChanged)|直前のsendHostsによってHatoholサーバー内のホスト情報が変更の真偽を取得します|Yes|-|method|
 |[sendUpdatedTriggers](#user-content-sendUpdatedTriggers)|アップデートされたトリガーをHatoholサーバーに送信します|Yes|-|notification|
 |[sendHosts](#user-content-sendHosts)|監視サーバーが監視しているホスト一覧をHatoholサーバーに送信します|Yes|-|notification|
@@ -88,7 +88,7 @@ getLastEventIdメソッドには引数が存在しません。nullオブジェ�
 
 ```
 
-### getLastTimeOfEvent(method)
+### getLastEventTime(method)
 
 同時刻に発生したイベントが存在する場合、取得するイベントが重複する可能性があります。
 
@@ -100,10 +100,10 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|lastTimeOfEvent|timestamp|Yes|-|-|Hatoholサーバーに保存されている最新イベントのタイムスタンプ|
+|lastEventTime|timestamp|Yes|-|-|Hatoholサーバーに保存されている最新イベントのタイムスタンプ|
 
 ```
-{"jsonrpc":"2.0", "result":{"lastTimeOfEvent":1}, "id":1}
+{"jsonrpc":"2.0", "result":{"lastEventTime":1}, "id":1}
 ```
 
 ### getIfHostsChanged(method)
@@ -196,7 +196,7 @@ getIfHostsChangedメソッドには引数が存在しません。paramsをnull�
 |extendedInfo|string|Yes|-|65535byte以内|briefには書いていない追加の情報を記述できます|
 
 ```
-{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{"running":true, "status":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
+{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{{"1",{"running":true, "status":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}}}, "id":1}
 ```
 
 ### sendHapSelfTriggers(notification)
@@ -235,9 +235,13 @@ SRV                             HAP
  |                           |   |
  |                  polling sec  |
  |                           |   |
- |    Host,Trigget,Event     |   |
+ |    Host                   |   |
  |<------------------------------|
- |           sendArmInfo         |
+ |         Trigget               |
+ |<------------------------------|
+ |                 Event         |
+ |<------------------------------|
+ |                   sendArmInfo |
  |<------------------------------|
  |                           |   |
  |                  polling sec  |
@@ -347,9 +351,9 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 
 ## エラーコード
 
-リクエストに成功した場合、送信したリクエストに対応したresultオブジェクト返されます。
+リクエストに成功した場合、送信したリクエストに応じたresultオブジェクトが返されます。
 リクエストに失敗した場合、resultオブジェクトではなくerrorオブジェクトが返されます。
-このセクションではこのエラーコードを解説します。
+このセクションではエラーオブジェクトとして返ってくるエラーコードとエラーメッセージについて解説します。
 
 ※各メソッド定義後に埋めていく
 
@@ -414,7 +418,7 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 
 ### itemInfoValueType
 
-アイテムのタイプです。任意のタイプを各イベントに設定して下さい。
+アイテムのタイプです。任意のタイプを各アイテムに設定して下さい。
 
 |タイプ|解説|
 |:-----|:---|
