@@ -57,8 +57,8 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
 |serverId          |number|Yes|-|正の整数|監視サーバーのserverId|
-|url               |string|Yes|-|65535byte以内|監視サーバーのURL [[解説](#user-content-serverType)]|
-|type              |number|Yes|-|0-4|監視サーバーの種類 [[一覧](#user-content-serverType)]|
+|url               |string|Yes|-|-|監視サーバーのURL [[解説](#user-content-serverType)]|
+|type              |string|Yes|-|-|監視サーバーの種類 [[一覧](#user-content-serverType)]|
 |nickName          |string|Yes|-|65535byte以内|監視サーバーのニックネーム|
 |userName          |string|Yes|-|65535byte以内|監視サーバーのユーザーネーム|
 |password          |string|Yes|-|65535byte以内|監視サーバーのパスワード|
@@ -185,8 +185,8 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|status        |number|Yes|-|正の整数     |トリガーのステータス [[一覧](#user-content-triggerStatus)]|
-|severity      |number|Yes|-|正の整数     |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
+|status        |string|Yes|-|-            |トリガーのステータス [[一覧](#user-content-triggerStatus)]|
+|severity      |string|Yes|-|-            |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
 |lastChangeTime|string|Yes|-|65535byte以内|トリガーが最後に更新された時間|
 |hostId        |string|Yes|-|正の整数     |トリガーが所属するホストID|
 |hostName      |string|Yes|-|65535byte以内|トリガーが所属するサーバーのホスト名|
@@ -210,10 +210,10 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |time        |string|Yes|-|65535byte以内|イベントが発生した時刻|
-|type        |string|Yes|-|65535byte以内|イベントのタイプ [[一覧](#user-content-eventType)]|
+|type        |string|Yes|-|-|イベントのタイプ [[一覧](#user-content-eventType)]|
 |triggerId   |number|Yes|-|正の整数     |このイベントを発火させたトリガーID|
-|status      |number|Yes|-|正の整数     |トリガーのステータス [[一覧](#user-content-triggerStatus)]|
-|severity    |number|Yes|-|正の整数     |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
+|status      |string|Yes|-|-|トリガーのステータス [[一覧](#user-content-triggerStatus)]|
+|severity    |string|Yes|-|-|トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
 |hostId      |string|Yes|-|65535byte以内|イベントが発生したホストのID|
 |hostName    |string|Yes|-|65535byte以内|イベントが発生したホストの名前|
 |brief       |string|Yes|-|65535byte以内|イベントの説明。Web上に表示される情報|
@@ -303,7 +303,7 @@ HatoholサーバーからHAPへアイテムのヒストリーをリクエスト�
 |:---|:--|:-------:|:----------:|:------:|:---|
 |hostId   |string|Yes|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
 |itemId   |number|Yes|-|正の整数   |ヒストリーのアイテムID|
-|valueType|string|Yes|-|255文字以内|取得するヒストリーの値の型 [[一覧](#user-content-itemValueType)]|
+|valueType|string|Yes|-|-|取得するヒストリーの値の型 [[一覧](#user-content-itemValueType)]|
 |beginTime|string|Yes|-|255文字以内|ヒストリー取得域の始点時間を指定します|
 |endTime  |string|Yes|-|255文字以内|ヒストリー取得域の終点時間を指定します|
 
@@ -339,7 +339,7 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 |名前         |型|Mandatory|デフォルト値|値の範囲|解説|
 |:------------|:----|:----:|:----------:|:------:|:---|
 |status        |number|Yes|-|正の整数     |トリガーのステータス|
-|severity      |number|Yes|-|正の整数     |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
+|severity      |string|Yes|-|-|トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
 |lastChangeTime|string|Yes|-|65535byte以内|トリガーが最後に更新された時間|
 |hostId        |number|Yes|-|正の整数     |監視サーバー内で設定されているホストID|
 |hostName      |string|Yes|-|65535byte以内|トリガーが所属するサーバーのホスト名|
@@ -425,7 +425,7 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 |"BAD"    |異常|
 |"UNKNOWN"|不明|
 
-### itemInfoValueType
+### itemValueType
 
 アイテムのタイプです。任意のタイプを各アイテムに設定して下さい。
 
