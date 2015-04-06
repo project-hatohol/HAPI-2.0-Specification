@@ -1,58 +1,63 @@
-# HAP(Hatohol Arm Plugin)
+a# HAP(Hatohol Arm Plugin)
+
+## ToDO
+
+serverTypeのURL
+エラーコード
+
 
 ## 概要
 
-HAPはJSON-RPC 2.0を用い、Hatoholサーバーと通信を行います。
+HAPはJSON-RPC 2.0を用い，Hatoholサーバーと通信を行います。
 JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.org/specification)をお読みください。
 
- ![overview](hapi_overview.png)
-
+![overview](hapi_overview.png)
 
 ## 注意事項
 
- - 現在、Hatoholはutf-8を標準的な文字コードとし、作成されています。utf-8を使用することを推奨します。
- - リクエスト・レスポンスで使用するIDには、十分なランダム性を必要とします。
- - JSON-RPCにはバッチリクエストという、複数のリクエストを同時に送信する文法も存在しますが、Hatoholはこの文法を用いたリクエストには対応していません。
- - 通信の方向がHAP -> SRVであるコマンド内のnumber型範囲は0~2147483647です。 
- - オブジェクトの名前として各要素のID、値としてそのIDに対応している各値を更にオブジェクト形式で記述してください。ここに記述するIDはユニークである必要があります。
- - 各コマンド解説においてMandatoryがYesとなっている要素が不要な場合は、「""」を入力し、リクエストやレスポンスを送信してください。
- - 全てのコマンドには想定される標準的な動作が存在しますが、想定された全て任意のタイミングで使用することができます。
+ - 現在，Hatoholはutf-8を標準的な文字コードとし，作成されています。utf-8を使用することを推奨します。
+ - リクエスト・レスポンスで使用するIDには，十分なランダム性を必要とします。
+ - JSON-RPCにはバッチリクエストという，複数のリクエストを同時に送信する文法も存在しますが，Hatoholはこの文法を用いたリクエストには対応していません。
+ - 通信の方向がHAP -> SRVであるコマンド内のnumber型範囲は0~2147483647です。
+ - オブジェクトの名前として各要素のID，値としてそのIDに対応している各値を更にオブジェクト形式で記述してください。ここに記述するIDはユニークである必要があります。
+ - 各コマンド解説においてMandatoryがYesとなっている要素が不要な場合は，「""」を入力し，リクエストやレスポンスを送信してください。
+ - 全てのコマンドには想定される標準的な動作が存在しますが，全て任意のタイミングで使用することができます。
+ - send~~~と名のついたコマンドは，送信したデータのデータベース書き込み成否をresultオブジェクトとして受け取ります。結果の値については[[一覧](#user-content-result)]をご覧ください。
 
-## データ型定義
+## データ型解説
 
 |名前|JSON型|解説|
 |:---|:---------|:---|
-|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省くことが出来ます。また、小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合、または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
-|boolean|true, false|true or falseを指定し、その値の真偽を示します|
+|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省くことが出来ます。また，小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
+|boolean|true, false|true or falseを指定し，その値の真偽を示します|
 
 ## コマンド解説
 
 |コマンド名               |解説|HAP -> SRV|SRV -> HAP|メソッドタイプ|
 |:------------------------|:---|:--------:|:--------:|:-------------:|
 |[getMonitoringServerInfo](#user-content-getMonitoringServerInfo)|監視サーバーの接続情報やポーリング間隔等を取得します|Yes|-|method|
-|[getLastEventId](#user-content-getLastEventId)|Hatoholサーバーに保存されている最新イベントのIDを取得します|Yes|-|method|
-|[getLastEventTime](#user-content-getLastEventTime)|Hatoholサーバーに保存されている最新イベントの発生時間を取得します|Yes|-|method|
-|[getIfHostsChanged](#user-content-getIfHostsChanged)|直前のsendHostsによってHatoholサーバー内のホスト情報が変更の真偽を取得します|Yes|-|method|
-|[sendHosts](#user-content-sendHosts)|監視サーバーが監視しているホスト一覧をHatoholサーバーに送信します|Yes|-|notification|
-|[sendHostGroupElements](#user-content-sendHostGroupElements)|ホストのホストグループ所属情報をHatoholサーバーに送信します|Yes|-|notification|
-|[sendHostGroups](#user-content-sendHostGroups)|ホストグループの情報をHatoholサーバーに送信します|Yes|-|notification|
-|[sendTriggers](#user-content-sendTrigges)|トリガーをHatoholサーバーに送信します。送信するトリガーはオプションで指定することが出来ます|Yes|-|notification|
-|[sendUpdatedEvents](#user-content-sendUpdatedEvents)|アップデートされたイベントをHatoholサーバーに送信します|Yes|-|notification|
-|[sendArmInfo](#user-content-sendArmInfo)|HAPの接続情報をHatoholサーバーに送信します|Yes|-|notification|
-|[reqFetchItems](#user-content-reqFetchItems)|HatoholサーバーからHAPへアイテム一覧取得のリクエストを送信します|-|Yes|method|
-|[reqTerminate](#user-content-reqTerminate)|HAPとHatoholサーバーとの接続を終了させます|-|Yes|method|
-|[reqFetchHistory](#user-content-reqFetchHistory)|HatoholサーバーからHAPへ指定した時間範囲のヒストリー取得のリクエストを送信します|-|Yes|method|
-|[reqFetchTriggers](#user-content-reqFetchTriggers)|HatoholサーバーからHAPへトリガー一覧取得のリクエストを送信します|-|Yes|method|
+|[getLastInfo](#user-content-getLastInfo)|Hatoholサーバーに保存されている指定した要素の最新情報を取得します|Yes|-|method|
+|[sendHosts](#user-content-sendHosts)|監視サーバーが監視しているホスト一覧をHatoholサーバーに送信します|Yes|-|method|
+|[sendHostGroups](#user-content-sendHostGroups)|ホストグループの情報をHatoholサーバーに送信します|Yes|-|method|
+|[sendHostGroupElements](#user-content-sendHostGroupElements)|ホストのホストグループ所属情報をHatoholサーバーに送信します|Yes|-|method|
+|[sendTriggers](#user-content-sendTrigges)|トリガーをHatoholサーバーに送信します。送信するトリガーはオプションで指定することが出来ます|Yes|-|method|
+|[sendEvents](#user-content-sendEvents)|アップデートされたイベントをHatoholサーバーに送信します|Yes|-|method|
+|[sendVirtualRelations](#user-content-sendVirtualRelations)|ホスト同士のVM親子関係をHatoholサーバーに送信します|Yes|-|method|
+|[sendArmInfo](#user-content-sendArmInfo)|HAPの接続情報をHatoholサーバーに送信します|Yes|-|method|
+|[reqFetchItems](#user-content-reqFetchItems)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|-|Yes|method|
+|[reqFetchHistory](#user-content-reqFetchHistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|-|Yes|method|
+|[reqFetchTriggers](#user-content-reqFetchTriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|-|Yes|method|
+|[reqTerminate](#user-content-reqTerminate)|HAPとHatoholサーバーとの接続を終了させます|-|Yes|notification|
 
 ### getMonitoringServerInfo(method)
 
-ポーリング時間毎にHatoholサーバーに自身の監視サーバー情報を問い合わせることを標準的な動作としますが、任意のタイミングで問い合わせることもできます。
+ポーリング時間毎にHatoholサーバーに自身の監視サーバー情報を問い合わせることを標準的な動作としますが，任意のタイミングで問い合わせることもできます。
 
-**params**
+***params***
 
 getMonitoringServerInfoメソッドには引数が存在しません。nullオブジェクトとしてparamsを送信してください。
 
-**result**
+***result***
 
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
@@ -64,60 +69,51 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 |password          |string|Yes|-|65535byte以内|監視サーバーのパスワード|
 |dbName            |string|Yes|-|65535byte以内|監視対象のデータベースのパスワード|
 |pollingIntervalSec|number|Yes|-|正の整数|ポーリングを行う間隔|
-|retryIntervalSec  |number|Yes|-|正の整数|ポーリングが失敗した場合、リトライを行うまでの間隔|
-|extra             |string|Yes|-|プラグイン固有の情報を格納することができる|
+|retryIntervalSec  |number|Yes|-|正の整数|ポーリングが失敗した場合，リトライを行うまでの間隔|
+|extra             |string|Yes|-|65535byte以内|プラグイン固有の情報を格納することができる|
 
 ```
 {"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10}, "id":1}
 ```
 
-### getLastEventId(method)
+### getLastInfo(method)
 
-ポーリング時間毎にHatoholサーバーに最新イベントのIDを問い合わせることを標準的な動作とします。
+指定した要素の最新情報を問い合わせます。データベースを降順ソートし，データベースが一番大きな値と判断した情報が返ってきます。指定した要素の最新情報がユニークではない場合，指定した要素を重複して取得する可能性があります。
 
-取得したイベントIDはsendUpdatedEventsと組み合わせることにより、前回の更新から今までに発生したイベントをHatoholサーバーに送信します。
+例：イベントにおいてIDではなく時刻を使用している場合，同時刻に発生したイベントを重複して取得する可能性がある。
 
-**params**
+また，初回起動時など，Hatoholサーバーにトリガーやイベントが保存されていない場合，resultオブジェクトはnullとして返ってきます。
 
-getLastEventIdメソッドには引数が存在しません。nullオブジェクトとしてparamsを送信してください。
+***params***
 
-**result**
+```
+{"jsonrpc":"2.0", "method":"getLastInfo", "params":"trigger", "id":1}
+```
+
+|paramsの値|
+|:---------|
+|"trigger"|
+|"event"  |
+
+
+***result***
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|lastEventId|number|Yes|-|65535byte以内|Hatoholサーバーに保存されている最新イベントのID|
+|result|string|Yes|-|65535byte以内|Hatoholサーバーに保存されている指定した要素の最新情報|
 
 ```
-{"jsonrpc":"2.0", "result":{"lastEventId":1}, "id":1}
+{"jsonrpc":"2.0", "result":"201504011349", "id":1}
+
+この例ではlastInfoとしてtimestampが返ってきています
 
 ```
 
-### getLastEventTime(method)
+### sendHosts(method)
 
-ポーリング時間毎にHatoholサーバーに最新イベントの発生時刻を問い合わせることを標準的な動作とします。
+Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際に全てのホスト情報をHatoholサーバーに送信することを標準的な動作とします。
 
-取得した時刻はsendUpdatedEventsと組み合わせることにより、前回の更新から今までに発生したイベントをHatoholサーバーに送信します。
-同時刻に発生したイベントが存在する場合、取得するイベントが重複する可能性があります。
-
-**params**
-
-getLastTimeOfEventメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
-
-**result**
-
-|名前|型 |Mandatory|デフォルト値|値の範囲|解説|
-|:---|:--|:-------:|:----------:|:------:|:---|
-|lastEventTime|timestamp|Yes|-|-|Hatoholサーバーに保存されている最新イベントのタイムスタンプ|
-
-```
-{"jsonrpc":"2.0", "result":{"lastEventTime":"201503241409"}, "id":1}
-```
-
-### sendHosts(notification)
-
-ポーリング時間毎に、全てのホスト情報をHatoholサーバーに送信することを標準的な動作とします。
-
-**params**
+***params***
 
 オブジェクトの名前：ホストID
 
@@ -128,14 +124,44 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 |hostName|string|Yes|-|65535byte以内|監視サーバーが監視しているホスト名|
 
 ```
-{"jsonrpc":"2.0","method":"sendHosts", "params":{{"1":"exampleHostName1"},{"2":"exampleHostName2"}}}
+{"jsonrpc":"2.0","method":"sendHosts", "params":{"1":"exampleHostName1"}, "id":1}
 ```
 
-### sendHostGroupElements(notification)
+***result***
+
+```
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```
+
+### sendHostGroups(method)
+
+ホストグループ一覧をHatoholサーバーに送信します。[sendHostGroupElements](#user-content-sendHostFroupElements)と合わせて使用することを標準的な動作とします。
+
+***params***
+
+オブジェクトの名前：グループID
+
+オブジェクトの値：
+
+|名前|型 |Mandatory|デフォルト値|値の範囲|解説|
+|:---|:--|:-------:|:----------:|:------:|:---|
+|groupName|string|Yes|-|65535byte以内|監視ホストが所属するホストグループ|
+
+```
+{"jsonrpc":"2.0","method":"sendHostGroups", "params":{"1":"Group1", "2":"Group2"}, "id":1}
+```
+
+***result***
+
+```
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```
+
+### sendHostGroupElements(method)
 
 ホストのグループ所属情報をHatoholサーバーに送信します。[sendHostsGroup](#user-content-sendHostGroups)と合わせて使用することを標準的な動作とします。
 
-**params**
+***params***
 
 オブジェクトの名前：ホストID
 
@@ -146,42 +172,34 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 |groupId|number|Yes|- |正の整数|監視ホストが所属しているグループのID|
 
 ```
-{"jsonrpc":"2.0","method":"sendHostGroupElements", "params":{{"1":1},{"2":2}}}
+{"jsonrpc":"2.0","method":"sendHostGroupElements", "params":{"1":1, "2":2}, "id":1}
 ```
 
-### sendHostGroups(notification)
-
-ホストグループ一覧をHatoholサーバーに送信します。[sendHostGroupElements](#user-content-sendHostFroupElements)と合わせて使用することを標準的な動作とします。
-
-**params**
-
-オブジェクトの名前：グループID
-オブジェクトの値：
-
-|名前|型 |Mandatory|デフォルト値|値の範囲|解説|
-|:---|:--|:-------:|:----------:|:------:|:---|
-|groupName|string|Yes|-|65535byte以内|監視ホストが所属するホストグループ|
+***result***
 
 ```
-{"jsonrpc":"2.0","method":"sendHostGroups", "params":{{"1":"Group1"},{"2":"Group2"}}}
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
 
-### sendTriggers(notification)
+### sendTriggers(method)
 
-トリガーをHatoholサーバーに送信します。送信するトリガーはoptionの値を変えることにより選択することができます。
- - "ALL"を用いた場合は監視サーバーが監視するホストの情報が変更した際に全てのトリガー
- - "UPDATED"はポーリング時間毎にアップデートされたトリガー
- - "SELF"はHAP自身が持つトリガー
-以上をそれぞれ指定し、送信することができます。
+[getLastInfo](#user-content-getLastInfo)を用いて取得，またはHAPプロセス自身が保管している最新トリガー情報を基に，そのトリガーから現時点までに更新されたトリガーをHatoholサーバーに送信するか，全てのトリガーを送信します。
 
-**params**
+***params***
 
-送信するトリガーをどういったオプションで送信するのかどうかを指定する必要があります。
-名前を"option"、値を[[一覧]("user-content-triggerOption")]の中から選んだオブジェクトをひとつ、paramsオブジェクトの中に配置してください。
+名前：triggers, lastInfo, option
 
-名前：トリガーID
+各オブジェクトの値：
 
-値：
+|名前|型|Mandatory|デフォルト値|値の範囲|解説|
+|:--|:--|:--|:--|:--|:--|
+|triggers|object|Yes|-|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
+|option|string|Yes|-|-|トリガー送信オプション[[一覧]("user-content-triggerOption")]の中から状況に応じた送信オプションを選択してください|
+|lastInfo|string|No|null|65535byte以内|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+
+***triggersオブジェクト***
+
+HAP自身が所持しているトリガーIDとホストIDを数字ではなく，"_SELF_"と記述し送信することで，Hatoholサーバーが送信されたトリガーをSELFトリガーと判別します。
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
@@ -194,14 +212,31 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 |extendedInfo  |string|Yes|-|65535byte以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
 
 ```
-{"jsonrpc":"2.0", "method":"sendTriggers", "params":{"option":"UPDATED", "1":{"status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}},"id":1}
+{"jsonrpc":"2.0", "method":"sendTriggers", "params":{"option":"UPDATED", "lastInfo":"201504061606", "Triggers":{"1":{"status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}, "_SELF_":{"status":"OK", "severity":"INFO","lastChangeTime":"201503231760", "hostId":"_SELF_ "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}}},"id":1}
 ```
 
-### sendUpdatedEvents(notification)
+***result***
 
-[getLastEventId](#user-content-getLastEventId)や[getLastEventTime](#user-content-getLastEventTime)を用いて取得した最新イベントを基に、そのイベントから現在までに発生したイベントをHatoholサーバーに送信します。
+```
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```
 
-**params**
+### sendEvents(method)
+
+[getLastInfo](#user-content-getLastInfo)を用いて取得，またはHAPプロセス自身が保管している最新イベント情報を基に，そのイベントから現時点までに発生したイベントをHatoholサーバーに送信します。
+
+***params***
+
+オブジェクトの名前：events, lastInfo
+
+各オブジェクトの値：
+
+|名前|型|Mandatory|デフォルト値|値の範囲|解説|
+|:--|:--|:--|:--|:--|:--|
+|events|object|Yes|-|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|lastInfo|string|No|null|65535byte以内|最新イベントの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+
+***eventsオブジェクト***
 
 オブジェクトの名前：イベントID
 
@@ -220,12 +255,37 @@ getLastTimeOfEventメソッドには引数が存在しません。paramsをnull�
 |extendedInfo|string|Yes|-|65535byte以内|briefには書いていない追加の情報を記述できます|
 
 ```
-{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{"1":{"time":"201503231513, "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}},"id":1}
+{"jsonrpc":"2.0", "method":"sendUpdatedEvents", "params":{"events":{"1":{"time":"201503231513, "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}}, "lastInfo":"201504011759"},"id":1}
 ```
 
-### sendArmInfo(notification)
+***result***
 
-情報の取得処理が行われるたびに送信することを標準的な動作としますが、任意に送信してもかまいません。最小間隔は１秒（MUST）、最大間隔はgetMonitoringServerInfoで取得したポーリング時間の2倍（SHOULD）とする。
+```
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```
+
+### sendVirtualRelations(method)
+
+指定したホストのペアがVMマシンの親子関係であることをHatoholサーバーに送信します。現在は複数のハイパーバイザが存在することを想定していないため，子のホストIDはユニークである必要があります。
+
+***params***
+
+オブジェクトの名前：子ホストID
+オブジェクトの値：親ホストID
+
+```
+{"jsonrpc":"2.0", "method":"sendVirtualRelations", "params":{"12":"10", "11":"10"},"id":1}
+```
+
+***result***
+
+```
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```
+
+### sendArmInfo(method)
+
+HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔はgetMonitoringServerInfoで取得したポーリング時間の2倍（SHOULD）とする。
 
 ```
 SRV                             HAP
@@ -244,7 +304,7 @@ SRV                             HAP
  |<---------Host-----------------|
 ```
 
-**params**
+***params***
 
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:---------:|:----------:|:------:|:---|
@@ -259,15 +319,21 @@ SRV                             HAP
 {"jsonrpc":"2.0", "method":"sendArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
 ```
 
+***result***
+
+```
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```
+
 ### reqFetchItems(method)
 
-HatoholWebクライアントで「概要:アイテム」,「最新データ」を表示する際にアイテムの情報が必要なため、このリクエストがHAPに送信されます。
+このコマンドは、Hatoholサーバーがアイテムを要求しているときにHAPに送信されます。HAPはレスポンスとしてアイテムIDをオブジェクトの名前，アイテム値をオブジェクトの値とした配列にして全てのアイテムを返す必要があります。
 
-**params**
+***params***
 
 reqFetchItemsメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
 
-**result**
+***result***
 
 |名前|型|Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
@@ -284,20 +350,12 @@ reqFetchItemsメソッドには引数が存在しません。paramsをnullオブ
 {"jsonrpc:"2.0", "result":{"serverId":1, "hostId":"1", "brief":"example brief", "lastValueTime":"201503231045","lastValue":"example value", "prevValue": "example previous value", "itemGroupName":"example group", "unit",""}}
 ```
 
-### reqTerminate(notification)
-
-HatoholサーバーからHatoholサーバーとHAPの接続を終了することをリクエストします。Hatoholサーバー上から監視サーバーの情報が削除された際に送ることを標準的な動作とします。
-
-**params**
-
-reqTerminateメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
-
 ### reqFetchHistory(method)
 
-HatoholサーバーからHAPへアイテムのヒストリーをリクエストします。
-指定した時間の範囲に一致するヒストリーが複数ある場合、アイテムIDをオブジェクトの名前にし、オブジェクトの値を配列にしてください。
+このコマンドは、Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます。HAPはレスポンスとして，指定時間の範囲に当てはまるヒストリーのアイテムIDをオブジェクトの名前，アイテム値をオブジェクトの値とした配列を返す必要があります。
 
-**params**
+
+***params***
 
 |名前|型 |Mandatory|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
@@ -311,7 +369,7 @@ HatoholサーバーからHAPへアイテムのヒストリーをリクエスト�
 {"jsonrpc":"2.0", "method":"reqFetchHistory", "params":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513, "beginTime":"201503231513"}},"id":1}
 ```
 
-**result**
+***result***
 
 オブジェクトの名前:アイテムID
 
@@ -328,13 +386,13 @@ HatoholサーバーからHAPへアイテムのヒストリーをリクエスト�
 
 ### reqFetchTriggers(method)
 
-トリガー全てを取得するリクエストをHatoholサーバーからHAPに送信します。
+このコマンドは、Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます。HAPはレスポンスとして全てのトリガーの配列を返す必要があります。
 
-**params**
+***params***
 
 reqFetchTriggersメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
 
-**result**
+***result***
 
 |名前         |型|Mandatory|デフォルト値|値の範囲|解説|
 |:------------|:----|:----:|:----------:|:------:|:---|
@@ -350,10 +408,18 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 {"jsonrpc":"2.0", "result":{"1":{"option":"UPDATED", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}},"id":1}
 ```
 
+### reqTerminate(notification)
+
+HatoholサーバーからHatoholサーバーとHAPの接続を終了することをリクエストします。Hatoholサーバー上から監視サーバーの情報が削除された際に送ることを標準的な動作とします。
+
+***params***
+
+reqTerminateメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
+
 ## エラーコード
 
-リクエストに成功した場合、送信したリクエストに応じたresultオブジェクトが返されます。
-リクエストに失敗した場合、resultオブジェクトではなくerrorオブジェクトが返されます。
+リクエストに成功した場合，送信したリクエストに応じたresultオブジェクトが返されます。
+リクエストに失敗した場合，resultオブジェクトではなくerrorオブジェクトが返されます。
 このセクションではエラーオブジェクトとして返ってくるエラーコードとエラーメッセージについて解説します。
 
 ※各メソッド定義後に埋めていく
@@ -411,9 +477,8 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 
 |種類|解説|
 |:---------|:---|
-|"ALL"    |全てのトリガーを送信する|
-|"UPDATED"|アップデートされたトリガーのみ送信する|
-|"SELF"   |HAP自身のトリガーを送信する|
+|"ALL"    |監視対象のトリガー全てを送信することを標準的な動作としています。Hatoholサーバー内の古いトリガーをWebUI上から見えないステータスに変更し，その後送信した全てのトリガーを新規トリガーとして登録します|
+|"UPDATED"|アップデートされたトリガーのみをHatoholサーバーに送信し，現在Hatoholサーバーに保存されているトリガーを上書きすることを標準的な動作とします|
 
 ### eventType
 
@@ -435,3 +500,13 @@ reqFetchTriggersメソッドには引数が存在しません。paramsをnullオ
 |"FLOAT"  |float型 |
 |"INTEGER"|int型   |
 |"STRING" |string型|
+
+### result
+
+send~~~コマンドを送信した際におけるDB書き込みの成否です。
+書き込みに失敗した際は，再度送信するといった動作が標準的です。
+
+|ステータス|解説|
+|:---------|:---|
+|"SUCCESS"|DBへの書き込みが成功しています|
+|"FAILED"|DBへの書き込みに失敗しています|
