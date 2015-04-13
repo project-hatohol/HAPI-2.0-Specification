@@ -7,7 +7,6 @@ serverTypeのURL
 エラーコード
 getMonitoringServerの項目，本当にMandatroyか
 情報の情報？
-reqTermはサーバー->HAPオンリー？
 
 ## 概要
 
@@ -25,73 +24,74 @@ Hatohol Arm Plugin InterfaceはHatoholサーバーとプラグイン間でのデ
 ```
 Hatoholサーバー                                   HAP
     |                                               
-    |                                        Turn on HAP         
+    |                                        Turn on HAP
     |                                              |
-    |<----------------Initiation------------------>|
-    |                                              |
-    |                  (データ同期)                |
-    |<-----------getMonitoringServerInfo-----------|
-    |           ポーリングタイムなどを取得         |
-    |<------------------updateHosts----------------|
-    |<------------------updateHostGroups-----------|
-    |<------------------updateHostGroupElements----|
-    |<------------------updateTriggers-------------|
-    |<------------------updateEvents---------------|
-    |     接続以前に発生したイベントの同期の有無は |
-    |     Hatoholサーバーで設定                    |
-    |                                              |
-    |<------------------updateVirtualRelations-----|
-    |<------------------updateArmInfo--------------|
-    |                 (データ同期終了)         |   |
+    |-----------------Initiation1----------------->|
+    |<----------------Initiation2------------------|
+    |-----------------Initiation3----------------->|
     |                                          |   |
     |                               ポーリング間隔 |
-    |            (通常運用，定期更新)          |   |
-    |<-----------getMonitoringServerInfo-----------|
+    |                                          |   |
+    |<-----getMonitoringServerInfo(リクエスト)-----|
+    |------getMonitoringServerInfo(レスポンス)---->|
     |                                              |
-    |<--------------getLastInfo--------------------|
-    |<------------------updateHosts----------------|
+    |<-----------getLastInfo(リクエスト)-----------|
+    |------------getLastInfo(レスポンス)---------->|
+    |<-----------updateHosts(リクエスト)-----------|
+    |------------updateHosts(レスポンス)---------->|
     |                                              |
-    |<--------------getLastInfo--------------------|
-    |<------------------updateHostGroups-----------|
+    |<-----------getLastInfo(リクエスト)-----------|
+    |------------getLastInfo(レスポンス)---------->|
+    |<--------updateHostGroups(リクエスト)---------|
+    |---------updateHostGroups(レスポンス)-------->|
     |                                              |
-    |<--------------getLastInfo--------------------|
-    |<------------------updateHostGroupElements----|
+    |<-----------getLastInfo(リクエスト)-----------|
+    |------------getLastInfo(レスポンス)---------->|
+    |<----updateHostGroupMembership(リクエスト)----|
+    |-----updateHostGroupMembership(レスポンス)--->|
     |                                              |
-    |<--------------getLastInfo--------------------|
-    |<------------------updateTriggers-------------|
+    |<-----------getLastInfo(リクエスト)-----------|
+    |------------getLastInfo(レスポンス)---------->|
+    |<-----------updateTriggers(リクエスト)--------|
+    |------------updateTriggers(レスポンス)------->|
     |                                              |
-    |<--------------getLastInfo--------------------|
-    |<------------------updateEvents---------------|
+    |<-----------getLastInfo(リクエスト)-----------|
+    |------------getLastInfo(レスポンス)---------->|
+    |<-----------updateEvents(リクエスト)----------|
+    |------------updateEvents(レスポンス)--------->|
     |                                              |
-    |<--------------getLastInfo--------------------|
-    |<------------------updateVirtualRelations-----|
+    |<-----------getLastInfo(リクエスト)-----------|
+    |------------getLastInfo(レスポンス)---------->|
+    |<---------- updateHostParent(リクエスト)------|
+    |----------- updateHostParent(レスポンス)----->|
     |                                              |
-    |<------------------updateArmInfo--------------|
-    |            (ここまで定期更新)            |   |
+    |<-----------updateArmInfo(リクエスト)---------|
+    |------------updateArmInfo(レスポンス)-------->|
+    |                                          |   |
     |                               ポーリング間隔 |
     |                                          |   |
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     |                                              |
-    |-----------fetchItems------------------------>|
-    |<------------------updateItems----------------|
+    |-----------fetchItems(リクエスト)------------>|
+    |<----------fetchItems(レスポンス)-------------|
+    |<----------updateItems(リクエスト)------------|
+    |-----------updateItems(レスポンス)----------->|
     |                                              |
-    |-----------fetchHistory---------------------->|
-    |<------------------sendHistory----------------|
+    |-----------fetchHistory(リクエスト)---------->|
+    |<----------fetchHistory(レスポンス)-----------|
+    |<-----sendHistory(ノーティフィケイション)-----|
     |                                              |
-    |-----------fetchTriggers--------------------->|
-    |<------------------updateTriggers-------------|
+    |-----------fetchTriggers(リクエスト)--------->|
+    |<----------fetchTriggers(レスポンス)----------|
+    |<---------updateTriggers(リクエスト)----------|
     |"ALL"オプションを使用し全てのトリガーを送信する|
+    |----------updateTriggers(レスポンス)--------->|
     |                                              |
-    |                                              |
-    |--------------reqTerminate------------------->|
-    |   HatoholとHAPの接続を終了する               |
-    |                                         Turn off HAP
 ```
 
 ## 注意事項
 
- - 現在，HatoholはUTF-8を標準的な文字コードとして，作成されています。Hatoholサーバーに送信するデータの文字コードにはUTF-8を使用することを推奨します。
  - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性を必要とします。
  - JSON-RPCにはバッチリクエストという，複数のリクエストを同時に送信する文法が存在しますが，Hatoholはこの文法を用いたリクエストには対応していません。
 
@@ -101,7 +101,7 @@ Hatoholサーバー                                   HAP
 
 |名前|JSON型|解説|
 |:---|:---------|:---|
-|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省くことが出来ます。また，小数点以下には9桁までしか値を挿入することはできません。小数点以下を省いた場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
+|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入することはできません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
 |boolean|true, false|true or falseを指定し，その値の真偽を示します|
 
 ##Initiationについて
@@ -118,23 +118,22 @@ Hatoholサーバー                                   HAP
 |[sendHistory](#user-content-sendHistory)|各アイテムが所持しているアイテムのヒストリーをHatoholサーバーに送信します|サーバー|notification|O|
 |[updateHosts](#user-content-updateHosts)|監視サーバーが監視しているホスト一覧をHatoholサーバーに送信します|サーバー|method|O|
 |[updateHostGroups](#user-content-updateHostGroups)|ホストグループの情報をHatoholサーバーに送信します|サーバー|method|O|
-|[updateHostGroupElements](#user-content-updateHostGroupElements)|ホストのホストグループ所属情報をHatoholサーバーに送信します|サーバー|method|O|
-|[updateTriggers](#user-content-updateTrigges)|トリガーをHatoholサーバーに送信します<br>送信するトリガーはオプションで指定することが出来ます|サーバー|method|O|
+|[updateHostGroupMembership](#user-content-updatehostgroupmembership)|ホストのホストグループ所属情報をHatoholサーバーに送信します|サーバー|method|O|
+|[updateTriggers](#user-content-updateTrigges)|トリガーをHatoholサーバーに送信します<br>送信するトリガーはオプションで指定することができます|サーバー|method|O|
 |[updateEvents](#user-content-updateEvents)|アップデートされたイベントをHatoholサーバーに送信します|サーバー|method|O|
-|[updateVirtualRelations](#user-content-updateVirtualRelations)|ホスト同士のVM親子関係をHatoholサーバーに送信します|サーバー|method|O|
+|[updateHostParent](#user-content-updateHostParent)|ホスト同士のVM親子関係をHatoholサーバーに送信します|サーバー|method|O|
 |[updateArmInfo](#user-content-updateArmInfo)|HAPの接続情報をHatoholサーバーに送信します|サーバー|method|O|
 |[fetchItems](#user-content-fetchItems)|Hatoholサーバーがアイテムを要求しているときにHAPに送信されます|プラグイン|method|O|
 |[fetchHistory](#user-content-fetchHistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|プラグイン|method|O|
 |[fetchTriggers](#user-content-fetchTriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|プラグイン|method|O|
-|[reqTerminate](#user-content-reqTerminate)|HAPとHatoholサーバーとの接続を終了させます|プラグイン|notification|M|
 
  - 「実装箇所」は各プロシージャを実装する箇所を示しています。
  - 「実装箇所」がサーバーとなっているプロシージャが使用するnumber型オブジェクトの値範囲は0~2147483647です。
- - 各プロシージャ解説にはM/O(Mandatory/Optional)カラムがあります。このカラムがMのプロシージャは実装を省略することができません。
- - M/OがOとなっているプロシージャは実装を省略することが可能です。しかしfetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，errorオブジェクトで要求を受けたプロシージャを実装していないことを伝えるエラーメッセージを返すよう実装してください。
+ - 各プロシージャ解説にはM/O(Mandatory/Optional)カラムがあります。このカラムがMのプロシージャは実装を省略できません。
+ - M/OがOとなっているプロシージャは実装を省略可能です。しかしfetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，errorオブジェクトで要求を受けたプロシージャを実装していないことを伝えるエラーメッセージを返すよう実装してください。
  - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトとして受け取ります。結果値については[[一覧](#user-content-updateResult)]をご覧ください。
  - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトでHatoholサーバーに返します。結果値については[[一覧](#user-content-fetchResult)]をご覧ください。
- - fetch~~~プロシージャはHatoholサーバーからのリクエスト頻度が高い場合は受け入れを省略することができます。
+ - fetch~~~プロシージャはHatoholサーバーからのリクエスト頻度が高い場合は受け入れを省略できます。
 
 ### getMonitoringServerInfo(method)
 
@@ -350,7 +349,7 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
 
-### updateHostGroupElements(method)
+### updateHostGroupMembership(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ所属情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
@@ -363,22 +362,18 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
-|hostGroupElements|object|M|-|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
+|hostGroupMembership|object|M|-|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
 |lastInfo|string|No|null|65535byte以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
 
-***hostGroupElementsオブジェクト***
+***hostGroupMembershipオブジェクト***
 
 オブジェクトの名前：ホストID
 
-オブジェクトの値：
-
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
-|:---|:--|:-------:|:----------:|:------:|:---|
-|groupId|number|M|- |正の整数|監視ホストが所属しているグループのID|
+オブジェクトの値：グループIDのString配列
 
 ```
-{"jsonrpc":"2.0","method":"updateHostGroupElements", "params":{"hostGroupsElements":{"1":1, "2":2},"lastInfo":"201504091056","option":"ALL"}, "id":1}
+{"jsonrpc":"2.0","method":"updateHostGroupMembership", "params":{"hostGroupsMembership":{"1":["1", "2", "5"], "2":["3", "4", "6"]},"lastInfo":"201504091056","option":"ALL"}, "id":1}
 ```
 
 ***result***
@@ -438,14 +433,13 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 ***params***
 
-オブジェクトの名前：events, option, lastInfo
+オブジェクトの名前：events, lastInfo
 
 各オブジェクトの値：
 
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |events|object|M|-|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
 |lastInfo|string|O|null|65535byte以内|最新イベントの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
 
 ***eventsオブジェクト***
@@ -467,7 +461,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |extendedInfo|string|M|-|65535byte以内|briefには書いていない追加の情報を記述できます|
 
 ```
-{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":{"1":{"time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}}, "option":"ALL", "lastInfo":"201504011759"},"id":1}
+{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":{"1":{"time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}}, "lastInfo":"201504011759"},"id":1}
 ```
 
 ***result***
@@ -476,30 +470,32 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
 
-### updateVirtualRelations(method)
+### updateHostParent(method)
 
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
 
 ***params***
 
-名前：virtualRelations, lastInfo, option
+名前：hostParent, lastInfo, option
 
 各オブジェクトの値：
 
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
-|virtualRelations|object|M|-|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
+|hostParent|object|M|-|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
 |lastInfo|string|No|null|65535byte以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
 
-***virtualRelationsオブジェクト***
+***hostParentオブジェクト***
 
-オブジェクトの名前：子ホストID
-オブジェクトの値：親ホストID
+ - VMの親子関係を削除する場合は親ホストIDの値をnullにすることで，送信した子ホストIDの親子関係をHatoholサーバーから削除することができます。
+
+オブジェクトの名前：子ホストID(String)
+オブジェクトの値：親ホストID(String or null)
 
 ```
-{"jsonrpc":"2.0", "method":"updateVirtualRelations", "params":{"12":"10", "11":"10"},"option":"ALL", "id":1}
+{"jsonrpc":"2.0", "method":"updateHostParent", "params":{"12":"10", "11":"10"},"option":"ALL", "id":1}
 ```
 
 ***result***
@@ -622,19 +618,6 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 {"jsonrpc":"2.0", "result":{"1":{"option":"UPDATED", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}},"id":1}
 ```
 
-### reqTerminate(notification)
-
- - このプロシージャはHatoholサーバーがHAPを設置している監視対象サーバーの登録を削除した場合にHAPに送信されます。HAPはこのプロシージャを受け取った場合，HAPプロセス自身を終了させてください。
-
-***params***
-
- - reqTerminateプロシージャには引数が存在しません。paramsをnullオブジェクトにして送信してください。
-
-***result***
-
- - reqTerminateプロシージャにはresultが存在しません。
-
-
 ## 表
 
 ### errorCode
@@ -647,6 +630,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 |code|message|meaning|
 |:--|:-------|:---|
 |1  |Unknown error|原因不明のエラーが起こっています|
+|2  |Not implement procedure|指定されたプロシージャは実装されていません|
 
 ### armInfoStatus
 
@@ -734,6 +718,6 @@ fetch~~~プロシージャを受信した際に，そのリクエストを受け
 
 |ステータス|解説|
 |:---------|:---|
-|"SUCCESS"|リクエストが受け入れられました|
+|"SUCCESS"|リクエストの受け入れに成功しました|
 |"ADDREV"|リクエストの受け入れが省略されました<br>リクエストの間隔が近い，といった理由でリクエストを受け入れない場合に使用します|
 |"FAILED"|リクエストの受け入れに失敗しました|
