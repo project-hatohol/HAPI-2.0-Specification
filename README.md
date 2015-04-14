@@ -5,8 +5,7 @@
 Initiation
 serverTypeのURL
 エラーコード
-getMonitoringServerの項目，本当にMandatroyか
-情報の情報？
+要素がひとつしか無いとこのオブジェクト形式
 
 ## 概要
 
@@ -19,13 +18,15 @@ Hatohol Arm Plugin InterfaceはHatoholサーバーとプラグイン間でのデ
 
 ![overview](hapi_overview.png)
 
-## HAP動作全容
+## HAP動作概要
 
 ```
+
 Hatoholサーバー                                   HAP
     |                                               
     |                                        Turn on HAP
     |                                              |
+    |<----------------Initiation4------------------|
     |-----------------Initiation1----------------->|
     |<----------------Initiation2------------------|
     |-----------------Initiation3----------------->|
@@ -62,8 +63,8 @@ Hatoholサーバー                                   HAP
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<---------- updateHostParent(リクエスト)------|
-    |----------- updateHostParent(レスポンス)----->|
+    |<-----------updateHostParent(リクエスト)------|
+    |------------updateHostParent(レスポンス)----->|
     |                                              |
     |<-----------updateArmInfo(リクエスト)---------|
     |------------updateArmInfo(レスポンス)-------->|
@@ -88,74 +89,76 @@ Hatoholサーバー                                   HAP
     |"ALL"オプションを使用し全てのトリガーを送信する|
     |----------updateTriggers(レスポンス)--------->|
     |                                              |
+
 ```
 
 ## 注意事項
 
- - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性を必要とします。
+ - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です。
  - JSON-RPCにはバッチリクエストという，複数のリクエストを同時に送信する文法が存在しますが，Hatoholはこの文法を用いたリクエストには対応していません。
 
 ## データ型解説
 
-このセクションは，JSON-RPC形式ではなくHatoholが独自に定義しているデータ型について解説します。これらは内部的にはJSON-RPC形式が定義しているデータ型を使用しています。
+ - このセクションは，JSON-RPC形式ではなくHatoholが独自に定義しているデータ型について解説します。これらは内部的にはJSON-RPC形式が定義しているデータ型を使用しています。
 
 |名前|JSON型|解説|
 |:---|:---------|:---|
-|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入することはできません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
+|timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入できません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
 |boolean|true, false|true or falseを指定し，その値の真偽を示します|
 
 ##Initiationについて
 
-応相談
+1. HAPからHatoholサーバーにHAPプロセスがアクティブであることを通知します。
+2. HatoholサーバーからHAPに向けてInitiationプロシージャが送信されます。
+3. HAPが受信したプロシージャに従い，Initiationプロシージャを実行します。
+4. Initiation完了後，Hatoholサーバーに向けてInitiation完了の旨の通知を行います。
 
 ## プロシージャ解説
 
 |プロシージャ名|解説|実装箇所  |タイプ|M/O|
 |:-------------|:---|:---------|:-----|:-:|
-|[getMonitoringServerInfo](#user-content-getMonitoringServerInfo)|Hatoholサーバーから監視対象の接続情報やポーリング間隔等を取得します|サーバー|method|M|
-|[getLastInfo](#user-content-getLastInfo)|Hatoholサーバーから指定した要素の最新情報を取得します|サーバー|method|O|
-|[updateItems](#user-content-updateItems)|監視サーバーが監視しているアイテム一覧をHatoholサーバーに送信します|サーバー|method|O|
-|[sendHistory](#user-content-sendHistory)|各アイテムが所持しているアイテムのヒストリーをHatoholサーバーに送信します|サーバー|notification|O|
-|[updateHosts](#user-content-updateHosts)|監視サーバーが監視しているホスト一覧をHatoholサーバーに送信します|サーバー|method|O|
-|[updateHostGroups](#user-content-updateHostGroups)|ホストグループの情報をHatoholサーバーに送信します|サーバー|method|O|
+|[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|接続情報やポーリング間隔等をHatoholサーバーから取得します|サーバー|method|M|
+|[getLastInfo](#user-content-getlastinfo)|指定した要素の最新情報をHatoholサーバーから取得します|サーバー|method|O|
+|[updateItems](#user-content-updateitems)|監視しているアイテム一覧をHatoholサーバーに送信します|サーバー|method|O|
+|[sendHistory](#user-content-sendhistory)|各アイテムが所持しているアイテムのヒストリーをHatoholサーバーに送信します|サーバー|notification|O|
+|[updateHosts](#user-content-updatehosts)|監視しているホスト一覧をHatoholサーバーに送信します|サーバー|method|O|
+|[updateHostGroups](#user-content-updatehostgroups)|ホストグループの情報をHatoholサーバーに送信します|サーバー|method|O|
 |[updateHostGroupMembership](#user-content-updatehostgroupmembership)|ホストのホストグループ所属情報をHatoholサーバーに送信します|サーバー|method|O|
-|[updateTriggers](#user-content-updateTrigges)|トリガーをHatoholサーバーに送信します<br>送信するトリガーはオプションで指定することができます|サーバー|method|O|
-|[updateEvents](#user-content-updateEvents)|アップデートされたイベントをHatoholサーバーに送信します|サーバー|method|O|
-|[updateHostParent](#user-content-updateHostParent)|ホスト同士のVM親子関係をHatoholサーバーに送信します|サーバー|method|O|
-|[updateArmInfo](#user-content-updateArmInfo)|HAPの接続情報をHatoholサーバーに送信します|サーバー|method|O|
-|[fetchItems](#user-content-fetchItems)|Hatoholサーバーがアイテムを要求しているときにHAPに送信されます|プラグイン|method|O|
-|[fetchHistory](#user-content-fetchHistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|プラグイン|method|O|
-|[fetchTriggers](#user-content-fetchTriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|プラグイン|method|O|
+|[updateTriggers](#user-content-updatetrigges)|監視しているトリガーをHatoholサーバーに送信します|サーバー|method|O|
+|[updateEvents](#user-content-updateevents)|アップデートされたイベントをHatoholサーバーに送信します|サーバー|method|O|
+|[updateHostParent](#user-content-updatehostparent)|ホスト同士のVM親子関係をHatoholサーバーに送信します|サーバー|method|O|
+|[updateArmInfo](#user-content-updatearminfo)|HAPの接続ステータスをHatoholサーバーに送信します|サーバー|method|O|
+|[fetchItems](#user-content-fetchitems)|Hatoholサーバーがアイテムを要求しているときにHAPに送信されます|プラグイン|method|O|
+|[fetchHistory](#user-content-fetchhistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|プラグイン|method|O|
+|[fetchTriggers](#user-content-fetchtriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|プラグイン|method|O|
 
  - 「実装箇所」は各プロシージャを実装する箇所を示しています。
  - 「実装箇所」がサーバーとなっているプロシージャが使用するnumber型オブジェクトの値範囲は0~2147483647です。
- - 各プロシージャ解説にはM/O(Mandatory/Optional)カラムがあります。このカラムがMのプロシージャは実装を省略できません。
- - M/OがOとなっているプロシージャは実装を省略可能です。しかしfetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，errorオブジェクトで要求を受けたプロシージャを実装していないことを伝えるエラーメッセージを返すよう実装してください。
- - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトとして受け取ります。結果値については[[一覧](#user-content-updateResult)]をご覧ください。
- - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトでHatoholサーバーに返します。結果値については[[一覧](#user-content-fetchResult)]をご覧ください。
- - fetch~~~プロシージャはHatoholサーバーからのリクエスト頻度が高い場合は受け入れを省略できます。
+ - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。これがMのプロシージャは実装を省略できません。
+ - M/OがOとなっているプロシージャは実装を省略可能です。しかし，fetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，呼び出されたプロシージャが実装されていないことをエラーとして返す必要があります。エラーメッセージをerrorオブジェクトに入れてHatoholサーバーにレスポンスを返してください。[エラーメッセージ一覧](#user-content-erroecode)
+ - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
+ - fetch~~~プロシージャはHatoholサーバーからのリクエスト頻度が高い場合は受け入れを拒否することができます。
 
 ### getMonitoringServerInfo(method)
 
-ポーリング時間毎にHatoholサーバーに自身の監視サーバー情報を問い合わせることを標準的な動作としますが，任意のタイミングで問い合わせることもできます。
+ - ポーリング時間毎にHatoholサーバーに自身の接続情報やポーリング間隔等を問い合わせることを標準的な動作としますが，任意のタイミングで問い合わせることもできます。
 
 ***params***
 
-getMonitoringServerInfoメソッドには引数が存在しません。nullオブジェクトとしてparamsを送信してください。
+ - getMonitoringServerInfoメソッドには引数が存在しません。paramsオブジェクトの値をnullにしてリクエストを送信してください。
 
 ```
-{"jsonrpc":"2.0", "method":"getMonitoringServerInfo", "params":"", "id":1}
+{"jsonrpc":"2.0", "method":"getMonitoringServerInfo", "params":null, id":1}
 ```
 
 ***result***
 
- - M/OがMとなっているが，データベースにデータが入っていない場合がある。その時そのオブジェクトにはnullとしてresultが返ってくる。
-
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
 |serverId          |number|M|-|正の整数|監視サーバーのサーバーID|
-|url               |string|M|-|-|監視サーバーのURL [[解説](#user-content-serverType)]|
-|type              |string|M|-|-|監視サーバーの種類 [[一覧](#user-content-serverType)]|
+|url               |string|M|-|-|監視サーバーのURL [[解説](#user-content-servertype)]|
+|type              |string|M|-|-|監視サーバーの種類 [[一覧](#user-content-servertype)]|
 |nickName          |string|M|-|255文字以内|監視サーバーのニックネーム|
 |userName          |string|M|-|255文字以内|監視サーバーのユーザーネーム|
 |password          |string|M|-|255文字以内|監視サーバーのパスワード|
@@ -171,29 +174,31 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 ### getLastInfo(method)
 
  - update~~~プロシージャでHatoholサーバーに送信，保存されたlastInfo情報を要求します。
- - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合，resultオブジェクトはnullとして返ってきます。
- - update~~~プロシージャは，getLastInfoプロシージャで取得したlastInfoを用いて，前回送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
+ - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合，resultオブジェクトの値はnullとして返ってきます。
+ - update~~~プロシージャは，getLastInfoプロシージャで取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
 
 ***params***
+
+ - どの種類のlastInfoが必要かを指定する必要があります。以下の表は指定できる値の一覧です。
+
+|paramsオブジェクトの値一覧(string)|解説|
+|:---------|:---|
+|"host"|ホストの最新情報を指定します。|
+|"hostGroup"|ホストグループの最新情報を指定します。|
+|"hostGroupMembership"|ホストグループの所属情報の最新情報を指定します。|
+|"trigger"|トリガーの最新情報を指定します。|
+|"event"|イベントの最新情報を指定します。|
+|"hostParent"|VMの親子関係の最新情報を指定します。|
 
 ```
 {"jsonrpc":"2.0", "method":"getLastInfo", "params":"trigger", "id":1}
 ```
 
-|paramsの値|
-|:---------|
-|"host"|
-|"hostGroup"|
-|"hostGroupElement"|
-|"trigger"|
-|"event"  |
-|"relation"|
-
 ***result***
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|resultオブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|result|string|M|-|255文字以内|Hatoholサーバーに保存されている指定した要素の最新情報|
+|最新情報|string|M|-|255文字以内|Hatoholサーバーに保存されている指定した要素の最新情報|
 
 ```
 {"jsonrpc":"2.0", "result":"201504011349", "id":1}
@@ -203,16 +208,11 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 ### updateItems(method)
 
- - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchItems)プロシージャをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
- - fetchItemsプロシージャのparamsオブジェクト内のfetchIdオブジェクトの値をupdateItemsプロシージャのparamsのfetchIdオブジェクトに入れてください。
+ - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitems)プロシージャをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
 ***params***
 
-名前：items, fetchId
-
-各オブジェクトの値：
-
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
 |items|object|M|-|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |fetchId|string|M|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchItemsプロシージャのparams内のfetchIdオブジェクトの値をここに入れてください。|
@@ -221,9 +221,9 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 オブジェクトの名前：アイテムID
 
-オブジェクトの値：
+オブジェクトの値：オブジェクト
 
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
 |hostId       |number|M|-|正の整数     |アイテムが所属するホストのID|
 |brief        |string|M|-|65535byte以内|アイテムの概要|
@@ -246,14 +246,10 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 ### sendHistory(notification)
 
  - [fetchHistory](#user-content-fetchhistory)プロシージャをHatoholサーバーから受け取った際に，条件にマッチするヒストリーをHatoholサーバーに送信するします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
- - fetchHistoryプロシージャのparamsオブジェクト内の"fetchId"オブジェクトの値をsendプロシージャのparamsの"fetchId"オブジェクトに入れてください。
 
 ***params***
-名前：history, fetchId
 
-各オブジェクトの値：
-
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
 |history|object|M|-|-|ヒストリー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |fetchId|string|M|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdオブジェクトの値をここに入れてください|
@@ -264,9 +260,9 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 オブジェクトの値: 配列
 
-配列の値：
+配列の値：オブジェクト
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |value |string|M|-|65535byte以内|clock時点でのアイテムの値|
 |clock |string|M|-|65535byte以内|このヒストリーの値が記録された時刻|
@@ -278,29 +274,23 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 ### updateHosts(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホスト情報をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
 
 ***params***
 
-名前：hosts, lastInfo, option
-
-各オブジェクトの値：
-
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hosts|object|M|-|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|No|null|65535byte以内|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+|lastInfo|string|O|-|65535byte以内|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostsオブジェクト***
 
 オブジェクトの名前：ホストID
 
-オブジェクトの値：
-
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
-|:---|:--|:-------:|:----------:|:------:|:---|
-|hostName|string|M|-|65535byte以内|監視サーバーが監視しているホスト名|
+|オブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
+|:--|:--|:--|:----------:|:------:|:---|
+|ホスト名|string|M|-|65535byte以内|監視サーバーが監視しているホスト名|
 
 ```
 {"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":{1":"exampleHostName1"},"option":"UPDATE","lastInfo":"201504091052"}, "id":1}
@@ -315,29 +305,23 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 ### updateHostGroups(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ情報をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループをHatoholサーバーに送信します。
 
 ***params***
 
-名前：hostGroups, lastInfo, option
-
-各オブジェクトの値：
-
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hostGroups|object|M|-|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|No|null|65535byte以内|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+|lastInfo|string|O|-|65535byte以内|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupsオブジェクト***
 
 オブジェクトの名前：グループID
 
-オブジェクトの値：
-
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|groupName|string|M|-|65535byte以内|グループIDに対応したホストグループの名前|
+|グループ名|string|M|-|65535byte以内|グループIDに対応したホストグループの名前|
 
 ```
 {"jsonrpc":"2.0","method":"updateHostGroups", "params":{"hostGroups":{"1":"Group1", "2":"Group2"},"option":"ALL", "lastInfo":"201504091049"}, "id":1}
@@ -352,19 +336,15 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 ### updateHostGroupMembership(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ所属情報をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
 
 ***params***
 
-名前：hostGroupElements, lastInfo, option
-
-各オブジェクトの値：
-
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hostGroupMembership|object|M|-|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|No|null|65535byte以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+|lastInfo|string|O|-|65535byte以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupMembershipオブジェクト***
 
@@ -384,9 +364,9 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 
 ### updateTriggers(method)
 
-[getLastInfo](#user-content-getLastInfo)を用いて取得，またはHAPプロセス自身が保管している最新トリガー情報を基に，そのトリガーから現時点までに更新されたトリガーをHatoholサーバーに送信するか，全てのトリガーを送信します。
+[getLastInfo](#user-content-getlastinfo)を用いて取得，またはHAPプロセス自身が保管している最新トリガー情報を基に，そのトリガーから現時点までに更新されたトリガーをHatoholサーバーに送信するか，全てのトリガーを送信します。
  - Hatoholサーバーとの接続完了時，fetchTriggersプロシージャによる要求があった際は"ALL"オプションを用い，全てのトリガーをHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，追加されたトリガーをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，追加されたトリガーをHatoholサーバーに送信します。
 
 ***params***
 
@@ -398,7 +378,7 @@ getMonitoringServerInfoメソッドには引数が存在しません。nullオ�
 |:--|:--|:--|:--|:--|:--|
 |triggers|object|M|-|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|O|-|65535byte以内|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+|lastInfo|string|O|-|65535byte以内|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 |fetchId|string|M|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersnoのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***triggersオブジェクト***
@@ -408,8 +388,8 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|status        |string|M|-|-            |トリガーのステータス [[一覧](#user-content-triggerStatus)]|
-|severity      |string|M|-|-            |トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
+|status        |string|M|-|-            |トリガーのステータス [[一覧](#user-content-triggerstatus)]|
+|severity      |string|M|-|-            |トリガーの種別 [[一覧](#user-content-triggerseverity)]|
 |lastChangeTime|string|M|-|65535byte以内|トリガーが最後に更新された時間|
 |hostId        |string|M|-|正の整数     |トリガーが所属するホストID|
 |hostName      |string|M|-|65535byte以内|トリガーが所属するサーバーのホスト名|
@@ -429,7 +409,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 ### updateEvents(method)
 
  - Hatoholサーバーとの接続完了時にHatoholサーバーが過去イベントを同期設定になっていた場合は"ALL"オプションを用い，全てのイベントをHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，発生したイベントをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，発生したイベントをHatoholサーバーに送信します。
 
 ***params***
 
@@ -440,7 +420,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |events|object|M|-|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|lastInfo|string|O|null|65535byte以内|最新イベントの情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+|lastInfo|string|O|-|65535byte以内|最新イベントの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***eventsオブジェクト***
 
@@ -451,10 +431,10 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |time        |string|M|-|65535byte以内|イベントが発生した時刻|
-|type        |string|M|-|-|イベントのタイプ [[一覧](#user-content-eventType)]|
+|type        |string|M|-|-|イベントのタイプ [[一覧](#user-content-eventtype)]|
 |triggerId   |number|M|-|正の整数     |このイベントを発火させたトリガーID|
-|status      |string|M|-|-|トリガーのステータス [[一覧](#user-content-triggerStatus)]|
-|severity    |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
+|status      |string|M|-|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
+|severity    |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
 |hostId      |string|M|-|65535byte以内|イベントが発生したホストのID|
 |hostName    |string|M|-|65535byte以内|イベントが発生したホストの名前|
 |brief       |string|M|-|65535byte以内|イベントの説明。Web上に表示される情報|
@@ -473,7 +453,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 ### updateHostParent(method)
 
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getLastInfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
 
 ***params***
 
@@ -485,7 +465,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |:--|:--|:--|:--|:--|:--|
 |hostParent|object|M|-|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |option|string|M|-|-|送信オプション[[一覧]("user-content-option")]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|No|null|65535byte以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getLastInfo)の返り値になる|
+|lastInfo|string|O|-|65535byte以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostParentオブジェクト***
 
@@ -506,13 +486,13 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 ### updateArmInfo(method)
 
-HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔はgetMonitoringServerInfoで取得したポーリング時間の2倍（SHOULD）とします。
+HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfo)で取得したポーリング時間の2倍（SHOULD）とします。
 
 ***params***
 
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:---------:|:----------:|:------:|:---|
-|lastStatus         |string   |M|-|-|最新のポーリング結果 [[一覧](#user-content-armInfoStatus)]|
+|lastStatus         |string   |M|-|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]|
 |failureReason      |string   |M|-|65535byte以内|情報取得が失敗した理由|
 |lastSuccessTime    |timestamp|M|-|-|最後に情報取得が成功した時刻|
 |lastFailureTime    |timestamp|M|-|-|最後に情報取得が失敗した時刻|
@@ -531,7 +511,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 ### fetchItems(method)
 
-このプロシージャは、Hatoholサーバーがアイテムを要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，全てのアイテムをupdateItemsプロシージャ[updateItems](#user-content-updateitems)を用いてHatoholサーバーに送信してください。また，paramsのfetchIdオブジェクトの値を[updateItems](#user-contents-updateItems)に渡す必要があります。
+このプロシージャは、Hatoholサーバーがアイテムを要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，全てのアイテムをupdateItemsプロシージャ[updateItems](#user-content-updateitems)を用いてHatoholサーバーに送信してください。また，paramsのfetchIdオブジェクトの値を[updateItems](#user-contents-updateitems)に渡す必要があります。
 
 ***params***
 
@@ -570,7 +550,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 |:---|:--|:-------:|:----------:|:------:|:---|
 |hostId   |string|M|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
 |itemId   |number|M|-|正の整数   |ヒストリーのアイテムID|
-|valueType|string|M|-|-|取得するヒストリーの値の型 [[一覧](#user-content-itemValueType)]|
+|valueType|string|M|-|-|取得するヒストリーの値の型 [[一覧](#user-content-itemvaluetype)]|
 |beginTime|string|M|-|255文字以内|ヒストリー取得域の始点時間を指定します|
 |endTime  |string|M|-|255文字以内|ヒストリー取得域の終点時間を指定します|
 
@@ -600,14 +580,14 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 ***result***
 
- - fetchTriggersメソッドには引数が存在しません。paramsをnullオブジェクトにして送信してください。
+ - fetchTriggersメソッドには引数が存在しません。paramsオブジェクトの値をnullにしてリクエストを送信してください。
 
 ***result***
 
 |名前         |型|M/O|デフォルト値|値の範囲|解説|
 |:------------|:----|:----:|:----------:|:------:|:---|
 |status        |number|M|-|正の整数     |トリガーのステータス|
-|severity      |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerSeverity)]|
+|severity      |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
 |lastChangeTime|string|M|-|65535byte以内|トリガーが最後に更新された時間|
 |hostId        |number|M|-|正の整数     |監視サーバー内で設定されているホストID|
 |hostName      |string|M|-|65535byte以内|トリガーが所属するサーバーのホスト名|
