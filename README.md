@@ -2,15 +2,12 @@
 
 ## ToDO
 
-Initiation
 serverTypeのURL
-エラーコード
-要素がひとつしか無いとこのオブジェクト形式
 
 ## 概要
 
 Hatohol Arm Plugin InterfaceはHatoholサーバーとプラグイン間でのデータの送受信を定義するフレームワークです。
-通信規格としてAMQP（rabbitmq），データプロトコルとしてJSON-RPC 2.0を採用しています。JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.org/specification)をお読みください。
+通信規格としてAMQP（RabbitMQ），データプロトコルとしてJSON-RPC 2.0を採用しています。JSON-RPCの仕様については[公式リファレンス](http://www.jsonrpc.org/specification)を，AMQP(RabbitMQ)の使用については[公式リファレンス](https://www.rabbitmq.com/documentation.html)をそれぞれご覧ください。
 
 このドキュメントではHatohol Arm Plugin Interface規格に則り,Hatoholサーバーとデータの送受信を行うHatohol Arm Plugin(以下，HAP)の仕様について記載しています。
 
@@ -26,10 +23,8 @@ Hatoholサーバー                                   HAP
     |                                               
     |                                        Turn on HAP
     |                                              |
-    |<----------------Initiation4------------------|
-    |-----------------Initiation1----------------->|
-    |<----------------Initiation2------------------|
-    |-----------------Initiation3----------------->|
+    |<------------getAPIVersion(リクエスト)------->|
+    |<------------getAPIVersion(レスポンス)------->|
     |                                          |   |
     |                               ポーリング間隔 |
     |                                          |   |
@@ -106,12 +101,31 @@ Hatoholサーバー                                   HAP
 |timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入できません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
 |boolean|true, false|true or falseを指定し，その値の真偽を示します|
 
-##Initiationについて
+## getAPIVersion
 
-1. HAPからHatoholサーバーにHAPプロセスがアクティブであることを通知します。
-2. HatoholサーバーからHAPに向けてInitiationプロシージャが送信されます。
-3. HAPが受信したプロシージャに従い，Initiationプロシージャを実行します。
-4. Initiation完了後，Hatoholサーバーに向けてInitiation完了の旨の通知を行います。
+ - getAPIVersionプロシージャは実装を省略することは出来ません。
+ - HAPやHatoholサーバーを初めて起動した時，またなんらかの理由で再起動した時には，双方がgetAPIVersionプロシージャを使用し，お互いが使用するAPIのバージョンを確認する必要があります。
+ - HAP，またはHatoholサーバーを再起動した際，AMQPのキューに再起動以前のリクエストが溜まっていて，再起動後にそれらのリクエストが各接続相手に処理されレスポンスが返ってきた場合，HAPはそれらのリクエストIDを覚えていないため，そのレスポンスを受け入れることはありません。
+ - getAPIVersionプロシージャのリクエストのレスポンスが返ってくる前に，HatoholサーバーからgetAPIVersion以外のリクエストがあった場合，それらのリクエストは受け入れないようにHAPを作成してください。Hatoholサーバーは現在，受け入れない仕様で作成されています。また，この際受け入れを拒否したことを示すためにリクエストに対するレスポンスにはresultオブジェクトではなく，errorオブジェクトを用いてください。使用するエラーコードについては[[エラーコード](#user-content-errorcode)]を参照してください。
+ - レスポンスが返ってくる前に複数回getAPIVersionを使用した場合は，後に発行されたリクエストのほうが優先されます。
+
+以下にJSON-RPC形式のgetAPIVersionプロシージャのリクエスト，リザルトを示します。
+
+***リクエスト***
+
+```
+{"jsonrpc":"2.0", "method":"getAPIVersion", "params": null, "id":1}
+```
+
+***リザルト***
+
+以下の例は使用しているAPIバージョンがHAPI-2.0であることを表しています。
+今後APIバージョンが増加し，複数のAPIバージョンに対応したHAPを作成する際は，
+mejor,minorの組を持つオブジェクトをresultオブジェクトの値である配列に追加してください。
+
+```
+{"jsonrpc":"2.0", "result":[{"mejor":2, "minor":0}], "id":1}
+```
 
 ## プロシージャ解説
 
@@ -135,7 +149,7 @@ Hatoholサーバー                                   HAP
  - 「実装箇所」は各プロシージャを実装する箇所を示しています。
  - 「実装箇所」がサーバーとなっているプロシージャが使用するnumber型オブジェクトの値範囲は0~2147483647です。
  - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。これがMのプロシージャは実装を省略できません。
- - M/OがOとなっているプロシージャは実装を省略可能です。しかし，fetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，呼び出されたプロシージャが実装されていないことをエラーとして返す必要があります。エラーメッセージをerrorオブジェクトに入れてHatoholサーバーにレスポンスを返してください。[エラーメッセージ一覧](#user-content-erroecode)
+ - M/OがOとなっているプロシージャは実装を省略可能です。しかし，fetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，呼び出されたプロシージャが実装されていないことをエラーとして返す必要があります。エラーメッセージをerrorオブジェクトに入れてHatoholサーバーにレスポンスを返してください。[エラーメッセージ一覧](#user-content-errorcode)
  - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
  - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
  - fetch~~~プロシージャはHatoholサーバーからのリクエスト頻度が高い場合は受け入れを拒否することができます。
@@ -604,13 +618,12 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 リクエストに成功した場合，送信したリクエストに応じたresultオブジェクトが返されます。
 リクエストに失敗した場合，resultオブジェクトではなくerrorオブジェクトを返す必要があります。
-このセクションではエラーオブジェクトとして返すエラーコードとエラーメッセージについて解説します。
-状況に応じて適したエラーコードを使用してください。
+このセクションではHatoholが独自に定義するJSON-RPCでのエラーコードについて解説します。
+JSON-RPCのデフォルトエラーコードについては[[公式リファレンス](http://www.jsonrpc.org/specification#error_object)]をご覧ください。
 
 |code|message|meaning|
 |:--|:-------|:---|
-|1  |Unknown error|原因不明のエラーが起こっています|
-|2  |Not implement procedure|指定されたプロシージャは実装されていません|
+|1  |NotGetAPIVersion|接続相手のAPIバージョンを取得できていません。|
 
 ### armInfoStatus
 
