@@ -86,8 +86,6 @@ Hatoholサーバー                                   HAP
     |-------------fetchEvents(リクエスト)--------->|
     |<------------fetchEvents(レスポンス)----------|
     |<-----------updateEvents(リクエスト)----------|
-    |    "SOME"オプションを使用し                  |
-    |         指定された件数のイベントを送信する   |
     |------------updateEvents(レスポンス)--------->|
     |                                              |
 
@@ -430,21 +428,17 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 ```
 
 ### updateEvents(method)
-updateEventsはmaxかいとく
 
- - Hatoholサーバーとの接続完了時にHatoholサーバーが過去イベントを同期設定になっていた場合は"ALL"オプションを用い，全てのイベントをHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，発生したイベントをHatoholサーバーに送信します。
+ - [getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，発生したイベントをHatoholサーバーに送信します。初回通信時は，lastInfoの値がnullであるため，接続以前に発生したイベントを送信するかどうかの判断はHAP作成者に委ねられています。
+ - 一度に送信できるイベント数は1000件までです。1000件を越える場合は，複数回に分けて送信してください。
 
 ***params***
 
-オブジェクトの名前：events, lastInfo
-
-各オブジェクトの値：
-
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |events|object|M|-|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |lastInfo|string|O|-|65535byte以内|最新イベントの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|fetchId|string|O|-|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***eventsオブジェクト***
 
