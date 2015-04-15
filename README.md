@@ -106,34 +106,19 @@ Hatoholサーバー                                   HAP
 |timestamp|string|時刻フォーマットはyyyyMMDDHHmmss.nnnnnnnnnです。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入できません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)。|
 |boolean|true, false|true or falseを指定し，その値の真偽を示します|
 
-## exchangeProfile
+## 初期起動，再起動時の動作について
 
- - exchangeProfileプロシージャは実装を省略することは出来ません。
- - HAP，またはHatoholサーバーの初回起動時や，なんらかの理由で再起動した際に，自身と接続相手が使用可能なプロシージャの一覧をexchangeProfileプロシージャを用いて教え合います。この情報を基にお互いに向けて送信するプロシージャの最適化を行います。
+ - HAP，またはHatoholサーバーの初回起動時や，なんらかの理由で再起動した際に，自身と接続相手が使用可能なプロシージャの一覧をexchangeProfileプロシージャを用いて教え合います。この情報を基にお互いに向けて送信するプロシージャの最適化を行ってください。
  - HAP，またはHatoholサーバーを再起動した際，AMQPのキューに再起動以前のリクエストが残留している可能性があります。しかし再起動したHAPやHatoholサーバーのプロセスはそれらのリクエストIDを覚えていないため，接続相手に処理されて返ってきたレスポンスを受け入れることはありません。
  - exchangeProfileプロシージャのリクエストを送信し，そのレスポンスが返ってくるまでに再度exchangeProfileのリクエストを送信した際は後に発行されたリクエストが優先されます。先に送信したリクエスト情報は破棄され，古いリクエストに対するレスポンスを受け入れることはありません。
 
-以下にJSON-RPC形式のexchangeProfileプロシージャのリクエスト，リザルトを示します。
-
-***リクエスト***
-
-HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値がHAPの名前としてログに出力されます。
-```
-{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedure":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
-```
-
-***リザルト***
-
-```
-{"jsonrpc":"2.0", "result":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "id":1}
-```
-
 ## プロシージャ解説
 
- - Hatoholサーバーに実装されているプロシージャ
+### Hatoholサーバーに実装されているプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
+|[exchangeProfile](#user-content-exchangeprofile)|HAPに自身が実装しているプロシージャ一覧を送信します<br>また，そのレスポンスとしてHAPが実装しているプロシージャ一覧も取得します|method|M|
 |[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|接続情報やポーリング間隔等をHatoholサーバーから取得します|method|M|
 |[getLastInfo](#user-content-getlastinfo)|指定した要素の最新情報をHatoholサーバーから取得します|method|M
 |[updateItems](#user-content-updateitems)|監視しているアイテム一覧をHatoholサーバーに送信します|method|O|
@@ -146,10 +131,11 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 |[updateHostParent](#user-content-updatehostparent)|ホスト同士のVM親子関係をHatoholサーバーに送信します|method|O|
 |[updateArmInfo](#user-content-updatearminfo)|HAPの接続ステータスをHatoholサーバーに送信します|method|M|
 
- - HAPに実装するプロシージャ
+### HAPに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
+|[exchangeProfile](#user-content-exchangeprofile)|Hatoholサーバーに自身が実装しているプロシージャ一覧と自身のプロセス名を送信します<br>また，そのレスポンスとしてHatoholサーバーが実装しているプロシージャ一覧も取得します|method|M|
 |[fetchItems](#user-content-fetchitems)|Hatoholサーバーがアイテムを要求しているときにHAPに送信されます|method|O|
 |[fetchHistory](#user-content-fetchhistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|method|O|
 |[fetchTriggers](#user-content-fetchtriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|method|O|
@@ -161,11 +147,34 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
  - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
  - fetch~~~プロシージャはHatoholサーバーからのリクエスト頻度が高い場合は受け入れを拒否することができます。
 
+### exchangeProfile(method)
+
+***リクエスト(params)***
+
+|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|:---|:--|:-------:|:----------:|:------:|:---|
+|procedures|string配列|M|-|-|送信元が使用可能なプロシージャ一覧|
+|agentName |string|O|-|65535byte以内|HAPからHatoholサーバーに送信する場合のみ必要な要素です。この値がHAPとHatoholサーバーの接続時にHAPの名前としてHatoholサーバーの接続完了ログに出力されます。|
+
+```
+{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
+```
+
+***リザルト(result)***
+
+|resultオブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
+|:---|:--|:-------:|:----------:|:------:|:---|
+|プロシージャ一覧|string配列|M|-|-|送信先が使用可能なプロシージャ一覧|
+
+```
+{"jsonrpc":"2.0", "result":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "id":1}
+```
+
 ### getMonitoringServerInfo(method)
 
  - ポーリング時間毎にHatoholサーバーに自身の接続情報やポーリング間隔等を問い合わせることを標準的な動作としますが，任意のタイミングで問い合わせることもできます。
 
-***params***
+***リクエスト(params)***
 
  - getMonitoringServerInfoメソッドには引数が存在しません。paramsオブジェクトの値をnullにしてリクエストを送信してください。
 
@@ -173,7 +182,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 {"jsonrpc":"2.0", "method":"getMonitoringServerInfo", "params":null, id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
@@ -198,7 +207,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
  - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合，resultオブジェクトの値はnullとして返ってきます。
  - update~~~プロシージャは，getLastInfoプロシージャで取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
 
-***params***
+***リクエスト(params)***
 
  - どの種類のlastInfoが必要かを指定する必要があります。以下の表は指定できる値の一覧です。
 
@@ -209,13 +218,13 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 |"hostGroupMembership"|ホストグループの所属情報の最新情報を指定します。|
 |"trigger"|トリガーの最新情報を指定します。|
 |"event"|イベントの最新情報を指定します。|
-|"hostParent"|VMの親子関係の最新情報を指定します。|
+|"hostParent"|ホストのVM親子関係の最新情報を指定します。|
 
 ```
 {"jsonrpc":"2.0", "method":"getLastInfo", "params":"trigger", "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 |resultオブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
@@ -231,7 +240,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 
  - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitems)プロシージャをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
-***params***
+***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
@@ -258,7 +267,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 {"jsonrpc":"2.0","method":"updateItems", "params":{"items":{"1":{"hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}}, "fetchId":"1"}, "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -266,9 +275,9 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 
 ### sendHistory(notification)
 
- - [fetchHistory](#user-content-fetchhistory)プロシージャをHatoholサーバーから受け取った際に，条件にマッチするヒストリーをHatoholサーバーに送信するします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
+ - [fetchHistory](#user-content-fetchhistory)プロシージャをHatoholサーバーから受け取った際に，条件にマッチするヒストリーをHatoholサーバーに送信します。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
-***params***
+***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
@@ -297,7 +306,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホスト情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
 
-***params***
+***リクエスト(params)***
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
@@ -317,7 +326,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 {"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":{1":"exampleHostName1"},"option":"UPDATE","lastInfo":"201504091052"}, "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -328,7 +337,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループをHatoholサーバーに送信します。
 
-***params***
+***リクエスト(params)***
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
@@ -348,7 +357,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 {"jsonrpc":"2.0","method":"updateHostGroups", "params":{"hostGroups":{"1":"Group1", "2":"Group2"},"option":"ALL", "lastInfo":"201504091049"}, "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -359,7 +368,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ所属情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
 
-***params***
+***リクエスト(params)***
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
@@ -377,7 +386,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
 {"jsonrpc":"2.0","method":"updateHostGroupMembership", "params":{"hostGroupsMembership":{"1":["1", "2", "5"], "2":["3", "4", "6"]},"lastInfo":"201504091056","option":"ALL"}, "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -389,7 +398,7 @@ HAPがHatoholサーバーとの接続に成功した際，paramsに入れた値�
  - Hatoholサーバーとの接続完了時，fetchTriggersプロシージャによる要求があった際は"ALL"オプションを用い，全てのトリガーをHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，追加されたトリガーをHatoholサーバーに送信します。
 
-***params***
+***リクエスト(params)***
 
 名前：triggers, lastInfo, option, fetchId
 
@@ -421,7 +430,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 {"jsonrpc":"2.0", "method":"updateTriggers", "params":{"option":"UPDATED", "lastInfo":"201504061606", "Triggers":{"1":{"status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}, "_SELF_":{"status":"OK", "severity":"INFO","lastChangeTime":"201503231760", "hostId":"_SELF_ "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}}},"id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -431,8 +440,9 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
  - [getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに更新，発生したイベントをHatoholサーバーに送信します。初回通信時は，lastInfoの値がnullであるため，接続以前に発生したイベントを送信するかどうかの判断はHAP作成者に委ねられています。
  - 一度に送信できるイベント数は1000件までです。1000件を越える場合は，複数回に分けて送信してください。
+ - fetchEventsプロシージャによるリクエストで指定されたID以前のイベントが存在しない場合は，paramsオブジェクトの値をnullにして送信してください。
 
-***params***
+***リクエスト(params)***
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
@@ -462,7 +472,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 {"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":{"1":{"time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}}, "lastInfo":"201504011759"},"id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -473,7 +483,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
 
-***params***
+***リクエスト(params)***
 
 名前：hostParent, lastInfo, option
 
@@ -496,7 +506,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 {"jsonrpc":"2.0", "method":"updateHostParent", "params":{"12":"10", "11":"10"},"option":"ALL", "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -506,7 +516,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfo)で取得したポーリング時間の2倍（SHOULD）とします。
 
-***params***
+***リクエスト(params)***
 
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:---------:|:----------:|:------:|:---|
@@ -521,7 +531,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 {"jsonrpc":"2.0", "method":"updateArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -531,7 +541,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 このプロシージャは、Hatoholサーバーがアイテムを要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，全てのアイテムをupdateItemsプロシージャ[updateItems](#user-content-updateitems)を用いてHatoholサーバーに送信してください。また，paramsのfetchIdオブジェクトの値を[updateItems](#user-contents-updateitems)に渡す必要があります。
 
-***params***
+***リクエスト(params)***
 
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
@@ -541,7 +551,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 {"jsonrpc":"2.0", "method":"fetchItems", "params":{"fetchId":"1"}, "id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -551,7 +561,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
  - このプロシージャは、Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定条件に当てはまるヒストリーをupdateHistoryプロシージャ[updateHistory](#user-content-sendhistory)を用いてHatoholサーバーに送信してください。その際，fetchHistoryプロシージャのparams内にあるfetchIdの値をsendHistoryプロシージャに渡す必要があります。
 
-***params***
+***リクエスト(params)***
 
 名前：reqHistory, fetchId
 
@@ -559,7 +569,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
-|reqHistory|array|M|-|-|ヒストリーの要求情報を格納する配列を配置します。この配列の中に詳細は次のテーブルを確認してください|
+|reqHistory|object|M|-|-|ヒストリーを取得するために必要な情報です。詳細は次のテーブルを確認してください|
 |fetchId|string|M|-|255文字以内|sendHistoryプロシージャで使用します。そのsendHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ***reqHistoryオブジェクト***
@@ -573,10 +583,10 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 |endTime  |string|M|-|255文字以内|ヒストリー取得域の終点時間を指定します|
 
 ```
-{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"reqHistory":[{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513", "beginTime":"201503231513"}], "fetchId":1 },"id":1}
+{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"reqHistory":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513", "beginTime":"201503231513"}, "fetchId":1 },"id":1}
 ```
 
-***result***
+***リザルト(result)***
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -586,7 +596,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
  - このプロシージャは、Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateTriggersプロシージャ](#user-content-updatetriggers)の"ALL"オプションを用いて監視している全てのトリガーを送信してください。その際，fetchTriggersプロシージャのparams内にあるfetchIdの値をupdateTriggersプロシージャに渡す必要があります。
 
-***params***
+***リクエスト(params)***
 
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
@@ -596,61 +606,33 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 {"jsonrpc":"2.0", "method":"fetchTriggers", "params":{"fetchId":"1"}, "id":1}
 ```
 
-***result***
-
- - fetchTriggersメソッドには引数が存在しません。paramsオブジェクトの値をnullにしてリクエストを送信してください。
-
-***result***
-
-|名前         |型|M/O|デフォルト値|値の範囲|解説|
-|:------------|:----|:----:|:----------:|:------:|:---|
-|status        |number|M|-|正の整数     |トリガーのステータス|
-|severity      |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
-|lastChangeTime|string|M|-|65535byte以内|トリガーが最後に更新された時間|
-|hostId        |number|M|-|正の整数     |監視サーバー内で設定されているホストID|
-|hostName      |string|M|-|65535byte以内|トリガーが所属するサーバーのホスト名|
-|brief         |string|M|-|65535byte以内|トリガーの概要|
-|extendedInfo  |string|M|-|65535byte以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
+***リザルト(result)***
 
 ```
-{"jsonrpc":"2.0", "result":{"1":{"option":"UPDATED", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}},"id":1}
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
 
 ### fetchEvents(method)
 
- - このプロシージャは、HatoholサーバーがHatoholDBに保存されている最古のイベント以前のイベントを要求しているときにHAPに送信されます。HAPはレスポンスとしてを返す必要があります。その後，[updateEventsプロシージャ](#user-content-updateevents)の"SOME"オプションを用いて指定されたIDのイベントから，指定された件数の過去イベントを送信してください。その際，fetchEventsプロシージャのparams内にあるfetchIdの値をupdateEventsプロシージャに渡す必要があります。
- - 取得時できる件数は一度のリクエストで1000件までです。それ以上の件数を取得したい場合は複数回のリクエストに分けて取得してください。
- - リクエストしたID以前のイベントが存在しない場合はレスポンスとしてresultオブジェクトの値をnullにしてください。
+ - HatoholサーバーがHatoholDBに保存されている最古のイベント以前のイベントを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateEventsプロシージャ](#user-content-updateevents)を用いて指定IDのイベントから，過去イベントを指定件数分取得し送信してください。その際，fetchEventsプロシージャのparamsオブジェクト内にあるfetchIdの値をupdateEventsプロシージャに渡す必要があります。
+ - 指定できる取得件数は一度のリクエストで1000件までです。それ以上の件数を取得したい場合は複数回のリクエストに分けて取得してください。
 
-***params***
+***リクエスト(params)***
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|reqBeforeEvents|object|M|-|-|過去のイベントを要求する際に必要な情報をまとめています|
+|oldestEventId|string|M|-|255文字以内|HatoholDB内に存在する最古イベントのID|
+|quantity     |number|M|-|正の整数|取得するイベント件数|
 |fetchId|string|M|-|255文字以内|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchEvents", "params":{"fetchId":"1", "baseEventId":"10", "number": "1000"}, "id":1}
 ```
 
-***result***
-
- - fetchEventsメソッドには引数が存在しません。paramsオブジェクトの値をnullにしてリクエストを送信してください。
-
-***result***
-
-|名前         |型|M/O|デフォルト値|値の範囲|解説|
-|:------------|:----|:----:|:----------:|:------:|:---|
-|status        |number|M|-|正の整数     |トリガーのステータス|
-|severity      |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
-|lastChangeTime|string|M|-|65535byte以内|トリガーが最後に更新された時間|
-|hostId        |number|M|-|正の整数     |監視サーバー内で設定されているホストID|
-|hostName      |string|M|-|65535byte以内|トリガーが所属するサーバーのホスト名|
-|brief         |string|M|-|65535byte以内|トリガーの概要|
-|extendedInfo  |string|M|-|65535byte以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
+***リザルト(result)***
 
 ```
-{"jsonrpc":"2.0", "result":{"1":{"option":"UPDATED", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}},"id":1}
+{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
 
 ## 表
