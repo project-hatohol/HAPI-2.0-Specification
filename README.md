@@ -565,7 +565,6 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 |:---|:--|:-------:|:----------:|:------:|:---|
 |hostId   |string|M|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
 |itemId   |number|M|-|正の整数   |ヒストリーのアイテムID|
-|itemValueType|string|M|-|-|取得するヒストリーの値の型 [[一覧](#user-content-itemvaluetype)]|
 |beginTime|string|M|-|255文字以内|ヒストリー取得域の始点時刻を指定します|
 |endTime  |string|M|-|255文字以内|ヒストリー取得域の終点時刻を指定します|
 
@@ -693,17 +692,6 @@ JSON-RPCのデフォルトエラーコードについては[[公式リファレ�
 |"GOOD"   |正常|
 |"BAD"    |異常|
 |"UNKNOWN"|不明|
-
-### itemValueType
-
-アイテムのタイプです。任意のタイプを各アイテムに設定して下さい。
-
-|タイプ|解説|
-|:-----|:---|
-|"UNKNOWN"|未定義  |
-|"FLOAT"  |float型 |
-|"INTEGER"|int型   |
-|"STRING" |string型|
 
 ### updateResult
 
