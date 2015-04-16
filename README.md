@@ -258,7 +258,7 @@ Hatoholサーバー                                   HAP
 |itemId       |number|M|-|正の整数     |アイテムのID|
 |hostId       |number|M|-|正の整数     |アイテムが所属するホストのID|
 |brief        |string|M|-|65535byte以内|アイテムの概要|
-|lastValueTime|string|M|-|65535byte以内|アイテムが最後に更新された時刻|
+|lastValueTime|timestamp|M|-|65535byte以内|アイテムが最後に更新された時刻|
 |lastValue    |string|M|-|65535byte以内|アイテムが最後に更新された際の値|
 |prevValue    |string|M|-|65535byte以内|アイテムが最後に更新される前の値|
 |itemGroupName|string|M|-|65535byte以内|アイテムをグループ分けしたもの<br>任意のグループ名をご使用ください|
