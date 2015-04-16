@@ -130,10 +130,7 @@ Hatoholサーバー                                   HAP
 |[updateHostParent](#user-content-updatehostparent)|ホスト同士のVM親子関係をHatoholサーバーに送信します|method|O|
 |[updateArmInfo](#user-content-updatearminfo)|HAPの接続ステータスをHatoholサーバーに送信します|method|M|
 
-### HAPに実装するプロシージnD定例で触れて
-おこうと考えています。
-
-以上，よろしくお願いします。 
+### HAPに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
