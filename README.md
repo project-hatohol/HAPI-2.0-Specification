@@ -7,9 +7,10 @@ serverTypeのURL
 ## 概要
 
 Hatohol Arm Plugin InterfaceはHatoholサーバーとプラグイン間でのデータの送受信を定義するフレームワークです。
-通信規格としてAMQP（RabbitMQ），データプロトコルとしてJSON-RPC 2.0を採用しています。JSON-RPC，AMQP(RabbitMQ)の各仕様についてはそれぞれの公式リファレンス([JSON-RPC](http://www.jsonrpc.org/specification)/[RabbitMQ](https://www.rabbitmq.com/documentation.html))をご覧ください。
+通信規格としてAMQP（RabbitMQ），通信プロトコルとしてJSON-RPC 2.0を採用しています。JSON-RPC，AMQP(RabbitMQ)の各仕様についてはそれぞれの公式リファレンス([JSON-RPC](http://www.jsonrpc.org/specification)/[RabbitMQ](https://www.rabbitmq.com/documentation.html))をご覧ください。
 
 このドキュメントではHatohol Arm Plugin Interface規格に則り，Hatoholサーバーとデータの送受信を行うHatohol Arm Plugin(以下，HAP)の仕様について記載しています。
+以下の図は上記の説明を図示したものです。
 
 不明点についてはHatoholコミュニティにお問い合わせください。[hatohol-users@sourceforge.net]
 
@@ -98,7 +99,7 @@ Hatoholサーバー                                   HAP
  - JSON-RPCにはバッチリクエストという，複数のリクエストを同時に送信する文法が存在しますが，Hatoholはこの文法を用いたリクエストには対応していません。
  - HAPからHatoholサーバーに送信されるプロシージャで使用されるnumber型オブジェクトの値範囲は0~2147483647です。
 
-## データ型解説
+## データ型
 
  - JSON-RPCではなくHatoholが独自に定義しているデータ型について解説します。これらは内部的にはJSON-RPCが定義しているデータ型を使用しています。
 
@@ -111,7 +112,7 @@ Hatoholサーバー                                   HAP
 
  - HAPやHatoholサーバーの起動，または再起動直後に自身と接続相手が使用可能なプロシージャの一覧をexchangeProfileプロシージャを用いて交換します。この情報を基に，互いが使用するプロシージャの最適化を行うことができます。
 
-## プロシージャ解説
+## プロシージャ
 
 ### Hatoholサーバーに実装するプロシージャ
 
@@ -295,7 +296,7 @@ Hatoholサーバー                                   HAP
 
 ### updateHosts(method)
 
- - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホスト情報をHatoholサーバーに送信します。
+ - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は,"ALL"オプションを用いて全てのホスト情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAPプロセス自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
 
 ***リクエスト(params)***
@@ -429,7 +430,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 ### updateEvents(method)
 
  - 自発的にイベントを送信する動作とfetchEventsプロシージャに対するレスポンスとしてイベントを送信する動作の2つの動作が存在します。
- - 自発的にイベントを送信する場合は，まず[getLastInfo](#user-content-getlastinfo)プロシージャやHAPプロセス自身から呼び出してlastInfoを取得します。取得したlastInfoから現時点までに発生した差分のイベントをHatoholサーバーに送信します。初回通信時は，lastInfoの値がnullであるため，接続以前に発生したイベントをすべて送信するか，何も送信しない選択がHAP作成者に委ねられています。
+ - 自発的にイベントを送信する場合は，まず[getLastInfo](#user-content-getlastinfo)プロシージャやHAPプロセス自身からlastInfoを取得します。取得したlastInfoで判別したイベントから現時点までに発生した差分のイベントをHatoholサーバーに送信します。初回通信時は，lastInfoの値がnullであるため，接続以前に発生したイベントをすべて送信するか，何も送信しない選択がHAP作成者に委ねられています。
  - 一度に送信できるイベント数は1000件までです。1000件を越える場合は，複数回に分けて送信してください。
  - fetchEventsプロシージャで指定されたIDより先にイベントが存在しない場合は，paramsオブジェクトの値をnullにして送信してください。
 
@@ -473,10 +474,6 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 ***リクエスト(params)***
 
-名前：hostParent, lastInfo, option
-
-各オブジェクトの値：
-
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hostParent|object配列|M|-|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
@@ -487,7 +484,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
  - VMの親子関係を削除する場合は親ホストIDの値をnullにすることで，送信した子ホストIDの親子関係をHatoholサーバーから削除することができます。
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |childHostId |string|M|-|65535byte以内|VMの子ホストのID|
 |parentHostId|string or null|M|-|65535byte以内|VMの親ホストのID|
@@ -508,7 +505,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 ***リクエスト(params)***
 
-|名前|型|M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:---------:|:----------:|:------:|:---|
 |lastStatus         |string   |M|-|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]|
 |failureReason      |string   |M|-|65535byte以内|情報取得が失敗した理由|
@@ -533,7 +530,7 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 ***リクエスト(params)***
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |selectHosts|string配列|M|-|-|指定したホストのアイテムのみを取得することできます。この値を”ALL”とすると全てのホストのアイテムを取得します。|
 |fetchId|string|M|-|255文字以内|updateItemsプロシージャで使用します。そのupdateItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
@@ -561,7 +558,7 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 ***reqHistoryオブジェクト***
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |hostId   |string|M|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
 |itemId   |number|M|-|正の整数   |ヒストリーのアイテムID|
@@ -585,7 +582,7 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 ***リクエスト(params)***
 
-|名前|型 |M/O|デフォルト値|値の範囲|解説|
+|オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |fetchId|string|M|-|255文字以内|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
