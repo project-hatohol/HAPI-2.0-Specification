@@ -155,7 +155,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |procedures|string配列|M|-|-|送信元が使用可能なプロシージャ一覧|
-|agentName |string|M|-|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|name |string|M|-|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
 {"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
@@ -166,10 +166,10 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |procedures|string配列|M|-|-|送信先が使用可能なプロシージャ一覧|
-|agentName |string|M|-|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|name |string|M|-|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
-{"jsonrpc":"2.0", "result":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"],"agentName":"exampleName"} "id":1}
+{"jsonrpc":"2.0", "result":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"],"name":"exampleName"} "id":1}
 ```
 
 ### getMonitoringServerInfo(method)
