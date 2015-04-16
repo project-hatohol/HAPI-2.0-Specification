@@ -609,12 +609,12 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |lastInfo|string|M|-|255文字以内|基準となるイベントの情報です|
-|quantity     |number|M|-|正の整数|取得するイベント件数|
-|order        |string|M|-|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
+|count     |number|M|-|正の整数|取得するイベント件数|
+|direction        |string|M|-|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
 |fetchId|string|M|-|255文字以内|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
-{"jsonrpc":"2.0", "method":"fetchEvents", "params":{"fetchId":"1", "lastInfo":"10", "number": "1000", "order":"ASC"}, "id":1}
+{"jsonrpc":"2.0", "method":"fetchEvents", "params":{"fetchId":"1", "lastInfo":"10", "count": "1000", "direction":"ASC"}, "id":1}
 ```
 
 ***リザルト(result)***
