@@ -255,8 +255,8 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
-|itemId       |number|M|-|正の整数     |アイテムのID|
-|hostId       |number|M|-|正の整数     |アイテムが所属するホストのID|
+|itemId       |string|M|-|65535byte以内|アイテムのID|
+|hostId       |string|M|-|65535byte以内|アイテムが所属するホストのID|
 |brief        |string|M|-|65535byte以内|アイテムの概要|
 |lastValueTime|timestamp|M|-|65535byte以内|アイテムが最後に更新された時刻|
 |lastValue    |string|M|-|65535byte以内|アイテムが最後に更新された際の値|
