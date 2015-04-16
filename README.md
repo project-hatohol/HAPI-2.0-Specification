@@ -119,7 +119,7 @@ Hatoholサーバー                                   HAP
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
 |[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身のプロセス名をHAPに送信します<br>また，そのレスポンスとしてHAPが実装しているプロシージャ一覧とHAPのプロセス名を取得します|method|M|
-|[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|接続情報やポーリング間隔等をHatoholサーバーから取得します|method|M|
+|[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|getMonitorinServerInfo接続情報やポーリング間隔等をHatoholサーバーから取得します|method|M|
 |[getLastInfo](#user-content-getlastinfo)|指定した要素の最新情報をHatoholサーバーから取得します|method|M
 |[updateItems](#user-content-updateitems)|監視しているアイテム一覧をHatoholサーバーに送信します|method|O|
 |[sendHistory](#user-content-sendhistory)|各アイテムが所持しているヒストリーをHatoholサーバーに送信します|notification|O|
@@ -197,10 +197,10 @@ Hatoholサーバー                                   HAP
 |dbName            |string|M|-|255文字以内|監視対象のデータベースのパスワード|
 |pollingIntervalSec|number|M|-|正の整数|ポーリングを行う間隔|
 |retryIntervalSec  |number|M|-|正の整数|ポーリングが失敗した場合，リトライを行うまでの間隔|
-|extra             |string|M|-|255文字以内|プラグイン固有の情報を格納することができる|
+|extra             |string|M|-|32767文字以内|プラグイン固有の情報を格納することができる|
 
 ```
-{"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10}, "id":1}
+{"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10, "extra":"exampleExtraInfo"}, "id":1}
 ```
 
 ### getLastInfo(method)
