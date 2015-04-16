@@ -550,6 +550,7 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 ### fetchHistory(method)
 
  - このプロシージャは，Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定条件に当てはまるヒストリーをupdateHistoryプロシージャ[updateHistory](#user-content-sendhistory)を用いてHatoholサーバーに送信してください。その際，fetchHistoryプロシージャのparams内にあるfetchIdの値をsendHistoryプロシージャに渡す必要があります。
+ - reqオブジェクト内にあるbeginTime，endTimeはbeginTime以上，endTime以下の条件に当てはまるHistory取得することを想定しています。
 
 ***リクエスト(params)***
 
