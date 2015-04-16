@@ -155,7 +155,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |procedures|string配列|M|-|-|送信元が使用可能なプロシージャ一覧|
-|name |string|M|-|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|name |string|M|-|-|送信元の名前です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
 {"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
@@ -285,8 +285,8 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|value |timestamp|M|-|65535byte以内|clock時点でのアイテムの値|
-|clock |string|M|-|65535byte以内|このヒストリーの値が記録された時刻|
+|value |string|M|-|65535byte以内|clock時点でのアイテムの値|
+|clock |timestamp|M|-|65535byte以内|このヒストリーの値が記録された時刻|
 
 ```
 {"jsonrpc":"2.0", "method":"sendHistory", "params":{"1":[{"value":"exampleValue","clock":"201503231130"},{"value":"exampleValue2","clock":"201503231130"}], "fetchId":"1"}, "id":1}
@@ -447,7 +447,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
 |eventId     |string|M|-|65535byte以内|イベントのID|
-|time        |string|M|-|65535byte以内|イベントが発生した時刻|
+|time        |timestamp|M|-|65535byte以内|イベントが発生した時刻|
 |type        |string|M|-|-|イベントのタイプ [[一覧](#user-content-eventtype)]|
 |triggerId   |number|O|-|正の整数     |このイベントを発火させたトリガーID。トリガーとイベントを関連付けないことも可能なため，必須ではありません|
 |status      |string|M|-|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
