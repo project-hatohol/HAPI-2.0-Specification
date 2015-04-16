@@ -142,7 +142,7 @@ Hatoholサーバー                                   HAP
 |[fetchEvents](#user-content-fetchevents)|HatoholサーバーがHatoholDBに登録されている最古イベント以前のイベントを要求しているときにHAPに送信されます|method|O|
 
  - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。Mandatoryであるプロシージャは実装を省略できません。
- - 「M/O」がOであるプロシージャは実装を省略可能です。しかし，fetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，呼び出されたプロシージャが実装されていないことをエラーとして返す必要があります。エラーメッセージをerrorオブジェクトに入れてHatoholサーバーにレスポンスを返してください。エラーメッセージの値については[一覧](#user-content-errorcode)をご覧ください。
+ - 「M/O」がOであるプロシージャは実装を省略可能です。しかし，fetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，呼び出されたプロシージャが実装されていないことをerrorオブジェクトとして返す必要があります。
  - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
  - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
@@ -623,17 +623,6 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 ```
 
 ## 表
-
-### errorCode
-
-リクエストに成功した場合，送信したリクエストに応じたresultオブジェクトが返されます。
-リクエストに失敗した場合，resultオブジェクトではなくerrorオブジェクトを返す必要があります。
-このセクションではHatoholが独自に定義するJSON-RPCでのエラーコードについて解説します。
-JSON-RPCのデフォルトエラーコードについては[[公式リファレンス](http://www.jsonrpc.org/specification#error_object)]をご覧ください。
-
-|code|message|meaning|
-|:--|:-------|:---|
-|1  |NotGetAPIVersion|接続相手のAPIバージョンを取得できていません。|
 
 ### armInfoStatus
 
