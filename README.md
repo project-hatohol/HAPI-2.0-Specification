@@ -1,4 +1,4 @@
-# Hatohol Arm Plugin Interface 2.0
+# Hatohol Arm Plugin Interface 2.0 仕様書(2015/04/16)
 
 ## ToDO
 
@@ -6,14 +6,37 @@ serverTypeのURL
 
 ## 概要
 
-Hatohol Arm Plugin InterfaceはHatoholサーバーとプラグイン間でのデータの送受信を定義するフレームワークです。
-通信規格としてAMQP（RabbitMQ），データプロトコルとしてJSON-RPC 2.0を採用しています。JSON-RPC，AMQP(RabbitMQ)の各仕様についてはそれぞれの公式リファレンス([JSON-RPC](http://www.jsonrpc.org/specification)/[RabbitMQ](https://www.rabbitmq.com/documentation.html))をご覧ください。
-
-このドキュメントではHatohol Arm Plugin Interface規格に則り，Hatoholサーバーとデータの送受信を行うHatohol Arm Plugin(以下，HAP)の仕様について記載しています。
-
-不明点についてはHatoholコミュニティにお問い合わせください。[hatohol-users@sourceforge.net]
+Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
+両者の間に確立された通信路上で実装されるJSON-RPCのアプリケーションとして構築されます。
 
 ![overview](hapi_overview.png)
+
+## 用語
+
+|用語|説明|
+|:---|:---|
+|SRV|Hatoholサーバー|
+|HAP|Hatohol監視サーバープラグイン|
+
+"MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY" および "OPTIONAL" は，[RFC2119](http://www.ietf.org/rfc/rfc2119.txt)に従います。
+
+## 関連プロトコル
+
+### 通信路
+
+通信路として，Advanced Message Queuing Protocol (AMQP) 0.9.1を用います。
+- AMQP 0.9.1: https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf
+
+### JSON-RPC
+
+情報交換の基本プロトコルとして，JSON-RPC 2.0を用います。
+- [JSON-RPC 2.0 (2013-01-04)](http://www.jsonrpc.org/specification)
+- [JSON(RFC4627)](https://www.ietf.org/rfc/rfc4627.txt)
+
+#### 注意事項
+- リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です(SHOULD)。
+- HAPI2.0では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
+- 特記しない限り，number型オブジェクトの値範囲は0~2147483647です。
 
 ## HAP動作概要
 
@@ -91,12 +114,6 @@ Hatoholサーバー                                   HAP
     |                                              |
 
 ```
-
-## 注意事項
-
- - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です。
- - JSON-RPCにはバッチリクエストという，複数のリクエストを同時に送信する文法が存在しますが，Hatoholはこの文法を用いたリクエストには対応していません。
- - HAPからHatoholサーバーに送信されるプロシージャで使用されるnumber型オブジェクトの値範囲は0~2147483647です。
 
 ## データ型解説
 
@@ -725,3 +742,13 @@ fetch~~~プロシージャを受信した際に，そのリクエストを受け
 |"SUCCESS"|リクエストの受け入れに成功しました|
 |"ADDREV"|リクエストの受け入れを省略されました<br>リクエストの間隔が近く，リクエストの受け入れを省略する場合に使用します|
 |"FAILED"|リクエストの受け入れに失敗しました|
+
+<!--
+## 改版履歴
+-->
+
+## 連絡先
+不明点についてはHatoholコミュニティにお問い合わせください。[hatohol-users@sourceforge.net]
+
+## 著作権
+Copyright (C)2015 Project Hatohol
