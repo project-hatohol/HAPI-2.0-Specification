@@ -159,8 +159,6 @@ Hatoholサーバー                                   HAP
 |[fetchEvents](#user-content-fetchevents)|HatoholサーバーがHatoholDBに登録されている最古イベント以前のイベントを要求しているときにHAPに送信されます|method|O|
 
  - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。Mandatoryであるプロシージャは実装を省略できません。
- - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
- - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
 ### exchangeProfile(method)
 
@@ -283,6 +281,8 @@ Hatoholサーバー                                   HAP
 
 ***リザルト(result)***
 
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
@@ -333,6 +333,8 @@ Hatoholサーバー                                   HAP
 
 ***リザルト(result)***
 
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
@@ -363,6 +365,8 @@ Hatoholサーバー                                   HAP
 
 ***リザルト(result)***
 
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
@@ -391,6 +395,8 @@ Hatoholサーバー                                   HAP
 ```
 
 ***リザルト(result)***
+
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -478,6 +484,8 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 ***リザルト(result)***
 
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
@@ -535,6 +543,8 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 ***リザルト(result)***
 
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
@@ -555,6 +565,8 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 ```
 
 ***リザルト(result)***
+
+ - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -587,6 +599,8 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 ***リザルト(result)***
 
+ - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
+
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
@@ -606,6 +620,8 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 ```
 
 ***リザルト(result)***
+
+ - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -630,6 +646,8 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 ```
 
 ***リザルト(result)***
+
+ - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
 ```
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
@@ -707,7 +725,7 @@ updateプロシージャをコールした際の更新の成否です。
 
 ### fetchResult
 
-fetch~~~プロシージャを受信した際に，そのリクエストを受け入れたかどうかの成否です。書き込みに失敗した際は，再度送信するといった動作が標準的です。
+fetchと名のついたプロシージャが呼び出された際に，そのリクエストを受け入れたかどうかの成否を表します。リクエストの受け入れに失敗した際は，再度リクエストするといった動作が標準的です。
 
 |ステータス|解説|
 |:---------|:---|
