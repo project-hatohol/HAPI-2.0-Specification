@@ -330,7 +330,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string    |M|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo    |String255 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostsオブジェクト***
@@ -341,7 +341,7 @@ Hatoholサーバー                                   HAP
 |hostName|String255|M|-|監視サーバーが監視しているホスト名|
 
 ```
-{"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":[{"hostId":"1", "hostName""exampleHostName1"}], "updateOption":"UPDATE","lastInfo":"201504091052"}, "id":1}
+{"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":[{"hostId":"1", "hostName""exampleHostName1"}], "updateType":"UPDATE","lastInfo":"201504091052"}, "id":1}
 ```
 
 ***リザルト(result)***
@@ -362,7 +362,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string    |M|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo    |String255 |O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupsオブジェクト***
@@ -373,7 +373,7 @@ Hatoholサーバー                                   HAP
 |groupName|String255|M|-|グループIDに対応したホストグループの名前|
 
 ```
-{"jsonrpc":"2.0","method":"updateHostGroups", "params":{"hostGroups":[{"groupId":"1", "groupName":"Group2"}],"updateOption":"ALL", "lastInfo":"201504091049"}, "id":1}
+{"jsonrpc":"2.0","method":"updateHostGroups", "params":{"hostGroups":[{"groupId":"1", "groupName":"Group2"}],"updateType":"ALL", "lastInfo":"201504091049"}, "id":1}
 ```
 
 ***リザルト(result)***
@@ -394,7 +394,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption       |string    |M|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo           |String255 |O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupMembershipオブジェクト***
@@ -404,7 +404,7 @@ Hatoholサーバー                                   HAP
 |hostId  |String255    |M|-|ホストのID|
 |groupIds|String255配列|M|-|ホストグループのID|
 ```
-{"jsonrpc":"2.0","method":"updateHostGroupMembership", "params":{"hostGroupsMembership":[{"hostId":"1", "groupIds":["1", "2", "5"]}], "lastInfo":"201504091056", "updateOption":"ALL"}, "id":1}
+{"jsonrpc":"2.0","method":"updateHostGroupMembership", "params":{"hostGroupsMembership":[{"hostId":"1", "groupIds":["1", "2", "5"]}], "lastInfo":"201504091056", "updateType":"ALL"}, "id":1}
 ```
 
 ***リザルト(result)***
@@ -426,7 +426,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |triggers    |object配列|M|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|String255 |M|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo    |String255 |O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 |fetchId     |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersのparams内のfetchIdオブジェクトの値をここに入れてください|
 
@@ -444,7 +444,7 @@ Hatoholサーバー                                   HAP
 |extendedInfo  |String32767|M|-|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
 
 ```
-{"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateOption":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
+{"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateType":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
 ```
 
 ***リザルト(result)***
@@ -507,7 +507,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostParent  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|String255 |M|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo    |String255 |O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostParentオブジェクト***
@@ -520,7 +520,7 @@ Hatoholサーバー                                   HAP
 |parentHostId|String255|M|-|VMの親ホストのID|
 
 ```
-{"jsonrpc":"2.0", "method":"updateHostParent", "params":{[{"childHostId":"12","parentHostId":"10"}], "updateOption":"ALL", "lastInfo":"201504152246"} "id":1}
+{"jsonrpc":"2.0", "method":"updateHostParent", "params":{[{"childHostId":"12","parentHostId":"10"}], "updateType":"ALL", "lastInfo":"201504152246"} "id":1}
 ```
 
 ***リザルト(result)***
@@ -702,7 +702,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |"NG"|通信に失敗している|
 |"UNKNOWN"|状態不明|
 
-### updateOption
+### updateType
 
 |種類|解説|
 |:---------|:---|
