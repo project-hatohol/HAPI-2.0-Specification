@@ -713,9 +713,10 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |タイプ|解説|
 |:-----|:--:|
-|"GOOD"   |正常|
-|"BAD"    |異常|
-|"UNKNOWN"|不明|
+|"GOOD"        |正常|
+|"BAD"         |異常|
+|"UNKNOWN"     |不明|
+|"NOTIFICATION"|通知|
 
 ### updateResult
 
