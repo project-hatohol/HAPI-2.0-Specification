@@ -434,7 +434,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |hostId        |string|M|-|正の整数     |トリガーが所属するホストID|
 |hostName      |string|M|-|255文字以内|トリガーが所属するサーバーのホスト名|
 |brief         |string|M|-|255文字以内|トリガーの概要|
-|extendedInfo  |string|M|-|255文字以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
+|extendedInfo  |string|M|-|32767文字以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
 
 ```
 {"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateOption":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
@@ -476,7 +476,7 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |hostId      |string|M|-|255文字以内|イベントが発生したホストのID|
 |hostName    |string|M|-|255文字以内|イベントが発生したホストの名前|
 |brief       |string|M|-|255文字以内|イベントの説明。Web上に表示される情報|
-|extendedInfo|string|M|-|255文字以内|briefには書いていない追加の情報を記述できます|
+|extendedInfo|string|M|-|32767文字以内|briefには書いていない追加の情報を記述できます|
 
 ```
 {"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
