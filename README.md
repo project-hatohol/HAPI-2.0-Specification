@@ -221,9 +221,8 @@ Hatoholサーバー                                   HAP
 
 ### getLastInfo(method)
 
- - update~~~プロシージャでHatoholサーバーに送信，保存されたlastInfo情報を要求します。
+ - プロシージャ名にupdateが付いているプロシージャの呼び出し時にHatoholサーバーに送信，保存されたlastInfo情報を要求します。取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
  - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合，resultオブジェクトの値はnullとして返ってきます。
- - update~~~プロシージャは，getLastInfoプロシージャで取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
 
 ***リクエスト(params)***
 
