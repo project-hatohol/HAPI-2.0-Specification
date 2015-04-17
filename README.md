@@ -137,7 +137,7 @@ Hatoholサーバー                                   HAP
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身のプロセス名をHAPに送信します<br>また，そのレスポンスとしてHAPが実装しているプロシージャ一覧とHAPのプロセス名を取得します|method|M|
+|[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身の名前をHAPに送信します<br>また，そのレスポンスとしてHAPが実装しているプロシージャ一覧とHAPのプロセス名を取得します|method|M|
 |[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|getMonitorinServerInfo接続情報やポーリング間隔等をHatoholサーバーから取得します|method|M|
 |[getLastInfo](#user-content-getlastinfo)|指定した要素の最新情報をHatoholサーバーから取得します|method|M
 |[updateItems](#user-content-updateitems)|監視しているアイテム一覧をHatoholサーバーに送信します|method|O|
@@ -154,7 +154,7 @@ Hatoholサーバー                                   HAP
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身のプロセス名をHatoholサーバーに送信します<br>また，そのレスポンスとしてHatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーのプロセス名を取得します|method|M|
+|[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身の名前をHatoholサーバーに送信します<br>また，そのレスポンスとしてHatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーのプロセス名を取得します|method|M|
 |[fetchItems](#user-content-fetchitems)|Hatoholサーバーがアイテムを要求しているときにHAPに送信されます|method|O|
 |[fetchHistory](#user-content-fetchhistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|method|O|
 |[fetchTriggers](#user-content-fetchtriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|method|O|
