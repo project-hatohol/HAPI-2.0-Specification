@@ -97,17 +97,17 @@ Hatoholサーバー                                   HAP
     |                                              |
     |-----------fetchItems(リクエスト)------------>|
     |<----------fetchItems(レスポンス)-------------|
-    |<----------updateItems(リクエスト)------------|
-    |-----------updateItems(レスポンス)----------->|
+    |<------------putItems(リクエスト)-------------|
+    |-------------putItems(レスポンス)------------>|
     |                                              |
     |-----------fetchHistory(リクエスト)---------->|
     |<----------fetchHistory(レスポンス)-----------|
-    |<-----putHistory(ノーティフィケイション)-----|
+    |<------putHistory(ノーティフィケイション)-----|
     |                                              |
     |-----------fetchTriggers(リクエスト)--------->|
     |<----------fetchTriggers(レスポンス)----------|
     |<---------updateTriggers(リクエスト)----------|
-    |"ALL"オプションを使用し全てのトリガーを送信する|
+    |            "ALL"オプションを使用する         |
     |----------updateTriggers(レスポンス)--------->|
     |                                              |
     |-------------fetchEvents(リクエスト)--------->|
@@ -142,7 +142,7 @@ Hatoholサーバー                                   HAP
 |[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身の名前をHAPに送信します<br>また，そのレスポンスとしてHAPが実装しているプロシージャ一覧とHAPのプロセス名を取得します|method|M|
 |[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|getMonitorinServerInfo接続情報やポーリング間隔等をHatoholサーバーから取得します|method|M|
 |[getLastInfo](#user-content-getlastinfo)|指定した要素の最新情報をHatoholサーバーから取得します|method|M
-|[updateItems](#user-content-updateitems)|監視しているアイテム一覧をHatoholサーバーに送信します|method|O|
+|[putItems](#user-content-putitems)|監視しているアイテム一覧をHatoholサーバーに送信します|method|O|
 |[putHistory](#user-content-puthistory)|各アイテムが所持しているヒストリーをHatoholサーバーに送信します|method|O|
 |[updateHosts](#user-content-updatehosts)|監視しているホスト一覧をHatoholサーバーに送信します|method|O|
 |[updateHostGroups](#user-content-updatehostgroups)|ホストグループの情報をHatoholサーバーに送信します|method|O|
@@ -176,7 +176,7 @@ Hatoholサーバー                                   HAP
 |name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
-{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
+{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
 ```
 
 ***リザルト(result)***
@@ -187,7 +187,7 @@ Hatoholサーバー                                   HAP
 |name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
-{"jsonrpc":"2.0", "result":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"],"name":"exampleName"} "id":1}
+{"jsonrpc":"2.0", "result":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"],"name":"exampleName"} "id":1}
 ```
 
 ### getMonitoringServerInfo(method)
@@ -257,7 +257,7 @@ Hatoholサーバー                                   HAP
 この例ではlastInfoとしてタイムスタンプが返ってきています
 ```
 
-### updateItems(method)
+### putItems(method)
 
  - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitems)プロシージャのリクエストをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
@@ -272,25 +272,25 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|itemId       |String255|M|-|アイテムのID|
-|hostId       |String255|M|-|アイテムが所属するホストのID|
-|brief        |String255|M|-|アイテムの概要|
-|lastValueTime|TimeStamp|M|-|アイテムが最後に更新された時刻|
-|lastValue    |String255|M|-|アイテムが最後に更新された際の値|
-|prevValue    |String255|M|-|アイテムが最後に更新される前の値|
-|itemGroupName|String255|M|-|アイテムをグループ分けしたもの<br>任意のグループ名をご使用ください|
-|unit         |String255|M|-|valueの単位|
+|itemId       |String255    |M|-|アイテムのID|
+|hostId       |String255    |M|-|アイテムが所属するホストのID|
+|brief        |String255    |M|-|アイテムの概要|
+|lastValueTime|TimeStamp    |M|-|アイテムが最後に更新された時刻|
+|lastValue    |String255    |M|-|アイテムが最後に更新された際の値|
+|prevValue    |String255    |O|-|アイテムが最後に更新される前の値<br>※話しあう必要アリ|
+|itemGroupName|String255配列|M|-|アイテムが所属しているグループ名|
+|unit         |String255    |M|-|valueの単位|
 
 ```
-{"jsonrpc":"2.0","method":"updateItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
+{"jsonrpc":"2.0","method":"putItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
 ```
 
 ***リザルト(result)***
 
- - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - putItemsに返す値はありません。resultオブジェクトの値は空文字としてレスポンスが返ってきます。
 
 ```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+{"jsonrpc":"2.0", "result":"", "id":1}
 ```
 
 ### putHistory(method)
@@ -558,14 +558,14 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 ### fetchItems(method)
 
-Hatoholサーバーがアイテムを要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，全てのアイテムをupdateItemsプロシージャ[updateItems](#user-content-updateitems)を用いてHatoholサーバーに送信してください。その際，paramsのfetchIdオブジェクトの値を[updateItems](#user-contents-updateitems)に渡す必要があります。
+Hatoholサーバーがアイテム情報を要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，指定されたホストに属する全てのアイテムをputItemsプロシージャ[putItems](#user-content-putitems)を用いてHatoholサーバーに送信してください。その際，paramsのfetchIdオブジェクトの値を[putItems](#user-contents-putitems)に渡す必要があります。
 
 ***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|selectHosts|String255配列|M|-|指定したホストのアイテムのみを取得することできます。この値を”ALL”とすると全てのホストのアイテムを取得します|
-|fetchId    |String255    |M|-|updateItemsプロシージャで使用します。そのupdateItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|hostIds|String255配列|M|-|ホストを指定し取得するアイテムを限定します|
+|fetchId|String255    |M|-|putItemsプロシージャで使用します。そのputItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchItems", "params":{"selectHosts":["1", "2", "3"], "fetchId":"1"}, "id":1}
@@ -614,13 +614,14 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 ### fetchTriggers(method)
 
- - このプロシージャは，Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateTriggersプロシージャ](#user-content-updatetriggers)の"ALL"オプションを用いて監視している全てのトリガーを送信してください。その際，fetchTriggersプロシージャのparams内にあるfetchIdの値をupdateTriggersプロシージャに渡す必要があります。
+ - このプロシージャは，Hatoholサーバーがトリガー情報を要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateTriggersプロシージャ](#user-content-updatetriggers)の"ALL"オプションを用いて指定されたホストに属する全てのトリガーを送信してください。その際，fetchIdとhostIdsの値をupdateTriggersプロシージャに渡す必要があります。
 
 ***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|fetchId|String255|M|-|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|hostIds|String255配列|M|-|ホストを指定し取得するトリガーを限定します|
+|fetchId|String255    |M|-|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchTriggers", "params":{"fetchId":"1"}, "id":1}
