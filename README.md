@@ -38,7 +38,6 @@ Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サー
 #### 注意事項
 - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です(SHOULD)。
 - HAPI2.0では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
-- 特記しない限り，number型オブジェクトの値範囲は0~2147483647です。
 
 ## 動作概要
 
@@ -124,8 +123,11 @@ Hatoholサーバー                                   HAP
 
 |名前|JSON型|解説|
 |:---|:---------|:---|
-|timestamp|string|この型は時刻を格納します。フォーマットはYYYYMMDDhhss.nnnnnnnnnです。YYYY,MM,DD,hh,ss, および,nnnnnnnnnは，それぞれ，西暦，月，日，時，分，秒，および，ナノ秒を表します。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入できません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)|
-|boolean|true, false|この型は真偽値を格納します。true or falseを指定し，その値の真偽を示します|
+|TimeStamp|string|この型は時刻を格納します。フォーマットはYYYYMMDDhhss.nnnnnnnnnです。YYYY,MM,DD,hh,ss, および,nnnnnnnnnは，それぞれ，西暦，月，日，時，分，秒，および，ナノ秒を表します。小数点以下の時刻については省略できます。また，小数点以下には9桁までしか値を挿入できません。小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)|
+|Boolean|true, false|この型は真偽値を格納します。true or falseを指定し，その値の真偽を示します|
+|Number|number|number型の値を格納します。この型を指定された要素では，特記しない限り，その値を0~2147483647の範囲に収める必要があります|
+|String255|string|string型の値を格納します。この型を指定された要素では，その文字数を255文字以内にしてください|
+|String32767|string|string型の値を格納します。この型を指定された要素では，その文字数を32767文字以内にしてください|
 
 ## 起動時の動作について
 
@@ -170,8 +172,8 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|procedures|string配列|M|-|-|送信元が使用可能なプロシージャ一覧|
-|name |string|M|-|-|送信元の名前です。接続完了の旨を伝えるログなどに利用されます|
+|procedures|String255配列|M|-|-|送信元が使用可能なプロシージャ一覧|
+|name |String255|M|-|-|送信元の名前です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
 {"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
@@ -181,8 +183,8 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|procedures|string配列|M|-|-|送信先が使用可能なプロシージャ一覧|
-|name |string|M|-|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|procedures|String255配列|M|-|-|送信先が使用可能なプロシージャ一覧|
+|name |String255|M|-|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
 {"jsonrpc":"2.0", "result":{"procedures":["getMonitoringServerInfo", "getLastInfo", "updateItems", "updateArmInfo", "fetchItems"],"name":"exampleName"} "id":1}
@@ -204,19 +206,19 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
-|serverId          |number|M|-|正の整数|監視サーバーのサーバーID|
-|url               |string|M|-|-|監視サーバーのURL [[解説](#user-content-servertype)]|
-|type              |string|M|-|-|監視サーバーの種類 [[一覧](#user-content-servertype)]|
-|nickName          |string|M|-|255文字以内|監視サーバーのニックネーム|
-|userName          |string|M|-|255文字以内|監視サーバーのユーザーネーム|
-|password          |string|M|-|255文字以内|監視サーバーのパスワード|
-|dbName            |string|M|-|255文字以内|監視サーバ監視サーバーのデータベースのパスワード|
-|pollingIntervalSec|number|M|-|正の整数|ポーリングを行う間隔|
-|retryIntervalSec  |number|M|-|正の整数|ポーリングが失敗した場合，リトライを行うまでの間隔|
-|extra             |string|M|-|32767文字以内|プラグイン固有の情報を格納することができる|
+|serverId          |Number|M|-|正の整数|監視サーバーのサーバーID|
+|url               |String255|M|-|-|監視サーバーのURL [[解説](#user-content-servertype)]|
+|type              |String255|M|-|-|監視サーバーの種類 [[一覧](#user-content-servertype)]|
+|nickName          |String255|M|-|255文字以内|監視サーバーのニックネーム|
+|userName          |String255|M|-|255文字以内|監視サーバーのユーザーネーム|
+|password          |String255|M|-|255文字以内|監視サーバーのパスワード|
+|dbName            |String255|M|-|255文字以内|監視サーバ監視サーバーのデータベースのパスワード|
+|pollingIntervalSec|Number|M|-|正の整数|ポーリングを行う間隔|
+|retryIntervalSec  |Number|M|-|正の整数|ポーリングが失敗した場合，リトライを行うまでの間隔|
+|extendedInfo      |String32767|M|-|32767文字以内|プラグイン固有の情報を格納することができる|
 
 ```
-{"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10, "extra":"exampleExtraInfo"}, "id":1}
+{"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10, "extendedInfo":"exampleExtraInfo"}, "id":1}
 ```
 
 ### getLastInfo(method)
@@ -228,9 +230,9 @@ Hatoholサーバー                                   HAP
 
 |paramsオブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---------------------|:--|:-:|:----------:|:------:|:---|
-|指定要素|string|M|-|-|どの種類のlastInfoが必要かを指定する必要があります。以下の表を参照してください|
+|指定要素|String255|M|-|-|どの種類のlastInfoが必要かを指定する必要があります。以下の表を参照してください|
 
-|paramsオブジェクトの値一覧(string)|解説|
+|paramsオブジェクトの値一覧|解説|
 |:---------|:---|
 |"host"|ホストの最新情報を指定します。|
 |"hostGroup"|ホストグループの最新情報を指定します。|
@@ -247,7 +249,7 @@ Hatoholサーバー                                   HAP
 
 |resultオブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---------------------|:--|:-:|:----------:|:------:|:---|
-|最新情報|string|M|-|255文字以内|Hatoholサーバーに保存されている指定した要素の最新情報|
+|最新情報|String255|M|-|255文字以内|Hatoholサーバーに保存されている指定した要素の最新情報|
 
 ```
 {"jsonrpc":"2.0", "result":"201504011349", "id":1}
@@ -264,20 +266,20 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
 |items|object|M|-|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|fetchId|string|M|-|-|Hatoholサーバーから送られたどのfetchItemsプロシージャによるリクエストに対するレスポンスであるかを示すIDです。fetchItemsプロシージャのparams内のfetchIdオブジェクトの値をここに入れてください。|
+|fetchId|String255|M|-|-|Hatoholサーバーから送られたどのfetchItemsプロシージャによるリクエストに対するレスポンスであるかを示すIDです。fetchItemsプロシージャのparams内のfetchIdオブジェクトの値をここに入れてください。|
 
 ***itemsオブジェクト***
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:----------:|:---------:|:------:|:---|
-|itemId       |string|M|-|255文字以内|アイテムのID|
-|hostId       |string|M|-|255文字以内|アイテムが所属するホストのID|
-|brief        |string|M|-|255文字以内|アイテムの概要|
-|lastValueTime|timestamp|M|-|255文字以内|アイテムが最後に更新された時刻|
-|lastValue    |string|M|-|255文字以内|アイテムが最後に更新された際の値|
-|prevValue    |string|M|-|255文字以内|アイテムが最後に更新される前の値|
-|itemGroupName|string|M|-|255文字以内|アイテムをグループ分けしたもの<br>任意のグループ名をご使用ください|
-|unit         |string|M|-|255文字以内|valueの単位|
+|itemId       |String255|M|-|255文字以内|アイテムのID|
+|hostId       |String255|M|-|255文字以内|アイテムが所属するホストのID|
+|brief        |String255|M|-|255文字以内|アイテムの概要|
+|lastValueTime|TimeStamp|M|-|255文字以内|アイテムが最後に更新された時刻|
+|lastValue    |String255|M|-|255文字以内|アイテムが最後に更新された際の値|
+|prevValue    |String255|M|-|255文字以内|アイテムが最後に更新される前の値|
+|itemGroupName|String255|M|-|255文字以内|アイテムをグループ分けしたもの<br>任意のグループ名をご使用ください|
+|unit         |String255|M|-|255文字以内|valueの単位|
 
 ```
 {"jsonrpc":"2.0","method":"updateItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
@@ -300,12 +302,12 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
 |アイテムID|object配列|M|-|-|ヒストリー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|fetchId|string|M|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdオブジェクトの値をここに入れてください|
+|fetchId|String255|M|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|value |string|M|-|255文字以内|clock時点でのアイテムの値|
-|clock |timestamp|M|-|255文字以内|このヒストリーの値が記録された時刻|
+|value |String255|M|-|255文字以内|clock時点でのアイテムの値|
+|clock |TimeStamp|M|-|255文字以内|このヒストリーの値が記録された時刻|
 
 ```
 {"jsonrpc":"2.0", "method":"putHistory", "params":{"1":[{"value":"exampleValue","clock":"201503231130"},{"value":"exampleValue2","clock":"201503231130"}], "fetchId":"1"}, "id":1}
@@ -328,15 +330,15 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hosts|object配列|M|-|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|O|-|255文字以内|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|updateOption|String255|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|lastInfo|String255|O|-|255文字以内|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostsオブジェクト***
 
 |オブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:----------:|:------:|:---|
-|hostId  |string|M|-|255文字以内|監視サーバーが監視しているホストID|
-|hostName|string|M|-|255文字以内|監視サーバーが監視しているホスト名|
+|hostId  |String255|M|-|255文字以内|監視サーバーが監視しているホストID|
+|hostName|String255|M|-|255文字以内|監視サーバーが監視しているホスト名|
 
 ```
 {"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":[{"hostId":"1", "hostName""exampleHostName1"}], "updateOption":"UPDATE","lastInfo":"201504091052"}, "id":1}
@@ -360,15 +362,15 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hostGroups|object配列|M|-|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|O|-|255文字以内|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|updateOption|String255|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|lastInfo|String255|O|-|255文字以内|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupsオブジェクト***
 
 |オブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|groupId|string|M|-|255文字以内|ホストグループのID|
-|groupName|string|M|-|255文字以内|グループIDに対応したホストグループの名前|
+|groupId|String255|M|-|255文字以内|ホストグループのID|
+|groupName|String255|M|-|255文字以内|グループIDに対応したホストグループの名前|
 
 ```
 {"jsonrpc":"2.0","method":"updateHostGroups", "params":{"hostGroups":[{"groupId":"1", "groupName":"Group2"}],"updateOption":"ALL", "lastInfo":"201504091049"}, "id":1}
@@ -392,15 +394,15 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hostGroupMembership|object配列|M|-|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|O|-|255文字以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|updateOption|String255|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|lastInfo|String255|O|-|255文字以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupMembershipオブジェクト***
 
 |オブジェクトの値|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|hostId |string|M|-|255文字以内|ホストのID|
-|groupIds|string配列|M|-|255文字以内|ホストグループのID|
+|hostId |String255|M|-|255文字以内|ホストのID|
+|groupIds|String255配列|M|-|255文字以内|ホストグループのID|
 ```
 {"jsonrpc":"2.0","method":"updateHostGroupMembership", "params":{"hostGroupsMembership":[{"hostId":"1", "groupIds":["1", "2", "5"]}], "lastInfo":"201504091056", "updateOption":"ALL"}, "id":1}
 ```
@@ -428,9 +430,9 @@ Hatoholサーバー                                   HAP
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |triggers|object配列|M|-|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|O|-|255文字以内|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
-|fetchId|string|O|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersのparams内のfetchIdオブジェクトの値をここに入れてください|
+|updateOption|String255|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|lastInfo|String255|O|-|255文字以内|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|fetchId|String255|O|-|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***triggersオブジェクト***
 
@@ -438,14 +440,14 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|triggerId     |string|M|-|正の整数     |トリガーのID|
-|status        |string|M|-|-            |トリガーのステータス [[一覧](#user-content-triggerstatus)]|
-|severity      |string|M|-|-            |トリガーの種別 [[一覧](#user-content-triggerseverity)]|
-|lastChangeTime|string|M|-|255文字以内|トリガーが最後に更新された時刻|
-|hostId        |string|M|-|正の整数     |トリガーが所属するホストID|
-|hostName      |string|M|-|255文字以内|トリガーが所属するサーバーのホスト名|
-|brief         |string|M|-|255文字以内|トリガーの概要|
-|extendedInfo  |string|M|-|32767文字以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
+|triggerId     |String255|M|-|正の整数     |トリガーのID|
+|status        |String255|M|-|-            |トリガーのステータス [[一覧](#user-content-triggerstatus)]|
+|severity      |String255|M|-|-            |トリガーの種別 [[一覧](#user-content-triggerseverity)]|
+|lastChangeTime|String255|M|-|255文字以内|トリガーが最後に更新された時刻|
+|hostId        |String255|M|-|正の整数     |トリガーが所属するホストID|
+|hostName      |String255|M|-|255文字以内|トリガーが所属するサーバーのホスト名|
+|brief         |String255|M|-|255文字以内|トリガーの概要|
+|extendedInfo  |String32767|M|-|32767文字以内|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
 
 ```
 {"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateOption":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
@@ -470,24 +472,24 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |events|object配列|M|-|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|lastInfo|string|O|-|255文字以内|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
-|mayMoreFlag|boolean|M|-|-|fetchEventsプロシージャで指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。この値をtrueにする場合，最低限イベントを1件は送信する必要があります|
-|fetchId|string|O|-|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
+|lastInfo|String255|O|-|255文字以内|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
+|mayMoreFlag|Boolean|M|-|-|fetchEventsプロシージャで指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。この値をtrueにする場合，最低限イベントを1件は送信する必要があります|
+|fetchId|String255|O|-|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***eventsオブジェクト***
 
 |名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|eventId     |string|M|-|255文字以内|イベントのID|
-|time        |timestamp|M|-|255文字以内|イベントが発生した時刻|
-|type        |string|M|-|-|イベントのタイプ [[一覧](#user-content-eventtype)]|
-|triggerId   |number|O|-|正の整数     |このイベントを発火させたトリガーID。トリガーとイベントを関連付けないことも可能なため，必須ではありません|
-|status      |string|M|-|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
-|severity    |string|M|-|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
-|hostId      |string|M|-|255文字以内|イベントが発生したホストのID|
-|hostName    |string|M|-|255文字以内|イベントが発生したホストの名前|
-|brief       |string|M|-|255文字以内|イベントの説明。Web上に表示される情報|
-|extendedInfo|string|M|-|32767文字以内|briefには書いていない追加の情報を記述できます|
+|eventId     |String255|M|-|255文字以内|イベントのID|
+|time        |TimeStamp|M|-|255文字以内|イベントが発生した時刻|
+|type        |String255|M|-|-|イベントのタイプ [[一覧](#user-content-eventtype)]|
+|triggerId   |String255|O|-|正の整数     |このイベントを発火させたトリガーID。トリガーとイベントを関連付けないことも可能なため，必須ではありません|
+|status      |String255|M|-|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
+|severity    |String255|M|-|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
+|hostId      |String255|M|-|255文字以内|イベントが発生したホストのID|
+|hostName    |String255|M|-|255文字以内|イベントが発生したホストの名前|
+|brief       |String255|M|-|255文字以内|イベントの説明。Web上に表示される情報|
+|extendedInfo|String32767|M|-|32767文字以内|briefには書いていない追加の情報を記述できます|
 
 ```
 {"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
@@ -511,8 +513,8 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 |名前|型|M/O|デフォルト値|値の範囲|解説|
 |:--|:--|:--|:--|:--|:--|
 |hostParent|object配列|M|-|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateOption|string|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo|string|O|-|255文字以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|updateOption|String255|M|-|-|送信オプション[[一覧](#user-content-updateoption)]の中から状況に応じた送信オプションを選択してください|
+|lastInfo|String255|O|-|255文字以内|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostParentオブジェクト***
 
@@ -520,8 +522,8 @@ HAP自身のトリガーを送信する場合は，トリガーIDとホストID�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|childHostId |string|M|-|255文字以内|VMの子ホストのID|
-|parentHostId|string|M|-|255文字以内|VMの親ホストのID|
+|childHostId |String255|M|-|255文字以内|VMの子ホストのID|
+|parentHostId|String255|M|-|255文字以内|VMの親ホストのID|
 
 ```
 {"jsonrpc":"2.0", "method":"updateHostParent", "params":{[{"childHostId":"12","parentHostId":"10"}], "updateOption":"ALL", "lastInfo":"201504152246"} "id":1}
@@ -541,12 +543,12 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 |オブジェクトの名前|型|M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:---------:|:----------:|:------:|:---|
-|lastStatus         |string   |M|-|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]|
-|failureReason      |string   |M|-|255文字以内|情報取得が失敗した理由|
-|lastSuccessTime    |timestamp|M|-|-|最後に情報取得が成功した時刻|
-|lastFailureTime    |timestamp|M|-|-|最後に情報取得が失敗した時刻|
-|numSuccess         |number   |M|-|正の整数|HAPが起動してから情報取得に成功した回数|
-|numFailure         |number   |M|-|正の整数|HAPが起動してから情報取得に失敗した回数|
+|lastStatus         |String255   |M|-|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]|
+|failureReason      |String255   |M|-|255文字以内|情報取得が失敗した理由|
+|lastSuccessTime    |TimeStamp|M|-|-|最後に情報取得が成功した時刻|
+|lastFailureTime    |TimeStamp|M|-|-|最後に情報取得が失敗した時刻|
+|numSuccess         |Number   |M|-|正の整数|HAPが起動してから情報取得に成功した回数|
+|numFailure         |Number   |M|-|正の整数|HAPが起動してから情報取得に失敗した回数|
 
 ```
 {"jsonrpc":"2.0", "method":"updateArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
@@ -568,8 +570,8 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|selectHosts|string配列|M|-|-|指定したホストのアイテムのみを取得することできます。この値を”ALL”とすると全てのホストのアイテムを取得します。|
-|fetchId|string|M|-|255文字以内|updateItemsプロシージャで使用します。そのupdateItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|selectHosts|String255配列|M|-|-|指定したホストのアイテムのみを取得することできます。この値を”ALL”とすると全てのホストのアイテムを取得します。|
+|fetchId|String255|M|-|255文字以内|updateItemsプロシージャで使用します。そのupdateItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchItems", "params":{"selectHosts":["1", "2", "3"], "fetchId":"1"}, "id":1}
@@ -593,16 +595,16 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:--|:-----------|:-------|:--|
 |reqHistory|object|M|-|-|ヒストリーを取得するために必要な情報です。詳細は次のテーブルを確認してください|
-|fetchId|string|M|-|255文字以内|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|fetchId|String255|M|-|255文字以内|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ***reqHistoryオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|hostId   |string|M|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
-|itemId   |number|M|-|正の整数   |ヒストリーのアイテムID|
-|beginTime|string|M|-|255文字以内|ヒストリー取得域の始点時刻を指定します|
-|endTime  |string|M|-|255文字以内|ヒストリー取得域の終点時刻を指定します|
+|hostId   |String255|M|-|255文字以内|ヒストリーのアイテムが所属しているホストID|
+|itemId   |String255|M|-|正の整数   |ヒストリーのアイテムID|
+|beginTime|TimeStamp|M|-|255文字以内|ヒストリー取得域の始点時刻を指定します|
+|endTime  |TimeStamp|M|-|255文字以内|ヒストリー取得域の終点時刻を指定します|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchHistory", "params":{"reqHistory":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513", "beginTime":"201503231513"}, "fetchId":1 },"id":1}
@@ -624,7 +626,7 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|fetchId|string|M|-|255文字以内|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|fetchId|String255|M|-|255文字以内|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchTriggers", "params":{"fetchId":"1"}, "id":1}
@@ -647,10 +649,10 @@ Hatoholサーバーがアイテムを要求しているときにHAPに送信さ�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|値の範囲|解説|
 |:---|:--|:-------:|:----------:|:------:|:---|
-|lastInfo|string|M|-|255文字以内|基準となるイベントの情報です|
-|count     |number|M|-|正の整数|取得するイベント件数|
-|direction        |string|M|-|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
-|fetchId|string|M|-|255文字以内|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|lastInfo|String255|M|-|255文字以内|基準となるイベントの情報です|
+|count     |Number|M|-|正の整数|取得するイベント件数|
+|direction        |String255|M|-|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
+|fetchId|String255|M|-|255文字以内|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
 {"jsonrpc":"2.0", "method":"fetchEvents", "params":{"fetchId":"1", "lastInfo":"10", "count": "1000", "direction":"ASC"}, "id":1}
