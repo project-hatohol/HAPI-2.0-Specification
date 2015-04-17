@@ -159,7 +159,6 @@ Hatoholサーバー                                   HAP
 |[fetchEvents](#user-content-fetchevents)|HatoholサーバーがHatoholDBに登録されている最古イベント以前のイベントを要求しているときにHAPに送信されます|method|O|
 
  - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。Mandatoryであるプロシージャは実装を省略できません。
- - 「M/O」がOであるプロシージャは実装を省略可能です。しかし，fetch~~~プロシージャのようにHatoholサーバーからリクエストを受けるプロシージャの実装を省略している場合は，呼び出されたプロシージャが実装されていないことをerrorオブジェクトとして返す必要があります。
  - update~~~プロシージャは，送信したデータのデータベース書き込み成否をresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
  - fetch~~~プロシージャで受けたリクエスト受け入れの成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
