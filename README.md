@@ -331,7 +331,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String255 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostsオブジェクト***
 
@@ -363,7 +363,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String255 |O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupsオブジェクト***
 
@@ -395,7 +395,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo           |String255 |O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostGroupMembershipオブジェクト***
 
@@ -427,7 +427,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |triggers    |object配列|M|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String255 |O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 |fetchId     |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***triggersオブジェクト***
@@ -466,7 +466,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |events     |object配列|M|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|lastInfo   |String255 |O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
+|lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
 |mayMoreFlag|Boolean   |M|-|fetchEventsプロシージャで指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。この値をtrueにする場合，最低限イベントを1件は送信する必要があります|
 |fetchId    |String255 |O|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
 
@@ -508,7 +508,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostParent  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String255 |O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
 
 ***hostParentオブジェクト***
 
@@ -644,7 +644,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|lastInfo |String255|M|-|基準となるイベントの情報です|
+|lastInfo |String32767|M|-|基準となるイベントの情報です|
 |count    |Number   |M|-|取得するイベント件数。1000件までしか指定できません|
 |direction|String255|M|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
 |fetchId  |String255|M|-|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
