@@ -9,6 +9,8 @@ serverTypeのURL
 Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
 両者の間に確立された通信路上で実装されるJSON-RPCのアプリケーションとして構築されます。
 
+以下の図は，上記概要を図で表したものです。
+
 ![overview](hapi_overview.png)
 
 ## 用語
