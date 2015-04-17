@@ -211,7 +211,7 @@ Hatoholサーバー                                   HAP
 |nickName          |string|M|-|255文字以内|監視サーバーのニックネーム|
 |userName          |string|M|-|255文字以内|監視サーバーのユーザーネーム|
 |password          |string|M|-|255文字以内|監視サーバーのパスワード|
-|dbName            |string|M|-|255文字以内|監視対象のデータベースのパスワード|
+|dbName            |string|M|-|255文字以内|監視サーバ監視サーバーのデータベースのパスワード|
 |pollingIntervalSec|number|M|-|正の整数|ポーリングを行う間隔|
 |retryIntervalSec  |number|M|-|正の整数|ポーリングが失敗した場合，リトライを行うまでの間隔|
 |extra             |string|M|-|32767文字以内|プラグイン固有の情報を格納することができる|
