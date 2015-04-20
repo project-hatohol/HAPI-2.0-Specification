@@ -568,7 +568,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |fetchId|String255    |M|-|putItemsプロシージャで使用します。そのputItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
-{"jsonrpc":"2.0", "method":"fetchItems", "params":{"selectHosts":["1", "2", "3"], "fetchId":"1"}, "id":1}
+{"jsonrpc":"2.0", "method":"fetchItems", "params":{"hostIds":["1", "2", "3"], "fetchId":"1"}, "id":1}
 ```
 
 ***リザルト(result)***
