@@ -41,7 +41,7 @@ Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サー
 
 ## 動作概要
 
-以下のシーケンス図は，HatoholサーバーとHAP間で送受信される各プロシージャのリクエスト・レスポンスの想定される標準的な動作を表す一例です。。
+以下のシーケンス図は，HatoholサーバーとHAP間で送受信される各プロシージャのリクエスト・レスポンスの想定される標準的な動作を表す一例です。
 
 ```
 
@@ -135,34 +135,34 @@ Hatoholサーバー                                   HAP
 
 ## プロシージャ
 
+ - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。Mandatoryであるプロシージャは実装を省略できません。
+
 ### Hatoholサーバーに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身の名前をHAPに送信します<br>また，そのレスポンスとしてHAPが実装しているプロシージャ一覧とHAPのプロセス名を取得します|method|M|
-|[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|getMonitorinServerInfo接続情報やポーリング間隔等をHatoholサーバーから取得します|method|M|
-|[getLastInfo](#user-content-getlastinfo)|指定した要素の最新情報をHatoholサーバーから取得します|method|M
-|[putItems](#user-content-putitems)|監視しているアイテム一覧をHatoholサーバーに送信します|method|O|
-|[putHistory](#user-content-puthistory)|各アイテムが所持しているヒストリーをHatoholサーバーに送信します|method|O|
-|[updateHosts](#user-content-updatehosts)|監視しているホスト一覧をHatoholサーバーに送信します|method|O|
-|[updateHostGroups](#user-content-updatehostgroups)|ホストグループの情報をHatoholサーバーに送信します|method|O|
-|[updateHostGroupMembership](#user-content-updatehostgroupmembership)|ホストのホストグループ所属情報をHatoholサーバーに送信します|method|O|
-|[updateTriggers](#user-content-updatetrigges)|監視しているトリガーをHatoholサーバーに送信します|method|O|
-|[updateEvents](#user-content-updateevents)|アップデートされたイベントをHatoholサーバーに送信します|method|O|
-|[updateHostParent](#user-content-updatehostparent)|ホスト同士のVM親子関係をHatoholサーバーに送信します|method|O|
-|[updateArmInfo](#user-content-updatearminfo)|HAPの接続ステータスをHatoholサーバーに送信します|method|M|
+|[exchangeProfile](#user-content-exchangeprofile)|HAPが実装しているプロシージャ一覧とHAPの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
+|[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|HAPとの接続情報やポーリング間隔等をHAPに返します|method|M|
+|[getLastInfo](#user-content-getlastinfo)|リクエストで指定された要素の最新情報をHAPに返します|method|M|
+|[putItems](#user-content-putitems)|HAPが監視しているアイテム一覧を受け取ります|method|O|
+|[putHistory](#user-content-puthistory)|HAPが監視している各アイテムのヒストリーを受け取ります|method|O|
+|[updateHosts](#user-content-updatehosts)|HAPからホスト一覧を受け取り，更新します|method|O|
+|[updateHostGroups](#user-content-updatehostgroups)|HAPからホストグループ一覧を受け取り，更新します|method|O|
+|[updateHostGroupMembership](#user-content-updatehostgroupmembership)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
+|[updateTriggers](#user-content-updatetrigges)|HAPからトリガー情報を受け取り，更新します|method|O|
+|[updateEvents](#user-content-updateevents)|HAPからイベント情報を受け取り，更新します|method|O|
+|[updateHostParent](#user-content-updatehostparent)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
+|[updateArmInfo](#user-content-updatearminfo)|HAPの接続ステータスを更新します|method|M|
 
 ### HAPに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofile)|自身が実装しているプロシージャ一覧と自身の名前をHatoholサーバーに送信します<br>また，そのレスポンスとしてHatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーのプロセス名を取得します|method|M|
-|[fetchItems](#user-content-fetchitems)|Hatoholサーバーがアイテムを要求しているときにHAPに送信されます|method|O|
-|[fetchHistory](#user-content-fetchhistory)|Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます|method|O|
-|[fetchTriggers](#user-content-fetchtriggers)|Hatoholサーバーが全てのトリガーを要求しているときにHAPに送信されます|method|O|
-|[fetchEvents](#user-content-fetchevents)|HatoholサーバーがHatoholDBに登録されている最古イベント以前のイベントを要求しているときにHAPに送信されます|method|O|
-
- - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。Mandatoryであるプロシージャは実装を省略できません。
+|[exchangeProfile](#user-content-exchangeprofile)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
+|[fetchItems](#user-content-fetchitems)|Hatoholサーバーからのアイテム取得リクエストを受け入れます|method|O|
+|[fetchHistory](#user-content-fetchhistory)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
+|[fetchTriggers](#user-content-fetchtriggers)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
+|[fetchEvents](#user-content-fetchevents)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
 
 ### exchangeProfile(method)
 
