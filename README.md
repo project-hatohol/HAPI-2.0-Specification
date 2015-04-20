@@ -176,7 +176,7 @@ Hatoholサーバー                                   HAP
 |name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
-{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"], "AgentName":"exampleName"} "id":1}
+{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"], "name":"exampleName"} "id":1}
 ```
 
 ***リザルト(result)***
