@@ -582,26 +582,20 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 ### fetchHistory(method)
 
  - このプロシージャは，Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定条件に当てはまるヒストリーをupdateHistoryプロシージャ[updateHistory](#user-content-puthistory)を用いてHatoholサーバーに送信してください。その際，fetchHistoryプロシージャのparams内にあるfetchIdの値をputHistoryプロシージャに渡す必要があります。
- - reqオブジェクト内にあるbeginTime，endTimeはbeginTime以上，endTime以下の条件に当てはまるHistory取得することを想定しています。
+ - paramsオブジェクト内にあるbeginTime，endTimeはbeginTime以上，endTime以下の条件に当てはまるHistory取得することを想定しています。
 
 ***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|reqHistory|object   |M|-|ヒストリーを取得するために必要な情報です。詳細は次のテーブルを確認してください|
+|hostId    |String255|M|-|ヒストリーのアイテムが所属しているホストID|
+|itemId    |String255|M|-|ヒストリーのアイテムID|
+|beginTime |TimeStamp|M|-|ヒストリー取得域の始点時刻を指定します|
+|endTime   |TimeStamp|M|-|ヒストリー取得域の終点時刻を指定します|
 |fetchId   |String255|M|-|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
-***reqHistoryオブジェクト***
-
-|オブジェクトの名前|型 |M/O|デフォルト値|解説|
-|:-----------------|:--|:-:|:----------:|:---|
-|hostId   |String255|M|-|ヒストリーのアイテムが所属しているホストID|
-|itemId   |String255|M|-|ヒストリーのアイテムID|
-|beginTime|TimeStamp|M|-|ヒストリー取得域の始点時刻を指定します|
-|endTime  |TimeStamp|M|-|ヒストリー取得域の終点時刻を指定します|
-
 ```
-{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"reqHistory":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513", "beginTime":"201503231513"}, "fetchId":1 },"id":1}
+{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513", "beginTime":"201503231513", "fetchId":1 },"id":1}
 ```
 
 ***リザルト(result)***
