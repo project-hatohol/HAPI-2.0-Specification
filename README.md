@@ -277,12 +277,11 @@ Hatoholサーバー                                   HAP
 |brief        |String255    |M|-|アイテムの概要|
 |lastValueTime|TimeStamp    |M|-|アイテムが最後に更新された時刻|
 |lastValue    |String255    |M|-|アイテムが最後に更新された際の値|
-|prevValue    |String255    |O|-|アイテムが最後に更新される前の値<br>※話しあう必要アリ|
 |itemGroupName|String255配列|M|-|アイテムが所属しているグループ名|
 |unit         |String255    |M|-|valueの単位|
 
 ```
-{"jsonrpc":"2.0","method":"putItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "prevValue":"example previous value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
+{"jsonrpc":"2.0","method":"putItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
 ```
 
 ***リザルト(result)***
