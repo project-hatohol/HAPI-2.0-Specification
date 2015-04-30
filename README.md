@@ -145,28 +145,28 @@ Hatoholサーバー                                   HAP
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofile)|HAPが実装しているプロシージャ一覧とHAPの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
-|[getMonitoringServerInfo](#user-content-getmonitoringserversnfo)|HAPとの接続情報やポーリング間隔等をHAPに返します|method|M|
-|[getLastInfo](#user-content-getlastinfo)|リクエストで指定された要素の最新情報をHAPに返します|method|M|
-|[putItems](#user-content-putitems)|HAPが監視しているアイテム一覧を受け取ります|method|O|
-|[putHistory](#user-content-puthistory)|HAPが監視している各アイテムのヒストリーを受け取ります|method|O|
-|[updateHosts](#user-content-updatehosts)|HAPからホスト一覧を受け取り，更新します|method|O|
-|[updateHostGroups](#user-content-updatehostgroups)|HAPからホストグループ一覧を受け取り，更新します|method|O|
-|[updateHostGroupMembership](#user-content-updatehostgroupmembership)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
-|[updateTriggers](#user-content-updatetrigges)|HAPからトリガー情報を受け取り，更新します|method|O|
-|[updateEvents](#user-content-updateevents)|HAPからイベント情報を受け取り，更新します|method|O|
-|[updateHostParent](#user-content-updatehostparent)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
-|[updateArmInfo](#user-content-updatearminfo)|HAPの接続ステータスを更新します|method|M|
+|[exchangeProfile](#user-content-exchangeprofilemethod)|HAPが実装しているプロシージャ一覧とHAPの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
+|[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)|HAPとの接続情報やポーリング間隔等をHAPに返します|method|M|
+|[getLastInfo](#user-content-getlastinfomethod)|リクエストで指定された要素の最新情報をHAPに返します|method|M|
+|[putItems](#user-content-putitemsmethod)|HAPが監視しているアイテム一覧を受け取ります|method|O|
+|[putHistory](#user-content-puthistorymethod)|HAPが監視している各アイテムのヒストリーを受け取ります|method|O|
+|[updateHosts](#user-content-updatehostsmethod)|HAPからホスト一覧を受け取り，更新します|method|O|
+|[updateHostGroups](#user-content-updatehostgroupsmethod)|HAPからホストグループ一覧を受け取り，更新します|method|O|
+|[updateHostGroupMembership](#user-content-updatehostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
+|[updateTriggers](#user-content-updatetriggersmethod)|HAPからトリガー情報を受け取り，更新します|method|O|
+|[updateEvents](#user-content-updateeventsmethod)|HAPからイベント情報を受け取り，更新します|method|O|
+|[updateHostParent](#user-content-updatehostparentmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
+|[updateArmInfo](#user-content-updatearminfomethod)|HAPの接続ステータスを更新します|method|M|
 
 ### HAPに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofile)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
-|[fetchItems](#user-content-fetchitems)|Hatoholサーバーからのアイテム取得リクエストを受け入れます|method|O|
-|[fetchHistory](#user-content-fetchhistory)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
-|[fetchTriggers](#user-content-fetchtriggers)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
-|[fetchEvents](#user-content-fetchevents)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
+|[exchangeProfile](#user-content-exchangeprofilemethod)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
+|[fetchItems](#user-content-fetchitemsmethod)|Hatoholサーバーからのアイテム取得リクエストを受け入れます|method|O|
+|[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
+|[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
+|[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
 
 ### exchangeProfile(method)
 
@@ -263,7 +263,7 @@ Hatoholサーバー                                   HAP
 
 ### putItems(method)
 
- - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitems)プロシージャのリクエストをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
+ - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitemsmethod)プロシージャのリクエストをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
 ***リクエスト(params)***
 
@@ -298,7 +298,7 @@ Hatoholサーバー                                   HAP
 
 ### putHistory(method)
 
- - [fetchHistory](#user-content-fetchhistory)プロシージャをHatoholサーバーから受け取った際に，条件にマッチするヒストリーをHatoholサーバーに送信します。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
+ - [fetchHistory](#user-content-fetchhistorymethod)プロシージャをHatoholサーバーから受け取った際に，条件にマッチするヒストリーをHatoholサーバーに送信します。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
 ***リクエスト(params)***
 
@@ -326,7 +326,7 @@ Hatoholサーバー                                   HAP
 ### updateHosts(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は,"ALL"オプションを用いて全てのホスト情報をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
 
 ***リクエスト(params)***
 
@@ -334,7 +334,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 
 ***hostsオブジェクト***
 
@@ -358,7 +358,7 @@ Hatoholサーバー                                   HAP
 ### updateHostGroups(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ情報をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループをHatoholサーバーに送信します。
 
 ***リクエスト(params)***
 
@@ -366,7 +366,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 
 ***hostGroupsオブジェクト***
 
@@ -390,7 +390,7 @@ Hatoholサーバー                                   HAP
 ### updateHostGroupMembership(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ所属情報をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
 
 ***リクエスト(params)***
 
@@ -398,7 +398,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 
 ***hostGroupMembershipオブジェクト***
 
@@ -420,9 +420,9 @@ Hatoholサーバー                                   HAP
 
 ### updateTriggers(method)
 
-[getLastInfo](#user-content-getlastinfo)を用いて取得，またはHAP自身が保管している最新トリガー情報を基に，そのトリガーから現時点までに更新されたトリガーをHatoholサーバーに送信するか，全てのトリガーを送信します。
+[getLastInfo](#user-content-getlastinfomethod)を用いて取得，またはHAP自身が保管している最新トリガー情報を基に，そのトリガーから現時点までに更新されたトリガーをHatoholサーバーに送信するか，全てのトリガーを送信します。
  - Hatoholサーバーとの接続完了時，fetchTriggersプロシージャによる要求があった際は"ALL"オプションを用い，全てのトリガーをHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに更新，追加されたトリガーをHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに更新，追加されたトリガーをHatoholサーバーに送信します。
 
 ***リクエスト(params)***
 
@@ -430,7 +430,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |triggers    |object配列|M|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 |fetchId     |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***triggersオブジェクト***
@@ -461,7 +461,7 @@ Hatoholサーバー                                   HAP
  - 一度に送信できるイベント数は1000件までです。1000件を越える場合は，複数回に分けて送信してください。
  - イベントIDが重複したイベントを送信することは認められてします。しかし，元から存在するイベントと送信するイベントのどちらが優先されるかは未定義です。
  - 自発的にイベントを送信する動作とfetchEventsプロシージャに対するレスポンスとしてイベントを送信する動作の2つの動作が存在します。
- - 自発的にイベントを送信する場合は，まず[getLastInfo](#user-content-getlastinfo)のレスポンスや，HAP自身からlastInfoを取得します。取得したlastInfoで判別したイベントから現時点までに発生した差分のイベントをHatoholサーバーに送信します。初回通信時は，lastInfoの値が空文字であるため，接続以前に発生したイベントをすべて送信するか，何も送信しない選択がHAP作成者に委ねられています。
+ - 自発的にイベントを送信する場合は，まず[getLastInfo](#user-content-getlastinfomethod)のレスポンスや，HAP自身からlastInfoを取得します。取得したlastInfoで判別したイベントから現時点までに発生した差分のイベントをHatoholサーバーに送信します。初回通信時は，lastInfoの値が空文字であるため，接続以前に発生したイベントをすべて送信するか，何も送信しない選択がHAP作成者に委ねられています。
  - fetchEventsプロシージャのlastInfoで指定されたイベントより先にイベントが存在しない場合は，eventsオブジェクトの値を空配列にして送信してください。
 
 ***リクエスト(params)***
@@ -469,7 +469,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |events     |object配列|M|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
+|lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
 |mayMoreFlag|Boolean   |M|-|fetchEventsプロシージャで指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。この値をtrueにする場合，最低限イベントを1件は送信する必要があります|
 |fetchId    |String255 |O|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
 
@@ -503,7 +503,7 @@ Hatoholサーバー                                   HAP
 ### updateHostParent(method)
 
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfo)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
 
 ***リクエスト(params)***
 
@@ -511,7 +511,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostParent  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfo)の返り値になる|
+|lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 
 ***hostParentオブジェクト***
 
@@ -534,7 +534,7 @@ Hatoholサーバー                                   HAP
 
 ### updateArmInfo(method)
 
-HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfo)で取得したポーリング時間の2倍（SHOULD）とします。
+HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)で取得したポーリング時間の2倍（SHOULD）とします。
 
 ***リクエスト(params)***
 
@@ -561,7 +561,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 ### fetchItems(method)
 
-Hatoholサーバーがアイテム情報を要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，指定されたホストに属する全てのアイテムをputItemsプロシージャ[putItems](#user-content-putitems)を用いてHatoholサーバーに送信してください。その際，paramsのfetchIdオブジェクトの値を[putItems](#user-contents-putitems)に渡す必要があります。
+Hatoholサーバーがアイテム情報を要求しているときにHAPに送信されます。このプロシージャを受け取った時，resultとしてリクエスト受け入れの成否を返す必要があります。その後，指定されたホストに属する全てのアイテムをputItemsプロシージャ[putItems](#user-content-putitemsmethod)を用いてHatoholサーバーに送信してください。その際，paramsのfetchIdオブジェクトの値を[putItems](#user-contents-putitemsmethod)に渡す必要があります。
 
 ***リクエスト(params)***
 
@@ -584,7 +584,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### fetchHistory(method)
 
- - このプロシージャは，Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定条件に当てはまるヒストリーをupdateHistoryプロシージャ[updateHistory](#user-content-puthistory)を用いてHatoholサーバーに送信してください。その際，fetchHistoryプロシージャのparams内にあるfetchIdの値をputHistoryプロシージャに渡す必要があります。
+ - このプロシージャは，Hatoholサーバーがヒストリーを要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定条件に当てはまるヒストリーをupdateHistoryプロシージャ[updateHistory](#user-content-puthistorymethod)を用いてHatoholサーバーに送信してください。その際，fetchHistoryプロシージャのparams内にあるfetchIdの値をputHistoryプロシージャに渡す必要があります。
  - paramsオブジェクト内にあるbeginTime，endTimeはbeginTime以上，endTime以下の条件に当てはまるHistory取得することを想定しています。
 
 ***リクエスト(params)***
@@ -611,7 +611,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### fetchTriggers(method)
 
- - このプロシージャは，Hatoholサーバーがトリガー情報を要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateTriggersプロシージャ](#user-content-updatetriggers)の"ALL"オプションを用いて指定されたホストに属する全てのトリガーを送信してください。その際，fetchIdとhostIdsの値をupdateTriggersプロシージャに渡す必要があります。
+ - このプロシージャは，Hatoholサーバーがトリガー情報を要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateTriggersプロシージャ](#user-content-updatetriggersmethod)の"ALL"オプションを用いて指定されたホストに属する全てのトリガーを送信してください。その際，fetchIdとhostIdsの値をupdateTriggersプロシージャに渡す必要があります。
 
 ***リクエスト(params)***
 
@@ -634,7 +634,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### fetchEvents(method)
 
- - 指定したイベントIDから昇順，または降順で指定した件数のイベントを取得するリクエストが送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定された条件のイベントを[updateEventsプロシージャ](#user-content-updateevents)を用いて送信してください。その際，fetchEventsプロシージャのparamsオブジェクト内にあるfetchIdの値をupdateEventsプロシージャに渡す必要があります。
+ - 指定したイベントIDから昇順，または降順で指定した件数のイベントを取得するリクエストが送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定された条件のイベントを[updateEventsプロシージャ](#user-content-updateeventsmethod)を用いて送信してください。その際，fetchEventsプロシージャのparamsオブジェクト内にあるfetchIdの値をupdateEventsプロシージャに渡す必要があります。
  - 指定できる取得件数は一度のリクエストで1000件までです。それ以上の件数を取得したい場合は複数回のリクエストに分けて取得してください。
 
 ***リクエスト(params)***
