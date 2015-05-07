@@ -216,13 +216,12 @@ Hatoholサーバー                                   HAP
 |nickName          |String255  |M|-|監視サーバーのニックネーム|
 |userName          |String255  |M|-|監視サーバーのユーザーネーム|
 |password          |String255  |M|-|監視サーバーのパスワード|
-|dbName            |String255  |M|-|監視サーバ監視サーバーのデータベースのパスワード|
 |pollingIntervalSec|Number     |M|-|ポーリングを行う間隔|
 |retryIntervalSec  |Number     |M|-|ポーリングが失敗した場合，リトライを行うまでの間隔|
 |extendedInfo      |String32767|M|-|プラグイン固有の情報を格納することができる|
 
 ```
-{"jsonrpc":"2.0", "result":{"hostName":"exampleHost", "type":0, "ipAddress":"127.0.0.1", "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "dbName":"", "port":80, "pollingIntervalSec":30, "retryIntervalSec":10, "extendedInfo":"exampleExtraInfo"}, "id":1}
+{"jsonrpc":"2.0", "result":{"serverId":1, "url":"http://example.com:80", "type":0, "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "pollingIntervalSec":30, "retryIntervalSec":10, "extendedInfo":"exampleExtraInfo"}, "id":1}
 ```
 
 ### getLastInfo(method)
