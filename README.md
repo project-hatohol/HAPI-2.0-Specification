@@ -483,11 +483,12 @@ Hatoholサーバー                                   HAP
 |status      |string     |M|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
 |severity    |string     |M|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
 |hostId      |String255  |M|-|イベントが発生したホストのID|
+|hostName    |String255  |M|-|イベントが発生したホストの名前|
 |brief       |String255  |M|-|イベントの説明。Web上に表示される情報|
 |extendedInfo|String32767|M|-|briefには書いていない追加の情報を記述できます|
 
 ```
-{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
+{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO":, "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
 ```
 
 ***リザルト(result)***
