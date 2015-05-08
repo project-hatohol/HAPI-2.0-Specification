@@ -162,7 +162,7 @@ Hatoholサーバー                                   HAP
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofilemethod)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
+|[exchangeProfile](#user-content-exchangeprofilemethod)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|O|
 |[fetchItems](#user-content-fetchitemsmethod)|Hatoholサーバーからのアイテム取得リクエストを受け入れます|method|O|
 |[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
 |[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
