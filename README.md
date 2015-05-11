@@ -129,6 +129,7 @@ Hatoholサーバー                                   HAP
 |Boolean|true, false|この型は真偽値を格納します。true or falseを指定し，その値の真偽を示します|
 |Number|number|number型の値を格納します。この型を指定された要素では，特記しない限り，その値を0~2147483647の範囲に収める必要があります|
 |String255|string|string型の値を格納します。この型を指定された要素では，その文字数を255文字以内にしてください|
+|String2047|string|string型の値を格納します。この型を指定された要素では，その文字数を2047文字以内にしてください|
 |String32767|string|string型の値を格納します。この型を指定された要素では，その文字数を32767文字以内にしてください|
 
 文字数は最終的な表現にかかわらず、NFC正規化後のUTF-32コードポイント数で数えます(MUST)。
@@ -211,7 +212,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |serverId          |Number     |M|-|監視サーバーのサーバーID|
-|url               |String255  |M|-|監視サーバーのURL [[解説](#user-content-servertype)]|
+|url               |String2047 |M|-|監視サーバーのURL [[解説](#user-content-servertype)]|
 |type              |string     |M|-|監視サーバーの種類 [[一覧](#user-content-servertype)]|
 |nickName          |String255  |M|-|監視サーバーのニックネーム|
 |userName          |String255  |M|-|監視サーバーのユーザーネーム|
