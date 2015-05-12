@@ -262,7 +262,7 @@ Hatoholサーバー                                   HAP
 
 ### putItems(method)
 
- - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitemsmethod)プロシージャのリクエストをHatoholサーバーから受け取った時に全てのアイテム情報を送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
+ - Hatoholサーバーとの接続完了時，または[fetchItems](#user-content-fetchitemsmethod)プロシージャのリクエストをHatoholサーバーから受け取った時に全てのアイテム情報をHatoholサーバーへ送信することを標準動作とします。Hatoholサーバーの負荷が高くなることが危惧されるため，任意のタイミングで使用することはできません。
 
 ***リクエスト(params)***
 
