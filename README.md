@@ -313,7 +313,7 @@ Hatoholサーバー                                   HAP
 |time  |TimeStamp|M|-|このヒストリーの値が記録された時刻|
 
 ```
-{"jsonrpc":"2.0", "method":"putHistory", "params":{"1":[{"value":"exampleValue","time":"201503231130"},{"value":"exampleValue2","time":"201503231130"}], "fetchId":"1"}, "id":1}
+{"jsonrpc":"2.0", "method":"putHistory", "params":{"itemId":"1", "histories": [{"value":"exampleValue","time":"201503231130"},{"value":"exampleValue2","time":"201503231130"}], "fetchId":"1"}, "id":1}
 ```
 ***リザルト(result)***
 
