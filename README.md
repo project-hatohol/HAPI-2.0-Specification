@@ -470,7 +470,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |events     |object配列|M|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
-|mayMoreFlag|Boolean   |M|-|fetchEventsプロシージャで指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。この値をtrueにする場合，最低限イベントを1件は送信する必要があります|
+|mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャで指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。この値をtrueにする場合，最低限イベントを1件は送信する必要があります|
 |fetchId    |String255 |O|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***eventsオブジェクト***
