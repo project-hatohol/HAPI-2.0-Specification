@@ -344,7 +344,7 @@ Hatoholサーバー                                   HAP
 |hostName|String255|M|-|監視サーバーが監視しているホスト名|
 
 ```
-{"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":[{"hostId":"1", "hostName""exampleHostName1"}], "updateType":"UPDATE","lastInfo":"201504091052"}, "id":1}
+{"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":[{"hostId":"1", "hostName":"exampleHostName1"}], "updateType":"UPDATE","lastInfo":"201504091052"}, "id":1}
 ```
 
 ***リザルト(result)***
