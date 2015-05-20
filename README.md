@@ -443,7 +443,7 @@ Hatoholサーバー                                   HAP
 |triggerId     |String255  |M|-|トリガーのID。HAP自身のトリガーを送信する場合は，トリガーIDとホストIDを"_SELF_"と記述することで送信したトリガーをSELFトリガー扱いにできます|
 |status        |string     |M|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
 |severity      |string     |M|-|トリガーの種別 [[一覧](#user-content-triggerseverity)]|
-|lastChangeTime|String255  |M|-|トリガーが最後に更新された時刻|
+|lastChangeTime|TimeStamp  |M|-|トリガーが最後に更新された時刻|
 |hostId        |String255  |M|-|トリガーが所属するホストID|
 |hostName      |String255  |M|-|トリガーが所属するサーバーのホスト名|
 |brief         |String255  |M|-|トリガーの概要|
