@@ -503,7 +503,7 @@ Hatoholサーバー                                   HAP
 {"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
 ```
 
-### updateHostParent(method)
+### updateHostParents(method)
 
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
