@@ -156,7 +156,7 @@ Hatoholサーバー                                   HAP
 |[updateHostGroupMembership](#user-content-updatehostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
 |[updateTriggers](#user-content-updatetriggersmethod)|HAPからトリガー情報を受け取り，更新します|method|O|
 |[updateEvents](#user-content-updateeventsmethod)|HAPからイベント情報を受け取り，更新します|method|O|
-|[updateHostParent](#user-content-updatehostparentmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
+|[updateHostParents](#user-content-updatehostparentsmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
 |[updateArmInfo](#user-content-updatearminfomethod)|HAPの接続ステータスを更新します|method|M|
 
 ### HAPに実装するプロシージャ
