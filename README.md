@@ -512,11 +512,11 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostParent  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
+|hostParents  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 
-***hostParentオブジェクト***
+***hostParentsオブジェクト***
 
  - VMの親子関係を削除する場合は親ホストIDの値を空文字にすることで，送信した子ホストIDの親子関係をHatoholサーバーから削除することができます。
 
