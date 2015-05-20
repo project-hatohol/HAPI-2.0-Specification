@@ -526,7 +526,7 @@ Hatoholサーバー                                   HAP
 |parentHostId|String255|M|-|VMの親ホストのID|
 
 ```
-{"jsonrpc":"2.0", "method":"updateHostParent", "params":{"hostParent":[{"childHostId":"12","parentHostId":"10"}], "updateType":"ALL", "lastInfo":"201504152246"}, "id":1}
+{"jsonrpc":"2.0", "method":"updateHostParent", "params":{"hostParents":[{"childHostId":"12","parentHostId":"10"},{"childHostId":"11","parentHostId":"20"}], "updateType":"ALL", "lastInfo":"201504152246"}, "id":1}
 ```
 
 ***リザルト(result)***
