@@ -47,7 +47,7 @@ Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サー
 ```
 
 Hatoholサーバー                                   HAP
-    |                                               
+    |
     |                                        Turn on HAP
     |                                              |
     |<----------exchangeProfile(リクエスト)------->|
@@ -285,7 +285,7 @@ Hatoholサーバー                                   HAP
 |unit         |String255    |M|-|valueの単位|
 
 ```
-{"jsonrpc":"2.0","method":"putItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
+{"jsonrpc":"2.0","method":"putItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"20150410175500", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
 ```
 
 ***リザルト(result)***
@@ -316,7 +316,7 @@ Hatoholサーバー                                   HAP
 |time  |TimeStamp|M|-|このヒストリーの値が記録された時刻|
 
 ```
-{"jsonrpc":"2.0", "method":"putHistory", "params":{"itemId":"1", "histories": [{"value":"exampleValue","time":"201503231130"},{"value":"exampleValue2","time":"201503231130"}], "fetchId":"1"}, "id":1}
+{"jsonrpc":"2.0", "method":"putHistory", "params":{"itemId":"1", "histories": [{"value":"exampleValue","time":"20150323113000"},{"value":"exampleValue2","time":"201503231130"}], "fetchId":"1"}, "id":1}
 ```
 ***リザルト(result)***
 
@@ -450,7 +450,7 @@ Hatoholサーバー                                   HAP
 |extendedInfo  |String32767|M|-|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
 
 ```
-{"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateType":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"201503231758", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
+{"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateType":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"20150323175800", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
 ```
 
 ***リザルト(result)***
@@ -492,7 +492,7 @@ Hatoholサーバー                                   HAP
 |extendedInfo|String32767|M|-|briefには書いていない追加の情報を記述できます|
 
 ```
-{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"201503231513", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO", "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
+{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"20150323151300", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO", "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
 ```
 
 ***リザルト(result)***
@@ -551,7 +551,7 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 |numFailure         |Number   |M|-|HAPが起動してから情報取得に失敗した回数|
 
 ```
-{"jsonrpc":"2.0", "method":"updateArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"201503131611", "lastFailureTime":"201503131615", "numSuccess":165, "numFailure":10}, "id":1}
+{"jsonrpc":"2.0", "method":"updateArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"20150313161100", "lastFailureTime":"20150313161500", "numSuccess":165, "numFailure":10}, "id":1}
 ```
 
 ***リザルト(result)***
@@ -601,7 +601,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |fetchId   |String255|M|-|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```
-{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"201503231513", "beginTime":"201503231513", "fetchId":1 },"id":1}
+{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"20150323151300", "beginTime":"20150323151300", "fetchId":1 },"id":1}
 ```
 
 ***リザルト(result)***
