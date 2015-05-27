@@ -180,8 +180,22 @@ Hatoholサーバー                                   HAP
 |procedures|String255配列|M|-|送信元が使用可能なプロシージャ一覧|
 |name      |String255    |M|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
-```
-{"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"], "name":"exampleName"} "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "name": "exampleName",
+    "procedures": [
+      "getMonitoringServerInfo",
+      "getLastInfo",
+      "putItems",
+      "updateArmInfo",
+      "fetchItems"
+    ]
+  },
+  "method": "exchangeProfile",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
@@ -191,8 +205,27 @@ Hatoholサーバー                                   HAP
 |procedures|String255配列|M|-|送信先が使用可能なプロシージャ一覧|
 |name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
-```
-{"jsonrpc":"2.0", "result":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"],"name":"exampleName"} "id":1}
+```json
+{
+  "id": 1,
+  "name": "exampleName",
+  "result": {
+    "procedures": [
+      "getMonitoringServerInfo",
+      "getLastInfo",
+      "putItems",
+      "putHistory",
+      "updateHosts",
+      "updateHostGroups",
+      "updateHostGroupMembership",
+      "updateTriggers",
+      "updateEvents",
+      "updateHostParent",
+      "updateArmInfo"
+    ]
+  },
+  "jsonrpc": 2
+}
 ```
 
 ### getMonitoringServerInfo(method)
@@ -203,8 +236,13 @@ Hatoholサーバー                                   HAP
 
  - getMonitoringServerInfoメソッドには引数が存在しません。paramsオブジェクトの値を空文字にしてリクエストを送信してください。
 
-```
-{"jsonrpc":"2.0", "method":"getMonitoringServerInfo", "params":"", "id":1}
+```json
+{
+  "id": 1,
+  "params": "",
+  "method": "getMonitoringServerInfo",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
@@ -221,8 +259,22 @@ Hatoholサーバー                                   HAP
 |retryIntervalSec  |Number     |M|-|ポーリングが失敗した場合，リトライを行うまでの間隔|
 |extendedInfo      |String32767|M|-|プラグイン固有の情報を格納することができる|
 
-```
-{"jsonrpc":"2.0", "result":{"serverId":1, "url":"http://example.com:80", "type":0, "nickName":"exampleName", "userName":"Admin", "password":"examplePass", "pollingIntervalSec":30, "retryIntervalSec":10, "extendedInfo":"exampleExtraInfo"}, "id":1}
+```json
+{
+  "id": 1,
+  "result": {
+    "extendedInfo": "exampleExtraInfo",
+    "serverId": 1,
+    "url": "http://example.com:80",
+    "type": 0,
+    "nickName": "exampleName",
+    "userName": "Admin",
+    "password": "examplePass",
+    "pollingIntervalSec": 30,
+    "retryIntervalSec": 10
+  },
+  "jsonrpc": "2.0"
+}
 ```
 
 ### getLastInfo(method)
@@ -245,8 +297,13 @@ Hatoholサーバー                                   HAP
 |"event"              |イベントの最新情報を指定します。|
 |"hostParent"         |ホストのVM親子関係の最新情報を指定します。|
 
-```
-{"jsonrpc":"2.0", "method":"getLastInfo", "params":"trigger", "id":1}
+```json
+{
+  "id": 1,
+  "params": "trigger",
+  "method": "getLastInfo",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
@@ -255,11 +312,15 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |最新情報|String255|M|-|Hatoholサーバーに保存されている指定した要素の最新情報|
 
+```json
+{
+  "id": 1,
+  "result": "201504011349",
+  "jsonrpc": "2.0"
+}
 ```
-{"jsonrpc":"2.0", "result":"201504011349", "id":1}
-
 この例ではlastInfoとしてタイムスタンプが返ってきています
-```
+
 
 ### putItems(method)
 
@@ -284,16 +345,47 @@ Hatoholサーバー                                   HAP
 |itemGroupName|String255配列|M|-|アイテムが所属しているグループ名|
 |unit         |String255    |M|-|valueの単位|
 
-```
-{"jsonrpc":"2.0","method":"putItems", "params":{"items":[{"itemId":"1", "hostId":"1", "brief":"example brief", "lastValueTime":"20150410175500", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}, {"itemId":"2", "hostId":"1", "brief":"example brief", "lastValueTime":"201504101755", "lastValue":"example value", "itemGroupName":"example name", "unit":"example unit"}], "fetchId":"1"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "items": [
+      {
+        "unit": "example unit",
+        "itemGroupName": "example name",
+        "lastValue": "example value",
+        "lastValueTime": "20150410175500",
+        "brief": "example brief",
+        "hostId": "1",
+        "itemId": "1"
+      },
+      {
+        "unit": "example unit",
+        "itemGroupName": "example name",
+        "lastValue": "example value",
+        "lastValueTime": "201504101755",
+        "brief": "example brief",
+        "hostId": "1",
+        "itemId": "2"
+      }
+    ]
+  },
+  "method": "putItems",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - putItemsに返す値はありません。resultオブジェクトの値は空文字としてレスポンスが返ってきます。
 
-```
-{"jsonrpc":"2.0", "result":"", "id":1}
+```json
+{
+  "id": 1,
+  "result": "",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### putHistory(method)
@@ -315,15 +407,37 @@ Hatoholサーバー                                   HAP
 |value |String255|M|-|time時点でのアイテムの値|
 |time  |TimeStamp|M|-|このヒストリーの値が記録された時刻|
 
-```
-{"jsonrpc":"2.0", "method":"putHistory", "params":{"itemId":"1", "histories": [{"value":"exampleValue","time":"20150323113000"},{"value":"exampleValue2","time":"201503231130"}], "fetchId":"1"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "histories": [
+      {
+        "time": "20150323113000",
+        "value": "exampleValue"
+      },
+      {
+        "time": "201503231130",
+        "value": "exampleValue2"
+      }
+    ],
+    "itemId": "1"
+  },
+  "method": "putHistory",
+  "jsonrpc": "2.0"
+}
 ```
 ***リザルト(result)***
 
  - putHistoryに返す値はありません。resultオブジェクトの値は空文字としてレスポンスが返ってきます。
 
-```
-{"jsonrpc":"2.0", "result":"", "id":1}
+```json
+{
+  "id": 1,
+  "result": "",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateHosts(method)
@@ -346,16 +460,34 @@ Hatoholサーバー                                   HAP
 |hostId  |String255|M|-|監視サーバーが監視しているホストID|
 |hostName|String255|M|-|監視サーバーが監視しているホスト名|
 
-```
-{"jsonrpc":"2.0","method":"updateHosts", "params":{"hosts":[{"hostId":"1", "hostName":"exampleHostName1"}], "updateType":"UPDATED","lastInfo":"201504091052"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "lastInfo": "201504091052",
+    "updateType": "UPDATED",
+    "hosts": [
+      {
+        "hostName": "exampleHostName1",
+        "hostId": "1"
+      }
+    ]
+  },
+  "method": "updateHosts",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateHostGroups(method)
@@ -378,16 +510,34 @@ Hatoholサーバー                                   HAP
 |groupId  |String255|M|-|ホストグループのID|
 |groupName|String255|M|-|グループIDに対応したホストグループの名前|
 
-```
-{"jsonrpc":"2.0","method":"updateHostGroups", "params":{"hostGroups":[{"groupId":"1", "groupName":"Group2"}],"updateType":"ALL", "lastInfo":"201504091049"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "lastInfo": "201504091049",
+    "updateType": "ALL",
+    "hostGroups": [
+      {
+        "groupName": "Group2",
+        "groupId": "1"
+      }
+    ]
+  },
+  "method": "updateHostGroups",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateHostGroupMembership(method)
@@ -409,16 +559,39 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |hostId  |String255    |M|-|ホストのID|
 |groupIds|String255配列|M|-|ホストグループのID|
-```
-{"jsonrpc":"2.0","method":"updateHostGroupMembership", "params":{"hostGroupsMembership":[{"hostId":"1", "groupIds":["1", "2", "5"]}], "lastInfo":"201504091056", "updateType":"ALL"}, "id":1}
+
+```json
+{
+  "id": 1,
+  "params": {
+    "updateType": "ALL",
+    "lastInfo": "201504091056",
+    "hostGroupsMembership": [
+      {
+        "groupIds": [
+          "1",
+          "2",
+          "5"
+        ],
+        "hostId": "1"
+      }
+    ]
+  },
+  "method": "updateHostGroupMembership",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateTriggers(method)
@@ -449,14 +622,39 @@ Hatoholサーバー                                   HAP
 |brief         |String255  |M|-|トリガーの概要|
 |extendedInfo  |String32767|M|-|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
 
-```
-{"jsonrpc":"2.0", "method":"updateTriggers", "params":{"updateType":"UPDATED", "lastInfo":"201504061606", "fetchId":"1", "triggers":[{"triggerId":"1", "status":"OK", "severity":"INFO","lastChangeTime":"20150323175800", "hostId":"1", "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sample extended info"}]},"id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "triggers": [
+      {
+        "extendedInfo": "sample extended info",
+        "brief": "example brief",
+        "hostName": "exampleName",
+        "hostId": "1",
+        "lastChangeTime": "20150323175800",
+        "severity": "INFO",
+        "status": "OK",
+        "triggerId": "1"
+      }
+    ],
+    "fetchId": "1",
+    "lastInfo": "201504061606",
+    "updateType": "UPDATED"
+  },
+  "method": "updateTriggers",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateEvents(method)
@@ -491,16 +689,42 @@ Hatoholサーバー                                   HAP
 |brief       |String255  |M|-|イベントの説明。Web上に表示される情報|
 |extendedInfo|String32767|M|-|briefには書いていない追加の情報を記述できます|
 
-```
-{"jsonrpc":"2.0", "method":"updateEvents", "params":{"events":[{"eventId":"1", "time":"20150323151300", "type":"GOOD", "triggerId":2, "status": "OK","severity":"INFO", "hostId":3, "hostName":"exampleName", "brief":"example brief", "extendedInfo": "sampel extended info"}], "lastInfo":"201504011759", "fetchId":"1"},"id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "lastInfo": "201504011759",
+    "events": [
+      {
+        "extendedInfo": "sampel extended info",
+        "brief": "example brief",
+        "eventId": "1",
+        "time": "20150323151300",
+        "type": "GOOD",
+        "triggerId": 2,
+        "status": "OK",
+        "severity": "INFO",
+        "hostId": 3,
+        "hostName": "exampleName"
+      }
+    ]
+  },
+  "method": "updateEvents",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateHostParent(method)
@@ -531,8 +755,12 @@ Hatoholサーバー                                   HAP
 
 ***リザルト(result)***
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### updateArmInfo(method)
@@ -550,16 +778,32 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 |numSuccess         |Number   |M|-|HAPが起動してから情報取得に成功した回数|
 |numFailure         |Number   |M|-|HAPが起動してから情報取得に失敗した回数|
 
-```
-{"jsonrpc":"2.0", "method":"updateArmInfo", "params":{"lastStatus":"INIT", "failureReason":"Example reason", "lastSuccessTime":"20150313161100", "lastFailureTime":"20150313161500", "numSuccess":165, "numFailure":10}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "numFailure": 10,
+    "numSuccess": 165,
+    "lastFailureTime": "20150313161500",
+    "lastSuccessTime": "20150313161100",
+    "failureReason": "Example reason",
+    "lastStatus": "INIT"
+  },
+  "method": "updateArmInfo",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### fetchItems(method)
@@ -573,16 +817,32 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |hostIds|String255配列|M|-|ホストを指定し取得するアイテムを限定します|
 |fetchId|String255    |M|-|putItemsプロシージャで使用します。そのputItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
-```
-{"jsonrpc":"2.0", "method":"fetchItems", "params":{"hostIds":["1", "2", "3"], "fetchId":"1"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "hostIds": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "method": "fetchItems",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### fetchHistory(method)
@@ -600,16 +860,31 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |endTime   |TimeStamp|M|-|ヒストリー取得域の終点時刻を指定します|
 |fetchId   |String255|M|-|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
-```
-{"jsonrpc":"2.0", "method":"fetchHistory", "params":{"hostId":"1", "itemId":1, "valueType":"INTERGER", "beginTime":"20150323151300", "beginTime":"20150323151300", "fetchId":1 },"id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": 1,
+    "beginTime": "20150323151300",
+    "valueType": "INTERGER",
+    "itemId": 1,
+    "hostId": "1"
+  },
+  "method": "fetchHistory",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### fetchTriggers(method)
@@ -623,16 +898,27 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |hostIds|String255配列|M|-|ホストを指定し取得するトリガーを限定します|
 |fetchId|String255    |M|-|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
-```
-{"jsonrpc":"2.0", "method":"fetchTriggers", "params":{"fetchId":"1"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1"
+  },
+  "method": "fetchTriggers",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ### fetchEvents(method)
@@ -649,16 +935,30 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |direction|String255|M|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
 |fetchId  |String255|M|-|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
-```
-{"jsonrpc":"2.0", "method":"fetchEvents", "params":{"fetchId":"1", "lastInfo":"10", "count": "1000", "direction":"ASC"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "direction": "ASC",
+    "count": "1000",
+    "lastInfo": "10",
+    "fetchId": "1"
+  },
+  "method": "fetchEvents",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
 
  - リクエストの受け入れ成否をresultオブジェクトとしてHatoholサーバーに返す必要があります。返す値については[[一覧](#user-content-fetchresult)]をご覧ください。
 
-```
-{"jsonrpc":"2.0", "result":"SUCCESS", "id":1}
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
 ```
 
 ## 表
