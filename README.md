@@ -208,8 +208,8 @@ Hatoholサーバー                                   HAP
 ```json
 {
   "id": 1,
-  "name": "exampleName",
   "result": {
+    "name": "exampleName",
     "procedures": [
       "getMonitoringServerInfo",
       "getLastInfo",
