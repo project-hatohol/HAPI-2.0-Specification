@@ -177,8 +177,8 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|procedures|String255配列|M|-|送信先が使用可能なプロシージャ一覧|
-|name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|procedures|String255配列|M|-|送信元が使用可能なプロシージャ一覧|
+|name      |String255    |M|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
 
 ```
 {"jsonrpc":"2.0", "method":"exchangeProfile", "params":{"procedures":["getMonitoringServerInfo", "getLastInfo", "putItems", "updateArmInfo", "fetchItems"], "name":"exampleName"} "id":1}
