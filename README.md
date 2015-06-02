@@ -900,13 +900,16 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ```json
 {
-  "id": 1,
-  "params": {
-    "fetchId": "1",
-    "hostIds": ["1", "2"]
-  },
+  "jsonrpc": "2.0",
   "method": "fetchTriggers",
-  "jsonrpc": "2.0"
+  "params": {
+    "hostIds": [
+      "1",
+      "2"
+    ],
+    "fetchId": "1"
+  },
+  "id": 1
 }
 ```
 
