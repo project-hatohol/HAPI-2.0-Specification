@@ -60,36 +60,36 @@ Hatoholサーバー                                   HAP
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<-----------updateHosts(リクエスト)-----------|
-    |------------updateHosts(レスポンス)---------->|
+    |<------------putHosts(リクエスト)-------------|
+    |-------------putHosts(レスポンス)------------>|
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<--------updateHostGroups(リクエスト)---------|
-    |---------updateHostGroups(レスポンス)-------->|
+    |<---------putHostGroups(リクエスト)-----------|
+    |----------putHostGroups(レスポンス)---------->|
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<----updateHostGroupMembership(リクエスト)----|
-    |-----updateHostGroupMembership(レスポンス)--->|
+    |<-----putHostGroupMembership(リクエスト)------|
+    |------putHostGroupMembership(レスポンス)----->|
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<-----------updateTriggers(リクエスト)--------|
-    |------------updateTriggers(レスポンス)------->|
+    |<------------putTriggers(リクエスト)----------|
+    |-------------putTriggers(レスポンス)--------->|
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<-----------updateEvents(リクエスト)----------|
-    |------------updateEvents(レスポンス)--------->|
+    |<------------putEvents(リクエスト)------------|
+    |-------------putEvents(レスポンス)----------->|
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<-----------updateHostParent(リクエスト)------|
-    |------------updateHostParent(レスポンス)----->|
+    |<------------putHostParent(リクエスト)--------|
+    |-------------putHostParent(レスポンス)------->|
     |                                              |
-    |<-----------updateArmInfo(リクエスト)---------|
-    |------------updateArmInfo(レスポンス)-------->|
+    |<------------putArmInfo(リクエスト)-----------|
+    |-------------putArmInfo(レスポンス)---------->|
     |                                          |   |
     |                               ポーリング間隔 |
     |                                          |   |
@@ -108,14 +108,14 @@ Hatoholサーバー                                   HAP
     |                                              |
     |-----------fetchTriggers(リクエスト)--------->|
     |<----------fetchTriggers(レスポンス)----------|
-    |<---------updateTriggers(リクエスト)----------|
+    |<----------putTriggers(リクエスト)------------|
     |            "ALL"オプションを使用する         |
-    |----------updateTriggers(レスポンス)--------->|
+    |-----------putTriggers(レスポンス)----------->|
     |                                              |
     |-------------fetchEvents(リクエスト)--------->|
     |<------------fetchEvents(レスポンス)----------|
-    |<-----------updateEvents(リクエスト)----------|
-    |------------updateEvents(レスポンス)--------->|
+    |<------------putEvents(リクエスト)------------|
+    |-------------putEvents(レスポンス)----------->|
     |                                              |
 
 ```
@@ -151,13 +151,13 @@ Hatoholサーバー                                   HAP
 |[getLastInfo](#user-content-getlastinfomethod)|リクエストで指定された要素の最新情報をHAPに返します|method|M|
 |[putItems](#user-content-putitemsmethod)|HAPが監視しているアイテム一覧を受け取ります|method|O|
 |[putHistory](#user-content-puthistorymethod)|HAPが監視している各アイテムのヒストリーを受け取ります|method|O|
-|[updateHosts](#user-content-updatehostsmethod)|HAPからホスト一覧を受け取り，更新します|method|O|
-|[updateHostGroups](#user-content-updatehostgroupsmethod)|HAPからホストグループ一覧を受け取り，更新します|method|O|
-|[updateHostGroupMembership](#user-content-updatehostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
-|[updateTriggers](#user-content-updatetriggersmethod)|HAPからトリガー情報を受け取り，更新します|method|O|
-|[updateEvents](#user-content-updateeventsmethod)|HAPからイベント情報を受け取り，更新します|method|O|
-|[updateHostParent](#user-content-updatehostparentmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
-|[updateArmInfo](#user-content-updatearminfomethod)|HAPの接続ステータスを更新します|method|M|
+|[putHosts](#user-content-puthostsmethod)|HAPからホスト一覧を受け取り，更新します|method|O|
+|[putHostGroups](#user-content-puthostgroupsmethod)|HAPからホストグループ一覧を受け取り，更新します|method|O|
+|[putHostGroupMembership](#user-content-puthostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
+|[putTriggers](#user-content-puttriggersmethod)|HAPからトリガー情報を受け取り，更新します|method|O|
+|[putEvents](#user-content-puteventsmethod)|HAPからイベント情報を受け取り，更新します|method|O|
+|[putHostParent](#user-content-puthostparentmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
+|[putArmInfo](#user-content-putarminfomethod)|HAPの接続ステータスを更新します|method|M|
 
 ### HAPに実装するプロシージャ
 
@@ -189,7 +189,7 @@ Hatoholサーバー                                   HAP
       "getMonitoringServerInfo",
       "getLastInfo",
       "putItems",
-      "updateArmInfo",
+      "putArmInfo",
       "fetchItems"
     ]
   },
@@ -215,13 +215,13 @@ Hatoholサーバー                                   HAP
       "getLastInfo",
       "putItems",
       "putHistory",
-      "updateHosts",
-      "updateHostGroups",
-      "updateHostGroupMembership",
-      "updateTriggers",
-      "updateEvents",
-      "updateHostParent",
-      "updateArmInfo"
+      "putHosts",
+      "putHostGroups",
+      "putHostGroupMembership",
+      "putTriggers",
+      "putEvents",
+      "putHostParent",
+      "putArmInfo"
     ]
   },
   "jsonrpc": 2
@@ -279,7 +279,7 @@ Hatoholサーバー                                   HAP
 
 ### getLastInfo(method)
 
- - プロシージャ名にupdateが付いているプロシージャの呼び出し時にHatoholサーバーに送信，保存されたlastInfo情報を要求します。取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
+ - プロシージャ名にputが付いているプロシージャの呼び出し時にHatoholサーバーに送信，保存されたlastInfo情報を要求します。取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
  - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合，resultオブジェクトの値は空文字として返ってきます。
 
 ***リクエスト(params)***
@@ -440,7 +440,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateHosts(method)
+### putHosts(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は,"ALL"オプションを用いて全てのホスト情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストをHatoholサーバーに送信します。
@@ -473,14 +473,14 @@ Hatoholサーバー                                   HAP
       }
     ]
   },
-  "method": "updateHosts",
+  "method": "putHosts",
   "jsonrpc": "2.0"
 }
 ```
 
 ***リザルト(result)***
 
- - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
@@ -490,7 +490,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateHostGroups(method)
+### putHostGroups(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループをHatoholサーバーに送信します。
@@ -523,14 +523,14 @@ Hatoholサーバー                                   HAP
       }
     ]
   },
-  "method": "updateHostGroups",
+  "method": "putHostGroups",
   "jsonrpc": "2.0"
 }
 ```
 
 ***リザルト(result)***
 
- - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
@@ -540,7 +540,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateHostGroupMembership(method)
+### putHostGroupMembership(method)
 
  - Hatoholサーバーとの接続完了時，またはHAPが内部的に保存している登録ホスト情報が変更された際は"ALL"オプションを用い，全てのホストグループ所属情報をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストグループ所属情報をHatoholサーバーに送信します。
@@ -577,14 +577,14 @@ Hatoholサーバー                                   HAP
       }
     ]
   },
-  "method": "updateHostGroupMembership",
+  "method": "putHostGroupMembership",
   "jsonrpc": "2.0"
 }
 ```
 
 ***リザルト(result)***
 
- - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
@@ -594,7 +594,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateTriggers(method)
+### putTriggers(method)
 
 [getLastInfo](#user-content-getlastinfomethod)を用いて取得，またはHAP自身が保管している最新トリガー情報を基に，そのトリガーから現時点までに更新されたトリガーをHatoholサーバーに送信するか，全てのトリガーを送信します。
  - Hatoholサーバーとの接続完了時，fetchTriggersプロシージャによる要求があった際は"ALL"オプションを用い，全てのトリガーをHatoholサーバーに送信します。
@@ -642,7 +642,7 @@ Hatoholサーバー                                   HAP
     "lastInfo": "201504061606",
     "updateType": "UPDATED"
   },
-  "method": "updateTriggers",
+  "method": "putTriggers",
   "jsonrpc": "2.0"
 }
 ```
@@ -657,7 +657,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateEvents(method)
+### putEvents(method)
 
  - 一度に送信できるイベント数は1000件までです。1000件を越える場合は，複数回に分けて送信してください。
  - イベントIDが重複したイベントを送信することは認められてします。しかし，元から存在するイベントと送信するイベントのどちらが優先されるかは未定義です。
@@ -671,7 +671,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |events     |object配列|M|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
-|mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャに対するレスポンスとしてupdateEventsプロシージャを用いる場合のみ，fetchIdと合わせてparamsに挿入してください。<br>指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。<br>この値をtrueにする場合，最低限イベントを1件は送信する必要があります
+|mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャに対するレスポンスとしてputEventsプロシージャを用いる場合のみ，fetchIdと合わせてparamsに挿入してください。<br>指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。<br>この値をtrueにする場合，最低限イベントを1件は送信する必要があります
 |fetchId    |String255 |O|-|このオブジェクトはfetchEventsによるリクエストを受けた場合のみ記述する必要があります。Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsのparams内のfetchIdオブジェクトの値をここに入れてください|
 
 ***eventsオブジェクト***
@@ -710,14 +710,14 @@ Hatoholサーバー                                   HAP
       }
     ]
   },
-  "method": "updateEvents",
+  "method": "putEvents",
   "jsonrpc": "2.0"
 }
 ```
 
 ***リザルト(result)***
 
- - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
@@ -727,7 +727,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateHostParent(method)
+### putHostParent(method)
 
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
@@ -750,7 +750,7 @@ Hatoholサーバー                                   HAP
 |parentHostId|String255|M|-|VMの親ホストのID|
 
 ```
-{"jsonrpc":"2.0", "method":"updateHostParent", "params":{[{"childHostId":"12","parentHostId":"10"}], "updateType":"ALL", "lastInfo":"201504152246"} "id":1}
+{"jsonrpc":"2.0", "method":"putHostParent", "params":{[{"childHostId":"12","parentHostId":"10"}], "updateType":"ALL", "lastInfo":"201504152246"} "id":1}
 ```
 
 ***リザルト(result)***
@@ -763,7 +763,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateArmInfo(method)
+### putArmInfo(method)
 
 HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)で取得したポーリング時間の2倍（SHOULD）とします。
 
@@ -789,14 +789,14 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
     "failureReason": "Example reason",
     "lastStatus": "INIT"
   },
-  "method": "updateArmInfo",
+  "method": "putArmInfo",
   "jsonrpc": "2.0"
 }
 ```
 
 ***リザルト(result)***
 
- - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-updateresult)]をご覧ください。
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
@@ -889,14 +889,14 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### fetchTriggers(method)
 
- - このプロシージャは，Hatoholサーバーがトリガー情報を要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[updateTriggersプロシージャ](#user-content-updatetriggersmethod)の"ALL"オプションを用いて指定されたホストに属する全てのトリガーを送信してください。その際，fetchIdとhostIdsの値をupdateTriggersプロシージャに渡す必要があります。
+ - このプロシージャは，Hatoholサーバーがトリガー情報を要求しているときにHAPに送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，[putTriggersプロシージャ](#user-content-puttriggersmethod)の"ALL"オプションを用いて指定されたホストに属する全てのトリガーを送信してください。その際，fetchIdとhostIdsの値をputTriggersプロシージャに渡す必要があります。
 
 ***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostIds|String255配列|M|-|ホストを指定し取得するトリガーを限定します|
-|fetchId|String255    |M|-|updateTriggersプロシージャで使用します。そのupdateTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|fetchId|String255    |M|-|putTriggersプロシージャで使用します。そのputTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```json
 {
@@ -927,7 +927,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### fetchEvents(method)
 
- - 指定したイベントIDから昇順，または降順で指定した件数のイベントを取得するリクエストが送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定された条件のイベントを[updateEventsプロシージャ](#user-content-updateeventsmethod)を用いて送信してください。その際，fetchEventsプロシージャのparamsオブジェクト内にあるfetchIdの値をupdateEventsプロシージャに渡す必要があります。
+ - 指定したイベントIDから昇順，または降順で指定した件数のイベントを取得するリクエストが送信されます。HAPはレスポンスとしてリクエスト受け入れの成否を返す必要があります。その後，指定された条件のイベントを[putEventsプロシージャ](#user-content-puteventsmethod)を用いて送信してください。その際，fetchEventsプロシージャのparamsオブジェクト内にあるfetchIdの値をputEventsプロシージャに渡す必要があります。
  - 指定できる取得件数は一度のリクエストで1000件までです。それ以上の件数を取得したい場合は複数回のリクエストに分けて取得してください。
 
 ***リクエスト(params)***
@@ -937,7 +937,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |lastInfo |String32767|M|-|基準となるイベントの情報です|
 |count    |Number   |M|-|取得するイベント件数。1000件までしか指定できません|
 |direction|String255|M|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
-|fetchId  |String255|M|-|updateEventsプロシージャで使用します。そのupdateEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|fetchId  |String255|M|-|putEventsプロシージャで使用します。そのputEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
 
 ```json
 {
@@ -1021,10 +1021,10 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |"UNKNOWN"     |不明|
 |"NOTIFICATION"|通知|
 
-### updateResult
+### putResult
 
- - updateプロシージャをコールした際の更新の成否です。
- - 更新に失敗した際は，再度updateプロシージャをコールするといった動作が標準的です。
+ - putプロシージャをコールした際の更新の成否です。
+ - 更新に失敗した際は，再度putプロシージャをコールするといった動作が標準的です。
 
 
 |ステータス|解説|
