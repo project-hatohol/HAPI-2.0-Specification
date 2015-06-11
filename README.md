@@ -378,12 +378,12 @@ Hatoholサーバー                                   HAP
 
 ***リザルト(result)***
 
- - putItemsに返す値はありません。resultオブジェクトの値は空文字としてレスポンスが返ってきます。
+ - 送信したデータが正常に更新されたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
   "id": 1,
-  "result": "",
+  "result": "SUCCESS",
   "jsonrpc": "2.0"
 }
 ```
@@ -428,14 +428,15 @@ Hatoholサーバー                                   HAP
   "jsonrpc": "2.0"
 }
 ```
+
 ***リザルト(result)***
 
- - putHistoryに返す値はありません。resultオブジェクトの値は空文字としてレスポンスが返ってきます。
+ - 送信したデータが正常に受け取られたかどうかをresultオブジェクトで受け取ります。受け取る値については[[一覧](#user-content-putresult)]をご覧ください。
 
 ```json
 {
   "id": 1,
-  "result": "",
+  "result": "SUCCESS",
   "jsonrpc": "2.0"
 }
 ```
