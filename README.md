@@ -85,8 +85,8 @@ Hatoholサーバー                                   HAP
     |                                              |
     |<-----------getLastInfo(リクエスト)-----------|
     |------------getLastInfo(レスポンス)---------->|
-    |<------------putHostParent(リクエスト)--------|
-    |-------------putHostParent(レスポンス)------->|
+    |<------------putHostParents(リクエスト)--------|
+    |-------------putHostParents(レスポンス)------->|
     |                                              |
     |<------------putArmInfo(リクエスト)-----------|
     |-------------putArmInfo(レスポンス)---------->|
@@ -750,8 +750,26 @@ Hatoholサーバー                                   HAP
 |childHostId |String255|M|-|VMの子ホストのID|
 |parentHostId|String255|M|-|VMの親ホストのID|
 
-```
-{"jsonrpc":"2.0", "method":"putHostParent", "params":{"hostParents":[{"childHostId":"12","parentHostId":"10"},{"childHostId":"11","parentHostId":"20"}], "updateType":"ALL", "lastInfo":"201504152246"}, "id":1}
+```json
+{
+  "id": 1,
+  "params": {
+    "lastInfo": "201504152246",
+    "updateType": "ALL",
+    "hostParents": [
+      {
+        "parentHostId": "10",
+        "childHostId": "12"
+      },
+      {
+        "parentHostId": "20",
+        "childHostId": "11"
+      }
+    ]
+  },
+  "method": "putHostParent",
+  "jsonrpc": "2.0"
+}
 ```
 
 ***リザルト(result)***
