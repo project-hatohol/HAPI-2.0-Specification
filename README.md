@@ -156,7 +156,7 @@ Hatoholサーバー                                   HAP
 |[updateHostGroupMembership](#user-content-updatehostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
 |[updateTriggers](#user-content-updatetriggersmethod)|HAPからトリガー情報を受け取り，更新します|method|O|
 |[updateEvents](#user-content-updateeventsmethod)|HAPからイベント情報を受け取り，更新します|method|O|
-|[updateHostParent](#user-content-updatehostparentmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
+|[updateHostParents](#user-content-updatehostparentsmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
 |[updateArmInfo](#user-content-updatearminfomethod)|HAPの接続ステータスを更新します|method|M|
 
 ### HAPに実装するプロシージャ
@@ -727,7 +727,7 @@ Hatoholサーバー                                   HAP
 }
 ```
 
-### updateHostParent(method)
+### updateHostParents(method)
 
  - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
  - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
@@ -736,11 +736,11 @@ Hatoholサーバー                                   HAP
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostParent  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
+|hostParents  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
 |lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
 
-***hostParentオブジェクト***
+***hostParentsオブジェクト***
 
  - VMの親子関係を削除する場合は親ホストIDの値を空文字にすることで，送信した子ホストIDの親子関係をHatoholサーバーから削除することができます。
 
@@ -750,7 +750,7 @@ Hatoholサーバー                                   HAP
 |parentHostId|String255|M|-|VMの親ホストのID|
 
 ```
-{"jsonrpc":"2.0", "method":"updateHostParent", "params":{[{"childHostId":"12","parentHostId":"10"}], "updateType":"ALL", "lastInfo":"201504152246"} "id":1}
+{"jsonrpc":"2.0", "method":"updateHostParent", "params":{"hostParents":[{"childHostId":"12","parentHostId":"10"},{"childHostId":"11","parentHostId":"20"}], "updateType":"ALL", "lastInfo":"201504152246"}, "id":1}
 ```
 
 ***リザルト(result)***
