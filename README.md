@@ -963,7 +963,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
   "id": 1,
   "params": {
     "direction": "ASC",
-    "count": "1000",
+    "count": 1000,
     "lastInfo": "10",
     "fetchId": "1"
   },
