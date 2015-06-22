@@ -266,7 +266,7 @@ Hatoholサーバー                                   HAP
     "extendedInfo": "exampleExtraInfo",
     "serverId": 1,
     "url": "http://example.com:80",
-    "type": 0,
+    "type": "12345678-9abc-def0-1234-567891abcdef",
     "nickName": "exampleName",
     "userName": "Admin",
     "password": "examplePass",
