@@ -567,7 +567,7 @@ Hatoholサーバー                                   HAP
   "params": {
     "updateType": "ALL",
     "lastInfo": "201504091056",
-    "hostGroupsMembership": [
+    "hostGroupMembership": [
       {
         "groupIds": [
           "1",
