@@ -397,22 +397,22 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |itemId    |String255 |M|-|取得するイベントのID|
-|histories |object配列|M|-|ヒストリー情報を格納するオブジェクトの配列です。詳細は次のテーブルを確認してください|
+|samples   |object配列|M|-|ヒストリー情報を構成するサンプルの配列です。詳細は次のテーブルを確認してください。サンプルは、時刻の昇順に並んでいる必要があります。|
 |fetchId   |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdオブジェクトの値をここに入れてください|
 
-***historiesオブジェクト***
+***samplesオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |value |String255|M|-|time時点でのアイテムの値|
-|time  |TimeStamp|M|-|このヒストリーの値が記録された時刻|
+|time  |TimeStamp|M|-|valueが記録された時刻|
 
 ```json
 {
   "id": 1,
   "params": {
     "fetchId": "1",
-    "histories": [
+    "samples": [
       {
         "time": "20150323113000",
         "value": "exampleValue"
