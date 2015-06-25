@@ -792,8 +792,8 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 |:-----------------|:--|:-:|:----------:|:---|
 |lastStatus         |string   |M|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]|
 |failureReason      |String255|M|-|情報取得が失敗した理由|
-|lastSuccessTime    |TimeStamp|M|-|最後に情報取得が成功した時刻|
-|lastFailureTime    |TimeStamp|M|-|最後に情報取得が失敗した時刻|
+|lastSuccessTime    |TimeStamp|M|-|最後に情報取得が成功した時刻。一度も成功していない場合は空文字列をセットして下さい。|
+|lastFailureTime    |TimeStamp|M|-|最後に情報取得が失敗した時刻。一度も失敗していない場合は空文字列をセットして下さい。|
 |numSuccess         |Number   |M|-|HAPが起動してから情報取得に成功した回数|
 |numFailure         |Number   |M|-|HAPが起動してから情報取得に失敗した回数|
 
