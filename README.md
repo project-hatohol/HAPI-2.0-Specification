@@ -170,6 +170,8 @@ Hatoholサーバー                                   HAP
 |[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
 |[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
 
+exchangeProfileプロシージャ同士によるプロフィール交換が完了していない状態で，他のプロシージャによるリクエストや通知が届いた場合は，[putResult](#user-content-putresult)形式レスポンスのresultオブジェクトの内容を”FAILURE”とし，通信相手に返答しなければなりません。
+
 ### exchangeProfile(method)
 
  - Hatoholサーバー，HAP両者に共通するプロシージャです。主に初期起動時，再起動時に使用することを標準的な動作とします。詳細については[起動時の動作について](#user-content-起動時の動作について)をご覧ください。
@@ -1045,11 +1047,23 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
  - putプロシージャをコールした際の更新の成否です。
  - 更新に失敗した際は，再度putプロシージャをコールするといった動作が標準的です。
 
-
 |ステータス|解説|
 |:---------|:---|
 |"SUCCESS"|更新が正常に終了しました|
 |"FAILURE" |更新が失敗しました|
+
+ - また，putプロシージャのparamsの内容に不備があり，引数が間違っていたなどの理由でエラーを返す場合は，以下の例のように，JSON-RPC2.0で定義されているerrorオブジェクトを用いてエラーを返す必要があります。
+
+ ```json
+{
+  "id": "1",
+  "error": {
+    "message": "Invalid params",
+    "code": -32602
+  },
+  "jsonrpc": "2.0"
+}
+ ```
 
 ### fetchResult
 
@@ -1060,6 +1074,19 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |"SUCCESS"|リクエストの受け入れに成功しました|
 |"ABBREV"|リクエストの間隔が近いため，リクエストの受け入れを省略しました|
 |"FAILURE"|リクエストの受け入れに失敗しました|
+
+ - また，fetchプロシージャのparamsの内容に不備があり，引数が間違っていたなどの理由でエラーを返す場合は，以下の例のように，JSON-RPC2.0で定義されているerrorオブジェクトを用いてエラーを返す必要があります。
+
+ ```json
+{
+  "id": "1",
+  "error": {
+    "message": "Invalid params",
+    "code": -32602
+  },
+  "jsonrpc": "2.0"
+}
+ ```
 
 <!--
 ## 改版履歴
