@@ -118,6 +118,8 @@ Hatoholサーバー                                   HAP
     |<------------putEvents(リクエスト)------------|
     |-------------putEvents(レスポンス)----------->|
     |                                              |
+    |------updateMonitoringServerInfo(通知)------->|
+    |                                              |
 
 ```
 ## データ型
@@ -169,6 +171,7 @@ Hatoholサーバー                                   HAP
 |[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
 |[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
 |[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
+|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります|notification|M|
 
 exchangeProfileプロシージャ同士によるプロフィール交換が完了していない状態で，他のプロシージャによるリクエストや通知が届いた場合は，[putResult](#user-content-putresult)形式レスポンスのresultオブジェクトの内容を”FAILURE”とし，通信相手に返答しなければなりません。
 
@@ -787,7 +790,7 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 ### putArmInfo(method)
 
-HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)で取得したポーリング時間の2倍（SHOULD）とします。
+HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)や[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)，で取得したポーリング時間の2倍（SHOULD）とします。
 
 ***リクエスト(params)***
 
@@ -983,6 +986,44 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 {
   "id": 1,
   "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### updateMonitoringServerInfo(notification)
+
+ - 監視サーバー情報が更新された際に，Hatoholサーバーから送信される通知です。この通知を受け取った場合，プラグインをリスタートするなどして，各監視情報を更新することが標準的な動作とします。
+
+***params***
+
+ - paramsの内容は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)のreusltオブジェクトの内容と同一です。
+
+|オブジェクトの名前|型 |M/O|デフォルト値|解説|
+|:-----------------|:--|:-:|:----------:|:---|
+|serverId          |Number     |M|-|監視サーバーのサーバーID|
+|url               |URI2047    |M|-|監視サーバーのURL [[解説](#user-content-servertype)]|
+|type              |string     |M|-|監視サーバーの種類 [[一覧](#user-content-servertype)]|
+|nickName          |String255  |M|-|監視サーバーのニックネーム|
+|userName          |String255  |M|-|監視サーバーのユーザーネーム|
+|password          |String255  |M|-|監視サーバーのパスワード|
+|pollingIntervalSec|Number     |M|-|ポーリングを行う間隔|
+|retryIntervalSec  |Number     |M|-|ポーリングが失敗した場合，リトライを行うまでの間隔|
+|extendedInfo      |String32767|M|-|プラグイン固有の情報を格納することができる|
+
+```json
+{
+  "method": "updateMonitoringServerInfo",
+  "params": {
+    "extendedInfo": "exampleExtraInfo",
+    "serverId": 1,
+    "url": "http://example.com:80",
+    "type": "12345678-9abc-def0-1234-567891abcdef",
+    "nickName": "exampleName",
+    "userName": "Admin",
+    "password": "examplePass",
+    "pollingIntervalSec": 30,
+    "retryIntervalSec": 10
+  },
   "jsonrpc": "2.0"
 }
 ```
