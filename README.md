@@ -1,9 +1,5 @@
 # Hatohol Arm Plugin Interface 2.0 仕様書(2015/04/16)
 
-## ToDO
-
-serverTypeのURL
-
 ## 概要
 
 Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
@@ -999,13 +995,13 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### ServerType
 
- - 既存のHAPを識別する際に使用されている各サーバータイプのURLとUUIDです。あなたがHAPを作成する場合，サーバータイプを新しく定義する必要があります。
+ - 既存のHAPを識別する際に使用されている各サーバータイプのUUIDです。あなたがHAPを作成する場合，以下の表にあるUUIDを新しく作成し，サーバータイプを定義する必要があります。
 
-|名前|UUID|URL|
-|:---|:---|:--|
-|Zabbix      |8e632c14-d1f7-11e4-8350-d43d7e3146fb||
-|Nagios      |902d955c-d1f7-11e4-80f9-d43d7e3146fb||
-|Ceilometer  |aa25a332-d1f7-11e4-80b4-d43d7e3146fb||
+|名前|UUID|
+|:---|:---|
+|Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
+|Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
+|Ceilometer|aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
 
 ### triggerSeverity
 
