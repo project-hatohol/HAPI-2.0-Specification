@@ -683,12 +683,12 @@ Hatoholサーバー                                   HAP
 |time        |TimeStamp  |M|-|イベントが発生した時刻|
 |type        |string     |M|-|イベントのタイプ [[一覧](#user-content-eventtype)]|
 |triggerId   |String255  |O|-|このイベントを発火させたトリガーID。トリガーとイベントを関連付けないことも可能なため，必須ではありません|
-|status      |string     |M|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
-|severity    |string     |M|-|トリガーの深刻度 [[一覧](#user-content-triggerseverity)]|
-|hostId      |String255  |M|-|イベントが発生したホストのID|
-|hostName    |String255  |M|-|イベントが発生したホストの名前|
+|status      |string     |O|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
+|severity    |string     |O|-|トリガーの深刻度 [[一覧](#user-content-triggerseverity)]|
+|hostId      |String255  |O|-|イベントが発生したホストのID|
+|hostName    |String255  |O|-|イベントが発生したホストの名前|
 |brief       |String255  |M|-|イベントの説明。Web上に表示される情報|
-|extendedInfo|String32767|M|-|briefには書いていない追加の情報を記述できます|
+|extendedInfo|String32767|O|-|briefには書いていない追加の情報を記述できます|
 
 ```json
 {
