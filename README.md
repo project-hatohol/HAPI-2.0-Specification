@@ -117,6 +117,8 @@ Hatoholサーバー                                   HAP
     |<------------putEvents(リクエスト)------------|
     |-------------putEvents(レスポンス)----------->|
     |                                              |
+    |------updateMonitoringServerInfo(通知)------->|
+    |                                              |
 
 ```
 ## データ型
@@ -168,6 +170,7 @@ Hatoholサーバー                                   HAP
 |[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
 |[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
 |[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
+|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります|notification|M|
 
 ### exchangeProfile(method)
 
@@ -784,7 +787,7 @@ Hatoholサーバー                                   HAP
 
 ### putArmInfo(method)
 
-HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)で取得したポーリング時間の2倍（SHOULD）とします。
+HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)や[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)，で取得したポーリング時間の2倍（SHOULD）とします。
 
 ***リクエスト(params)***
 
@@ -980,6 +983,32 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 {
   "id": 1,
   "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### updateMonitoringServerInfo(notification)
+
+ - 監視サーバー情報が更新された際に，Hatoholサーバーから送信される通知です。この通知を受け取った場合，プラグインをリスタートするなどして，各監視情報を更新することを標準的な動作とします。
+
+***params***
+
+ - paramsの内容は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)のreusltオブジェクトの内容と同一です。
+
+```json
+{
+  "method": "updateMonitoringServerInfo",
+  "params": {
+    "extendedInfo": "exampleExtraInfo",
+    "serverId": 1,
+    "url": "http://example.com:80",
+    "type": "12345678-9abc-def0-1234-567891abcdef",
+    "nickName": "exampleName",
+    "userName": "Admin",
+    "password": "examplePass",
+    "pollingIntervalSec": 30,
+    "retryIntervalSec": 10
+  },
   "jsonrpc": "2.0"
 }
 ```
