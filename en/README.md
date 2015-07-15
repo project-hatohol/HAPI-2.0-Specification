@@ -1,0 +1,1138 @@
+# Arm Plugin Interface 2.0 Specification(2015/04/16)
+
+## Overview
+
+Hatohol Arm Plugin Interface (HAPI) 2.0 is protocol for information exchange between Hatohol server and Monitoring server plugin.
+It is constructed as JSON-RPC appllication on the communication path that is consolidated between them.
+
+The following figure express the above overview.
+
+![overview](../hapi_overview.png)
+
+## Words
+
+|words|description|
+|:---|:---|
+|SRV|Hatohol server|
+|HAP|Hatohol monitoring server plugin|
+
+"MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY" and "OPTIONAL" conform to [RFC2119](http://www.ietf.org/rfc/rfc2119.txt).
+
+## Involved protocol
+
+### Communication path 
+
+Use Advanced Message Queuing Protocol (AMQP) 0.9.1 as communication path.
+- AMQP 0.9.1: https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf
+
+### JSON-RPC
+
+Use JSON-RPC 2.0 as basic protocol of information exchange.
+- [JSON-RPC 2.0 (2013-01-04)](http://www.jsonrpc.org/specification)
+- [JSON(RFC4627)](https://www.ietf.org/rfc/rfc4627.txt)
+
+#### Attention
+- Encoding is UTF-8(MUST). Normalization form C(SHOULD). String can escape(MAY).
+- Enough randomness is needed from ID object that is used in request and response(SHOULD).
+- Must not use batch request of JSON_RPC in HAPI2.0(MUST NOT).
+- HAPI2.0 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.0 assume Hatohol server and plugin use the above queue name.
+
+## Operating overview
+The following sequence figure express basic operating of procedures request and response that are exchanged between Hatohol server and Hatohol arm plugin. 
+
+```
+
+   SRV                                            HAP
+    |
+    |                                        Turn on HAP
+    |                                              |
+    |<----------exchangeProfile(Request)---------->|
+    |<----------exchangeProfile(Response)--------->|
+    |                                          |   |
+    |                             Polling interval |
+    |                                          |   |
+    |<-----getMonitoringServerInfo(Request)--------|
+    |------getMonitoringServerInfo(Response)------>|
+    |                                              |
+    |<-----------getLastInfo(Request)--------------|
+    |------------getLastInfo(Response)------------>|
+    |<------------putHosts(Request)----------------|
+    |-------------putHosts(Response)-------------->|
+    |                                              |
+    |<-----------getLastInfo(Request)--------------|
+    |------------getLastInfo(Response)------------>|
+    |<---------putHostGroups(Request)--------------|
+    |----------putHostGroups(Response)------------>|
+    |                                              |
+    |<-----------getLastInfo(Request)--------------|
+    |------------getLastInfo(Response)------------>|
+    |<-----putHostGroupMembership(Request)---------|
+    |------putHostGroupMembership(Response)------->|
+    |                                              |
+    |<-----------getLastInfo(Request)--------------|
+    |------------getLastInfo(Response)------------>|
+    |<------------putTriggers(Request)-------------|
+    |-------------putTriggers(Response)----------->|
+    |                                              |
+    |<-----------getLastInfo(Request)--------------|
+    |------------getLastInfo(Response)------------>|
+    |<------------putEvents(Request)---------------|
+    |-------------putEvents(Response)------------->|
+    |                                              |
+    |<-----------getLastInfo(Request)--------------|
+    |------------getLastInfo(Response)------------>|
+    |<------------putHostParents(Request)----------|
+    |-------------putHostParents(Response)-------->|
+    |                                              |
+    |<------------putArmInfo(Request)--------------|
+    |-------------putArmInfo(Response)------------>|
+    |                                          |   |
+    |                             Polling interval |
+    |                                          |   |
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |                                              |
+    |-----------fetchItems(Request)--------------->|
+    |<----------fetchItems(Response)---------------|
+    |<------------putItems(Request)----------------|
+    |-------------putItems(Response)-------------->|
+    |                                              |
+    |-----------fetchHistory(Request)------------->|
+    |<----------fetchHistory(Response)-------------|
+    |<------------putHistory(Request)--------------|
+    |-------------putHistory(Response)------------>|
+    |                                              |
+    |-----------fetchTriggers(Request)------------>|
+    |<----------fetchTriggers(Response)------------|
+    |<-----------putTriggers(Request)--------------|
+    |                Use "ALL"option               |
+    |-----------putTriggers(Response)------------->|
+    |                                              |
+    |-------------fetchEvents(Request)------------>|
+    |<------------fetchEvents(Response)------------|
+    |<------------putEvents(Request)---------------|
+    |-------------putEvents(Response)------------->|
+    |                                              |
+    |--updateMonitoringServerInfo(notification)--->|
+    |                                              |
+
+```
+## Data type
+
+ - In this section explains about data type that is defined for Hatohol. They use date type that is defined in the JSON-RPC internally.
+
+|Name|JSON type|description|
+|:---|:---------|:---|
+|TimeStamp|string|This type stores times of day. Use UTC. Format is YYYYMMDDhhmmss.nnnnnnnnn. YYYY, MM, DD, hh, mm, ss, and nnnnnnnnn each express the A.D., Month, Day, hour, minute, second, nano second. Can abbreviate nano second. In case of the above or nano second digits less than nine, insert zero to spare parts(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000).|
+|Boolean|true, false|This type stores boolean. Assign true or false to show authenticity of value.|
+|Number|number|This type stores number type value. Need to keep the number within the 0 and 2147483647.|
+|String255|string|This type stores string type value. Need to keep the number of characters within less than 255 characters.|
+|URI2047|string|This type stores string type value. Need to keep the number of characters within less than 2047 characters(MUST). It match URI that is defined in the RFC3986,RFC6874, and keep octet size  of within lessthan 2047(SHOULD).|
+|String32767|string|This type stores string type value. Need to keep the number of characters within less than 32767 characters.|
+
+In case of all cases, the number of character is counted by UTF-32 code point number after NFC(MUST).
+
+## About start up operation
+
+ - When start Hatohol server and HAP or restart them, there exchange each profile and usuable procedures to use exchangeProfile. There can optimize procedures based on exchanged information.
+
+## Procedures
+
+ - [M/O] is show whether that procedure is Mandatory or Optional. Mandatory procedure can not abbreviate to implement.
+ - When does not complate exchange profile yet to use exchangeProfile procedure and get other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE” to result object.
+
+### Hatohol server procedures
+
+|name|description|type|M/O|
+|:-------------|:---|:-----|:-:|
+|[exchangeProfile](#user-content-exchangeprofilemethod)|Receive view of procedures that is implemented in HAP and HAP name, after that return procedures view that is implemented in yourself and yourself name.|method|M|
+|[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)|Return connecting information with HAP and polling interval seconds to HAP.|method|M|
+|[getLastInfo](#user-content-getlastinfomethod)|Return latest information that is designated by request.|method|M|
+|[putItems](#user-content-putitemsmethod)|Receive items view that is monitored by HAP.|method|O|
+|[putHistory](#user-content-puthistorymethod)|Receive history of each item that is monitored by HAP.|method|O|
+|[putHosts](#user-content-puthostsmethod)|Receive hosts view from HAP and update it.|method|O|
+|[putHostGroups](#user-content-puthostgroupsmethod)|Receive host groups view from HAP and update it.|method|O|
+|[putHostGroupMembership](#user-content-puthostgroupmembershipmethod)|Receive host group membership from HAP and update it.|method|O|
+|[putTriggers](#user-content-puttriggersmethod)|Receive triggers view from HAP and update it.|method|O|
+|[putEvents](#user-content-puteventsmethod)|Receive events view from HAP and update it.|method|O|
+|[putHostParents](#user-content-puthostparentsmethod)|Receive host parent relations view from HAP and update it.|method|O|
+|[putArmInfo](#user-content-putarminfomethod)|Receive connecting status of HAP and update it.|method|M|
+
+### HAP procedures
+
+|name|desscription|type|M/O|
+|:-------------|:---|:-----|:-:|
+|[exchangeProfile](#user-content-exchangeprofilemethod)|Receive view of procedures that is implemented in Hatohol server and Hatohol server name, after that return procedures view that is implemented in yourself and yourself name.|method|M|
+|[fetchItems](#user-content-fetchitemsmethod)|Accept request to get item from Hatohol server.|method|O|
+|[fetchHistory](#user-content-fetchhistorymethod)|Accept request to get history from Hatohol server.|method|O|
+|[fetchTriggers](#user-content-fetchtriggersmethod)|Accept request to get trigger from Hatohol server.|method|O|
+|[fetchEvents](#user-content-fetcheventsmethod)|Accept request to get event from Hatohol server.|method|O|
+|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Receive connecting information with Hatohol server and polling interval seconds as notification.|method|M|
+
+### exchangeProfile(method)
+
+ This procedure is had Hatohol server and HAP in common. It uses when start and restart mainly. Please look at the [About start up oetation](#user-content-about-start-up-content).
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|procedures|String255 array|M|-|Usual procedures list of sender.|
+|name      |String255    |M|-|Process name of sender. It is used in the log message and etc.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "name": "exampleName",
+    "procedures": [
+      "getMonitoringServerInfo",
+      "getLastInfo",
+      "putItems",
+      "putArmInfo",
+      "fetchItems"
+    ]
+  },
+  "method": "exchangeProfile",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|procedures|String255 array|M|-|Usual procedures list of destination.|
+|name      |String255    |M|-|Process name of destination. It is used in the log message and etc.|
+
+```json
+{
+  "id": 1,
+  "result": {
+    "name": "exampleName",
+    "procedures": [
+      "getMonitoringServerInfo",
+      "getLastInfo",
+      "putItems",
+      "putHistory",
+      "putHosts",
+      "putHostGroups",
+      "putHostGroupMembership",
+      "putTriggers",
+      "putEvents",
+      "putHostParent",
+      "putArmInfo"
+    ]
+  },
+  "jsonrpc": 2
+}
+```
+
+### getMonitoringServerInfo(method)
+
+To inquire myself conecting information and polling interval to Hatohol server per polling interval is the standard motion, but can inquire anytime.
+
+
+***Request(params)***
+
+ getMonitoringServerInfo method does not have arguments. Send a params of request as empty string.
+
+```json
+{
+  "id": 1,
+  "params": "",
+  "method": "getMonitoringServerInfo",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|serverId          |Number     |M|-|A Server ID of the monitoring server.|
+|url               |URI2047    |M|-|A URL of monitoring server. [[Description](#user-content-servertype)]|
+|type              |string     |M|-|A type of monitoring server. [[List](#user-content-servertype)]|
+|nickName          |String255  |M|-|A nickname of monitoring server.|
+|userName          |String255  |M|-|A user name of monitoring server.|
+|password          |String255  |M|-|A pass word of monitoring server.|
+|pollingIntervalSec|Number     |M|-|Polling interval seconds.|
+|retryIntervalSec  |Number     |M|-|Retry interval seconds in case of fail polling.|
+|extendedInfo      |String32767|M|-|Can store your any information.|
+
+```json
+{
+  "id": 1,
+  "result": {
+    "serverId": 1,
+    "url": "http://example.com:80",
+    "type": "12345678-9abc-def0-1234-567891abcdef",
+    "nickName": "exampleName",
+    "userName": "Admin",
+    "password": "examplePass",
+    "pollingIntervalSec": 30,
+    "retryIntervalSec": 10,
+    "extendedInfo": "exampleExtraInfo"
+  },
+  "jsonrpc": "2.0"
+}
+```
+
+### getLastInfo(method)
+
+Can send the diffarence between sent data and having data currently to use got lastInfo.
+
+Such as when start up a plugin, in case of does not saved lastInfo in Hatohol server, get lastInfo as empty string.
+
+***Request(params)***
+
+|params object value|Type |M/O|Default value|Description|
+|:---------------------|:--|:-:|:----------:|:---|
+|Designate element|String255|M|-|Need to select in the following elements list.|
+
+|Value list|Description|
+|:-------------------------|:---|
+|"host"               |Select latest host information.|
+|"hostGroup"          |Select latest host group information.|
+|"hostGroupMembership"|Select latest host group membership information.|
+|"trigger"            |Select latest trigger information.|
+|"event"              |Select latest event information.|
+|"hostParent"         |Select latest host parent information.|
+
+```json
+{
+  "id": 1,
+  "params": "trigger",
+  "method": "getLastInfo",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+|Object value|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|latest information|String255|M|-|Designate element latest information of to saved in Hatohol server.|
+
+```json
+{
+  "id": 1,
+  "result": "201504011349",
+  "jsonrpc": "2.0"
+}
+```
+In this example, receive a timestamp as lastInfo.
+
+### putItems(method)
+
+Standard motion is to send all item information to Hatohol server when complate conect to Hatohol server and get [fetchItems](#user-content-fetchitemsmethod) request from Hatohol server. It has possible that burden to Hatohol server, can not use anytime. 
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|items  |object   |M|-|This is object that stores item information. Look at the following table for details.|
+|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchItems request.
+
+***items object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|itemId       |String255    |M|-|ID of the item.|
+|hostId       |String255    |M|-|Host ID of the the item belongs.|
+|brief        |String255    |M|-|Overview of the item.|
+|lastValueTime|TimeStamp    |M|-|Time of when the item was last updated.|
+|lastValue    |String255    |M|-|Value of when the item was last updated.|
+|itemGroupName|String255 array|M|-|Group name of the item belongs.|
+|unit         |String255    |M|-|Unit of value.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "items": [
+      {
+        "unit": "example unit",
+        "itemGroupName": "example name",
+        "lastValue": "example value",
+        "lastValueTime": "20150410175500",
+        "brief": "example brief",
+        "hostId": "1",
+        "itemId": "1"
+      },
+      {
+        "unit": "example unit",
+        "itemGroupName": "example name",
+        "lastValue": "example value",
+        "lastValueTime": "201504101755",
+        "brief": "example brief",
+        "hostId": "1",
+        "itemId": "2"
+      }
+    ]
+  },
+  "method": "putItems",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putHistory(method)
+
+ - When receive [fetchHistory](#user-content-fetchhistorymethod) procedure from Hatohol server, return matched history to conditions. It has possible that burden to Hatohol server, can not use anytime. 
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|itemId    |String255 |M|-|Id of the got item|
+|samples   |object array|M|-|This is sample array to configure history information. Look at the following table for details. The samples is needed to sort by ascending order of time.|
+|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchHistory request.
+
+***samples object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|value |String255|M|-|Item value at that time.|
+|time  |TimeStamp|M|-|Time of recorded.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    cccc
+      {
+        "time": "20150323113000",
+        "value": "exampleValue"
+      },
+      {
+        "time": "201503231130",
+        "value": "exampleValue2"
+      }
+    ],
+    "itemId": "1"
+  },
+  "method": "putHistory",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putHosts(method)
+
+Send all hosts information to Hatohol server to use "ALL" option when complate conect to Hatohol server and changed hosts information that saved in internal.
+
+ In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hosts       |object array|M|-|This is object array that stores hosts information. Look at the following table for details.|
+|updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
+|lastInfo    |String32767 |O|-|Insert to here host information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+
+***hosts object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostId  |String255|M|-|Host Id of monitered by monitoring server.|
+|hostName|String255|M|-|Host name of monitored by monitoring server.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "lastInfo": "201504091052",
+    "updateType": "UPDATED",
+    "hosts": [
+      {
+        "hostName": "exampleHostName1",
+        "hostId": "1"
+      }
+    ]
+  },
+  "method": "putHosts",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putHostGroups(method)
+
+Send all host groups information to Hatohol server to use "ALL" option when complate conect to Hatohol server and changed hosts information that saved in internal.
+
+ In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostGroups  |object array|M|-|This is object array that stores host groups information. Look at the following table for details.|
+|updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
+|lastInfo    |String32767 |O|-|Insert to here host group information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+
+***hostGroups object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|groupId  |String255|M|-|Id of host group.|
+|groupName|String255|M|-|Host grou name of compliant the above group Id.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "lastInfo": "201504091049",
+    "updateType": "ALL",
+    "hostGroups": [
+      {
+        "groupName": "Group2",
+        "groupId": "1"
+      }
+    ]
+  },
+  "method": "putHostGroups",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putHostGroupMembership(method)
+
+Send all host group membership information to Hatohol server to use "ALL" option when complate conect to Hatohol server and changed hosts information that saved in internal.
+
+ In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostGroupMembership|object array|M|-|This is object array that stores host group membership information. Look at the following table for details.|
+|updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
+|lastInfo    |String32767 |O|-|Insert to here host group membership information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+
+***hostGroupMembership object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostId  |String255    |M|-|Id of host.|
+|groupIds|String255 array|M|-|Id of host group.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "updateType": "ALL",
+    "lastInfo": "201504091056",
+    "hostGroupMembership": [
+      {
+        "groupIds": [
+          "1",
+          "2",
+          "5"
+        ],
+        "hostId": "1"
+      }
+    ]
+  },
+  "method": "putHostGroupMembership",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putTriggers(method)
+
+Send all triggers information to Hatohol server to use "ALL" option when complate conect to Hatohol server or reseive [fetchTriggers](#user-content-fetchtriggersmethod) procedure from Hatohol server.
+
+ In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|triggers    |object array|M|-|This is object array that stores triggers information. Look at the following table for details.|
+|updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
+|lastInfo    |String32767|O|-|Insert to here trigger information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchTriggers request.
+
+***triggers object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|triggerId     |String255  |M|-|Id of the trigger. When send trigger of HAP itself, must insert "_SELF_" to trigger Id and host Id.|
+|status        |string     |M|-|Status of trigger [[List](#user-content-triggerstatus)].|
+|severity      |string     |M|-|Severity of trigger [[List](#user-content-triggerseverity)].|
+|lastChangeTime|TimeStamp  |M|-|Time of last updated trigger.|
+|hostId        |String255  |M|-|Id of host that is trigger of host belongs.|
+|hostName      |String255  |M|-|Host name of host that is trigger of host belongs.|
+|brief         |String255  |M|-|Overview of trigger.|
+|extendedInfo  |String32767|M|-|The extra information other than the followings. It uses to show data on WebUI mainly.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "triggers": [
+      {
+        "extendedInfo": "sample extended info",
+        "brief": "example brief",
+        "hostName": "exampleName",
+        "hostId": "1",
+        "lastChangeTime": "20150323175800",
+        "severity": "INFO",
+        "status": "OK",
+        "triggerId": "1"
+      }
+    ],
+    "fetchId": "1",
+    "lastInfo": "201504061606",
+    "updateType": "UPDATED"
+  },
+  "method": "putTriggers",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putEvents(method)
+
+putEvents procedures can send till 1000 events. If want to send over than 1000, send events to separate more than once.
+
+Can send event that duplicates event Id. But, to taken priority existing event or new event does not define.
+
+It has two behavior that are to send voluntary and send as response for fetchEvents.
+
+In case of voluntary, send diffarence from before events to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. When HAP connect first time, lastInfo is nothing, so HAP producer can select to send all existing event or do nothing.
+
+In case of ahead event from to designate event is nothing, send events object as empty string. 
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|events     |object array|M|-|This is object array that stores events information. Look at the following table for details.|
+|lastInfo    |String32767|O|-|Insert to here event information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|mayMoreFlag|Boolean   |O|-|Only use in case of response to fetchEvents with fetchId. If plugin has remaining events to be transmitted, must change value to true. In case of that, must send event at least one.|
+|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchEvents request.
+
+***events object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|eventId     |String255  |M|-|Id of event.|
+|time        |TimeStamp  |M|-|Time of happened event.|
+|type        |string     |M|-|Type of event.[[一覧](#user-content-eventtype)]|
+|triggerId   |String255  |O|-|Trigger id of ignition this event. It is not mandatory because can do not to assciate trigger and event.|
+|status      |string     |O|-|Status of trigger. [[一覧](#user-content-triggerstatus)]|
+|severity    |string     |O|-|Severity of trigger. [[一覧](#user-content-triggerseverity)]|
+|hostId      |String255  |O|-|Host id of happened event.|
+|hostName    |String255  |O|-|Host name of happened event.|
+|brief       |String255  |M|-|Explanation of event. It is shown by on the WebUI.|
+|extendedInfo|String32767|O|-|Can write a additional information.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "lastInfo": "201504011759",
+    "events": [
+      {
+        "extendedInfo": "sampel extended info",
+        "brief": "example brief",
+        "eventId": "1",
+        "time": "20150323151300",
+        "type": "GOOD",
+        "triggerId": 2,
+        "status": "OK",
+        "severity": "INFO",
+        "hostId": 3,
+        "hostName": "exampleName"
+      }
+    ]
+  },
+  "method": "putEvents",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putHostParents(method)
+
+ When HAP complates to connect to Hatohol server,  send all host parent relations to use "ALL" option to Hatohol server.
+
+In case of use "UPDATE" option, send diffarence of host parent relations that based on lastInfo that got from [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. 
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostParents  |object array|M|-|This is object array that stores host parent relations information. Look at the following table for details.|
+|updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
+|lastInfo    |String32767|O|-|Insert to here host parent relation information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+
+***hostParents object***
+
+ In case of remove host parent relation from Hatohol server, can remove host parent relation that is to sent childHostId by insert empty string to parentHostId.
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|childHostId |String255|M|-|Child host id.|
+|parentHostId|String255|M|-|Parent host id.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "lastInfo": "201504152246",
+    "updateType": "ALL",
+    "hostParents": [
+      {
+        "parentHostId": "10",
+        "childHostId": "12"
+      },
+      {
+        "parentHostId": "20",
+        "childHostId": "11"
+      }
+    ]
+  },
+  "method": "putHostParent",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### putArmInfo(method)
+
+Standard motion is to send after each to send host, trigger, event information to Hatohol server, but can send anytime. The minimum interval is 1 second(MUST), The maximum interval is twice of polling interval second that got by the [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod) and [updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)(SHOULD).
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|lastStatus         |string   |M|-|Latest polling result. [[一覧](#user-content-arminfostatus)]|
+|failureReason      |String255|M|-|Reason of fail to get information. |
+|lastSuccessTime    |TimeStamp|M|-|Time of latest success to get information. If have not been successful once, set empty string.|
+|lastFailureTime    |TimeStamp|M|-|Time of latest failure to get information. If have not been unsuccessful once, set empty string.|
+|numSuccess         |Number   |M|-|The number of success to get information from start up HAP.|
+|numFailure         |Number   |M|-|The number of failure to get information from start up HAP.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "numFailure": 10,
+    "numSuccess": 165,
+    "lastFailureTime": "20150313161500",
+    "lastSuccessTime": "20150313161100",
+    "failureReason": "Example reason",
+    "lastStatus": "INIT"
+  },
+  "method": "putArmInfo",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### fetchItems(method)
+
+This procedure request to get item to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched items using a putItems procedure. At that time, need to pass fetchId and hostIds of fetchItems procedure params to putItems procedure.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostIds|String255 array|O|-|Get triggers of to designate a hosts. If does not designate hostIds, all trigger are targeted.|
+|fetchId|String255    |M|-|Use in putItems procedures. It need to identify the putItems corresponding to the fetchItems.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": "1",
+    "hostIds": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "method": "fetchItems",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### fetchHistory(method)
+
+This procedure request to get history to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched history using a putHistory procedure. At that time, need to pass fetchId of fetchHistory procedure params to putHistory procedure.
+
+Assume to get matched history that from beginTime till endTime.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostId    |String255|M|-|Host Id that the item belongs.|
+|itemId    |String255|M|-|Item Id of history.|
+|beginTime |TimeStamp|M|-|Starting point of history.|
+|endTime   |TimeStamp|M|-|End point of history.|
+|fetchId|String255    |M|-|Use in putHistory procedures. It need to identify the putHistory corresponding to the fetchHistory.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": 1,
+    "beginTime": "20150323151300",
+    "valueType": "INTERGER",
+    "itemId": 1,
+    "hostId": "1"
+  },
+  "method": "fetchHistory",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### fetchTriggers(method)
+
+This procedure request to get triggers to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched triggers using a putTriggers procedure. At that time, need to pass fetchId and hostIds of fetchTriggers procedure params to putTriggers procedure.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|hostIds|String255 array|O|-|Get triggers of to designate a hosts. If does not designate hostIds, all trigger are targeted.|
+|fetchId|String255    |M|-|Use in putTriggers procedures. It need to identify the putTriggers corresponding to the fetchTriggers.|
+
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "fetchTriggers",
+  "params": {
+    "hostIds": [
+      "1",
+      "2"
+    ],
+    "fetchId": "1"
+  },
+  "id": 1
+}
+```
+
+***Result(result)***
+
+Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### fetchEvents(method)
+
+This procedure request to get designate number of events that sorted by ascending or descending order to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched event using a putEvents procedure. At that time, need to pass fetchId of fetchEvents procedure params to putEvents procedure.
+
+Can designate "count" value till 1000. If want to request over the event number 1000, separate request to more than once.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|lastInfo |String32767|M|-|Basis of ivent information.|
+|count    |Number   |M|-|Event count of getting.|
+|direction|String255|M|-|Select "ASC"(newer event than designate ID) or ”DESC”(older event that designate ID).|
+|fetchId  |String255|M|-|Use in putEvents procedures. It need to identify the putEvents corresponding to the fetchEvents.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "direction": "ASC",
+    "count": 1000,
+    "lastInfo": "10",
+    "fetchId": "1"
+  },
+  "method": "fetchEvents",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### updateMonitoringServerInfo(notification)
+
+ This procedure is sent from Hatohol server when updated monitoring server information. At that time, should update each monitoring server information to restart HAP.
+
+***params***
+
+params content is same as the result object of [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod).
+
+```json
+{
+  "method": "updateMonitoringServerInfo",
+  "params": {
+    "extendedInfo": "exampleExtraInfo",
+    "serverId": 1,
+    "url": "http://example.com:80",
+    "type": "12345678-9abc-def0-1234-567891abcdef",
+    "nickName": "exampleName",
+    "userName": "Admin",
+    "password": "examplePass",
+    "pollingIntervalSec": 30,
+    "retryIntervalSec": 10
+  },
+  "jsonrpc": "2.0"
+}
+```
+
+## Tables
+
+### armInfoStatus
+
+|Status|Description|
+|:---------|:---|
+|"INIT"   |Initial status. Not communication yes.|
+|"OK"     |Succeed connection.|
+|"NG"     |Fail connection.|
+
+### ServerType
+
+If you create a HAP, need to define new server type that has UUID other than the following UUIDs.
+
+|名前|UUID|
+|:---|:---|
+|Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
+|Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
+|Ceilometer|aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+
+### triggerSeverity
+
+|Severity|Description|
+|:---|:--|
+|"UNKNOWN"  |Unknown|
+|"INFO"     |Information|
+|"WARNING"  |Warning|
+|"ERROR"    |Error|
+|"CRITICAL" |Critical|
+|"EMERGENCY"|Emergency|
+
+### triggerStatus
+
+|Status|Description|
+|:---------|:---|
+|"OK""    |Succeed connection.|
+|"NG"     |Fail connection.|
+|"UNKNOWN"|Status is unknown|
+
+### updateType
+
+|Type|Description|
+|:---------|:---|
+|"ALL"    |Send all data. Remove old data from hatohol server and regist all sent data.|
+|"UPDATED"|Send only updata data, after that If data ID already exists in Hatohol server, overwrite data and in case of does not exist, initial regist that data.|
+
+### eventType
+
+|Type|Description|
+|:---|:---------:|
+|"GOOD"        |Normal|
+|"BAD"         |Abnormal|
+|"UNKNOWN"     |Unknown|
+|"NOTIFICATION"|Notification|
+
+### putResult
+
+The following table value are success and failure of to call put procedure. If fail to update database, to recall procedure is standard motion.
+
+|Status|Description|
+|:---------|:---|
+|"SUCCESS"|Update is succeed.|
+|"FAILURE" |Update is fail.|
+
+ In case of put procedure params wronged and etc..., need to return error that is defined in the JSON_RPC2.0 to HAP as the following example.
+
+ ```json
+{
+  "id": "1",
+  "error": {
+    "message": "Invalid params",
+    "code": -32602
+  },
+  "jsonrpc": "2.0"
+}
+ ```
+
+### fetchResult
+
+The following table value are success and failure of fetch request. If request fail, to resend request to plugin is standard motion.
+
+|Status|Description|
+|:---------|:---|
+|"SUCCESS"|Succeed to accept a request.|
+|"ABBREV" |Abbreviate to accept a request because request interval a little.| 
+|"FAILURE"|Fail to accept a request.|
+
+ In case of fetch procedure params wronged and etc..., need to return error that is defined in the JSON_RPC2.0 to Hatohol server as the following example.
+ 
+ ```json
+{
+  "id": "1",
+  "error": {
+    "message": "Invalid params",
+    "code": -32602
+  },
+  "jsonrpc": "2.0"
+}
+ ```
+
+
+<!--
+## Revision history
+-->
+
+## Getting help 
+If you have a problems, send bug reports to Hatohol community mailing list. [hatohol-users@sourceforge.net]
+
+## Copyright
+Copyright (C)2015 Project Hatohol
