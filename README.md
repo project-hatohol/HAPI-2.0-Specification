@@ -124,12 +124,12 @@ Hatoholサーバー                                   HAP
 
 |名前|JSON型|解説|
 |:---|:---------|:---|
-|TimeStamp|string|この型は時刻を格納します。協定世界時（UTC）を使用します。<br>フォーマットはYYYYMMDDhhmmss.nnnnnnnnnです<br>YYYY,MM,DD,hh,mm,ss,およびnnnnnnnnnは，それぞれ西暦，月，日，時，分，秒，およびナノ秒を表します<br>小数点以下の時刻については省略できます<br>また，小数点以下には9桁までしか値を挿入できません<br>小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます<br>(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)|
-|Boolean|true, false|この型は真偽値を格納します。true or falseを指定し，その値の真偽を示します|
-|Number|number|number型の値を格納します。この型を指定された要素では，特記しない限り，その値を0~2147483647の範囲に収める必要があります|
-|String255|string|string型の値を格納します。この型を指定された要素では，その文字数を255文字以内にしてください|
-|URI2047|string|string型の値を格納します。この型を指定された要素では，その文字数を2047文字以内にしてください(MUST)。また，RFC3986,RFC6874で定義されるURIに適合し，2047オクテット以下であるべきです(SHOULD)|
-|String32767|string|string型の値を格納します。この型を指定された要素では，その文字数を32767文字以内にしてください|
+|TimeStamp|string|この型は時刻を格納します。協定世界時（UTC）を使用します。<br>フォーマットはYYYYMMDDhhmmss.nnnnnnnnnです。<br>YYYY,MM,DD,hh,mm,ss,およびnnnnnnnnnは，それぞれ西暦，月，日，時，分，秒，およびナノ秒を表します。<br>小数点以下の時刻については省略できます。<br>また，小数点以下には9桁までしか値を挿入できません。<br>小数点以下を省略した場合，または小数点以下が9桁未満の場合には余った桁部に0が挿入されます。<br>(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000)|
+|Boolean|true, false|この型は真偽値を格納します。true or falseを指定し，その値の真偽を示します。|
+|Number|number|number型の値を格納します。この型を指定された要素では，特記しない限り，その値を0~2147483647の範囲に収める必要があります。|
+|String255|string|string型の値を格納します。この型を指定された要素では，その文字数を255文字以内にしてください。|
+|URI2047|string|string型の値を格納します。この型を指定された要素では，その文字数を2047文字以内にしてください(MUST)。また，RFC3986,RFC6874で定義されるURIに適合し，2047オクテット以下であるべきです(SHOULD)。|
+|String32767|string|string型の値を格納します。この型を指定された要素では，その文字数を32767文字以内にしてください。|
 
 文字数は最終的な表現にかかわらず、NFC正規化後のUTF-32コードポイント数で数えます(MUST)。
 
@@ -140,36 +140,35 @@ Hatoholサーバー                                   HAP
 ## プロシージャ
 
  - 「M/O」はそのプロシージャがMandatory(必須)かOptional(任意)であるかを表します。Mandatoryであるプロシージャは実装を省略できません。
+ - exchangeProfileプロシージャ同士によるプロフィール交換が完了していない状態で，他のプロシージャによるリクエストや通知が届いた場合は，[putResult](#user-content-putresult)形式レスポンスのresultオブジェクトの内容を”FAILURE”とし，通信相手に返答する必要があります。
 
 ### Hatoholサーバーに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofilemethod)|HAPが実装しているプロシージャ一覧とHAPの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
-|[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)|HAPとの接続情報やポーリング間隔等をHAPに返します|method|M|
-|[getLastInfo](#user-content-getlastinfomethod)|リクエストで指定された要素の最新情報をHAPに返します|method|M|
-|[putItems](#user-content-putitemsmethod)|HAPが監視しているアイテム一覧を受け取ります|method|O|
-|[putHistory](#user-content-puthistorymethod)|HAPが監視している各アイテムのヒストリーを受け取ります|method|O|
-|[putHosts](#user-content-puthostsmethod)|HAPからホスト一覧を受け取り，更新します|method|O|
-|[putHostGroups](#user-content-puthostgroupsmethod)|HAPからホストグループ一覧を受け取り，更新します|method|O|
-|[putHostGroupMembership](#user-content-puthostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します|method|O|
-|[putTriggers](#user-content-puttriggersmethod)|HAPからトリガー情報を受け取り，更新します|method|O|
-|[putEvents](#user-content-puteventsmethod)|HAPからイベント情報を受け取り，更新します|method|O|
-|[putHostParents](#user-content-puthostparentsmethod)|HAPが監視しているホスト同士のVM親子関係を更新します|method|O|
-|[putArmInfo](#user-content-putarminfomethod)|HAPの接続ステータスを更新します|method|M|
+|[exchangeProfile](#user-content-exchangeprofilemethod)|HAPが実装しているプロシージャ一覧とHAPの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します。|method|M|
+|[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)|HAPとの接続情報やポーリング間隔等をHAPに返します。|method|M|
+|[getLastInfo](#user-content-getlastinfomethod)|リクエストで指定された要素の最新情報をHAPに返します。|method|M|
+|[putItems](#user-content-putitemsmethod)|HAPが監視しているアイテム一覧を受け取ります。|method|O|
+|[putHistory](#user-content-puthistorymethod)|HAPが監視している各アイテムのヒストリーを受け取ります。|method|O|
+|[putHosts](#user-content-puthostsmethod)|HAPからホスト一覧を受け取り，更新します。|method|O|
+|[putHostGroups](#user-content-puthostgroupsmethod)|HAPからホストグループ一覧を受け取り，更新します。|method|O|
+|[putHostGroupMembership](#user-content-puthostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します。|method|O|
+|[putTriggers](#user-content-puttriggersmethod)|HAPからトリガー情報を受け取り，更新します。|method|O|
+|[putEvents](#user-content-puteventsmethod)|HAPからイベント情報を受け取り，更新します。|method|O|
+|[putHostParents](#user-content-puthostparentsmethod)|HAPが監視しているホスト同士のVM親子関係を更新します。|method|O|
+|[putArmInfo](#user-content-putarminfomethod)|HAPの接続ステータスを更新します。|method|M|
 
 ### HAPに実装するプロシージャ
 
 |プロシージャ名|解説|タイプ|M/O|
 |:-------------|:---|:-----|:-:|
-|[exchangeProfile](#user-content-exchangeprofilemethod)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します|method|M|
-|[fetchItems](#user-content-fetchitemsmethod)|Hatoholサーバーからのアイテム取得リクエストを受け入れます|method|O|
-|[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます|method|O|
-|[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます|method|O|
-|[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます|method|O|
-|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります|notification|M|
-
-exchangeProfileプロシージャ同士によるプロフィール交換が完了していない状態で，他のプロシージャによるリクエストや通知が届いた場合は，[putResult](#user-content-putresult)形式レスポンスのresultオブジェクトの内容を”FAILURE”とし，通信相手に返答しなければなりません。
+|[exchangeProfile](#user-content-exchangeprofilemethod)|Hatoholサーバーが実装しているプロシージャ一覧とHatoholサーバーの名前を受け取り，そのレスポンスとして自身が実装しているプロシージャ一覧と自身の名前を返します。|method|M|
+|[fetchItems](#user-content-fetchitemsmethod)|Hatoholサーバーからのアイテム取得リクエストを受け入れます。|method|O|
+|[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます。|method|O|
+|[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます。|method|O|
+|[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます。|method|O|
+|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります。|notification|M|
 
 ### exchangeProfile(method)
 
@@ -179,8 +178,8 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|procedures|String255配列|M|-|送信元が使用可能なプロシージャ一覧|
-|name      |String255    |M|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|procedures|String255配列|M|-|送信元が使用可能なプロシージャ一覧です。|
+|name      |String255    |M|-|送信元のプロセス名です。接続完了の旨を伝えるログなどに利用されます。|
 
 ```json
 {
@@ -204,8 +203,8 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|procedures|String255配列|M|-|送信先が使用可能なプロシージャ一覧|
-|name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます|
+|procedures|String255配列|M|-|送信先が使用可能なプロシージャ一覧です。|
+|name      |String255    |M|-|送信先のプロセス名です。接続完了の旨を伝えるログなどに利用されます。|
 
 ```json
 {
@@ -251,15 +250,15 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|serverId          |Number     |M|-|監視サーバーのサーバーID|
-|url               |URI2047    |M|-|監視サーバーのURL [[解説](#user-content-servertype)]|
-|type              |string     |M|-|監視サーバーの種類 [[一覧](#user-content-servertype)]|
-|nickName          |String255  |M|-|監視サーバーのニックネーム|
-|userName          |String255  |M|-|監視サーバーのユーザーネーム|
-|password          |String255  |M|-|監視サーバーのパスワード|
-|pollingIntervalSec|Number     |M|-|ポーリングを行う間隔|
-|retryIntervalSec  |Number     |M|-|ポーリングが失敗した場合，リトライを行うまでの間隔|
-|extendedInfo      |String32767|M|-|プラグイン固有の情報を格納することができる|
+|serverId          |Number     |M|-|監視サーバーのサーバーIDです。|
+|url               |URI2047    |M|-|監視サーバーのURL [[解説](#user-content-servertype)]です。|
+|type              |string     |M|-|監視サーバーの種類 [[一覧](#user-content-servertype)]です。|
+|nickName          |String255  |M|-|監視サーバーのニックネームです。|
+|userName          |String255  |M|-|監視サーバーのユーザーネームです。|
+|password          |String255  |M|-|監視サーバーのパスワードです。|
+|pollingIntervalSec|Number     |M|-|ポーリングを行う間隔です。|
+|retryIntervalSec  |Number     |M|-|ポーリングが失敗した場合，リトライを行うまでの間隔です。|
+|extendedInfo      |String32767|M|-|プラグイン固有の情報を格納することができます。|
 
 ```json
 {
@@ -288,7 +287,7 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |paramsオブジェクトの値|型 |M/O|デフォルト値|解説|
 |:---------------------|:--|:-:|:----------:|:---|
-|指定要素|String255|M|-|どの種類のlastInfoが必要かを指定する必要があります。以下の表を参照してください|
+|指定要素|String255|M|-|どの種類のlastInfoが必要かを指定する必要があります。以下の表を参照してください。|
 
 |paramsオブジェクトの値一覧|解説|
 |:-------------------------|:---|
@@ -312,7 +311,7 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|最新情報|String255|M|-|Hatoholサーバーに保存されている指定した要素の最新情報|
+|最新情報|String255|M|-|Hatoholサーバーに保存されている指定した要素の最新情報です。|
 
 ```json
 {
@@ -321,7 +320,7 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
   "jsonrpc": "2.0"
 }
 ```
-この例ではlastInfoとしてタイムスタンプが返ってきています
+この例ではlastInfoとしてタイムスタンプが返ってきています。
 
 
 ### putItems(method)
@@ -332,20 +331,20 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|items  |object   |M|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
+|items  |object   |M|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |fetchId|String255|O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchItemsによるリクエストを受けた場合にのみ、fetchItemsのparams内のfetchIdの値をここに入れてください。|
 
 ***itemsオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|itemId       |String255    |M|-|アイテムのID|
-|hostId       |String255    |M|-|アイテムが所属するホストのID|
-|brief        |String255    |M|-|アイテムの概要|
-|lastValueTime|TimeStamp    |M|-|アイテムが最後に更新された時刻|
-|lastValue    |String255    |M|-|アイテムが最後に更新された際の値|
-|itemGroupName|String255配列|M|-|アイテムが所属しているグループ名|
-|unit         |String255    |M|-|valueの単位|
+|itemId       |String255    |M|-|アイテムのIDです。|
+|hostId       |String255    |M|-|アイテムが所属するホストのIDです。|
+|brief        |String255    |M|-|アイテムの概要です。|
+|lastValueTime|TimeStamp    |M|-|アイテムが最後に更新された時刻です。|
+|lastValue    |String255    |M|-|アイテムが最後に更新された際の値です。|
+|itemGroupName|String255配列|M|-|アイテムが所属しているグループ名です。|
+|unit         |String255    |M|-|valueの単位です。|
 
 ```json
 {
@@ -398,7 +397,7 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|itemId    |String255 |M|-|取得するイベントのID|
+|itemId    |String255 |M|-|取得するイベントのIDです。|
 |samples   |object配列|M|-|ヒストリー情報を構成するサンプルの配列です。詳細は次のテーブルを確認してください。サンプルは、時刻の昇順に並んでいる必要があります。|
 |fetchId   |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryによるリクエストを受けた場合にのみ、fetchHistoryのparams内のfetchIdの値をここに入れてください。|
 
@@ -406,8 +405,8 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|value |String255|M|-|time時点でのアイテムの値|
-|time  |TimeStamp|M|-|valueが記録された時刻|
+|value |String255|M|-|time時点でのアイテムの値です。|
+|time  |TimeStamp|M|-|valueが記録された時刻です。|
 
 ```json
 {
@@ -452,16 +451,16 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
+|hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
+|lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 
 ***hostsオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostId  |String255|M|-|監視サーバーが監視しているホストID|
-|hostName|String255|M|-|監視サーバーが監視しているホスト名|
+|hostId  |String255|M|-|監視サーバーが監視しているホストIDです。|
+|hostName|String255|M|-|監視サーバーが監視しているホスト名です。|
 
 ```json
 {
@@ -502,16 +501,16 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
+|hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
+|lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になります。|
 
 ***hostGroupsオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|groupId  |String255|M|-|ホストグループのID|
-|groupName|String255|M|-|グループIDに対応したホストグループの名前|
+|groupId  |String255|M|-|ホストグループのIDです。|
+|groupName|String255|M|-|グループIDに対応したホストグループの名前です。|
 
 ```json
 {
@@ -552,16 +551,16 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
+|hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
+|lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 
 ***hostGroupMembershipオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostId  |String255    |M|-|ホストのID|
-|groupIds|String255配列|M|-|ホストグループのID|
+|hostId  |String255    |M|-|ホストのIDです。|
+|groupIds|String255配列|M|-|ホストグループのIDです。|
 
 ```json
 {
@@ -607,23 +606,23 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|triggers    |object配列|M|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
+|triggers    |object配列|M|-|トリガー情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
+|lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 |fetchId     |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersによるリクエストを受けた場合にのみ、fetchTriggersのparams内のfetchIdの値をここに入れてください。|
 
 ***triggersオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|triggerId     |String255  |M|-|トリガーのID。HAP自身のトリガーを送信する場合は，トリガーIDとホストIDを"_SELF_"と記述することで送信したトリガーをSELFトリガー扱いにできます|
-|status        |string     |M|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
-|severity      |string     |M|-|トリガーの深刻度 [[一覧](#user-content-triggerseverity)]|
-|lastChangeTime|TimeStamp  |M|-|トリガーが最後に更新された時刻|
-|hostId        |String255  |M|-|トリガーが所属するホストID|
-|hostName      |String255  |M|-|トリガーが所属するサーバーのホスト名|
-|brief         |String255  |M|-|トリガーの概要|
-|extendedInfo  |String32767|M|-|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられる|
+|triggerId     |String255  |M|-|トリガーのID。HAP自身のトリガーを送信する場合は，トリガーIDとホストIDを"_SELF_"と記述することで送信したトリガーをSELFトリガー扱いにできます。|
+|status        |string     |M|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]です。|
+|severity      |string     |M|-|トリガーの深刻度 [[一覧](#user-content-triggerseverity)]です。|
+|lastChangeTime|TimeStamp  |M|-|トリガーが最後に更新された時刻です。|
+|hostId        |String255  |M|-|トリガーが所属するホストIDです。|
+|hostName      |String255  |M|-|トリガーが所属するサーバーのホスト名です。|
+|brief         |String255  |M|-|トリガーの概要です。|
+|extendedInfo  |String32767|M|-|上記の情報以外の必要な情報。主にWebUI上にデータを表示する際に用いられます。|
 
 ```json
 {
@@ -673,24 +672,24 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |events     |object配列|M|-|イベント情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存される|
-|mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャに対するレスポンスとしてputEventsプロシージャを用いる場合のみ，fetchIdと合わせてparamsに挿入してください。<br>指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。<br>この値をtrueにする場合，最低限イベントを1件は送信する必要があります
+|lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存されます。|
+|mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャに対するレスポンスとしてputEventsプロシージャを用いる場合のみ，fetchIdと合わせてparamsに挿入してください。<br>指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。<br>この値をtrueにする場合，最低限イベントを1件は送信する必要があります。|
 |fetchId    |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsによるリクエストを受けた場合にのみ、fetchEventsのparams内のfetchIdの値をここに入れてください。|
 
 ***eventsオブジェクト***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|eventId     |String255  |M|-|イベントのID|
-|time        |TimeStamp  |M|-|イベントが発生した時刻|
-|type        |string     |M|-|イベントのタイプ [[一覧](#user-content-eventtype)]|
-|triggerId   |String255  |O|-|このイベントを発火させたトリガーID。トリガーとイベントを関連付けないことも可能なため，必須ではありません|
-|status      |string     |O|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]|
-|severity    |string     |O|-|トリガーの深刻度 [[一覧](#user-content-triggerseverity)]|
-|hostId      |String255  |O|-|イベントが発生したホストのID|
-|hostName    |String255  |O|-|イベントが発生したホストの名前|
-|brief       |String255  |M|-|イベントの説明。Web上に表示される情報|
-|extendedInfo|String32767|O|-|briefには書いていない追加の情報を記述できます|
+|eventId     |String255  |M|-|イベントのIDです。|
+|time        |TimeStamp  |M|-|イベントが発生した時刻です。|
+|type        |string     |M|-|イベントのタイプ [[一覧](#user-content-eventtype)]です。|
+|triggerId   |String255  |O|-|このイベントを発火させたトリガーID。トリガーとイベントを関連付けないことも可能なため，必須ではありません。|
+|status      |string     |O|-|トリガーのステータス [[一覧](#user-content-triggerstatus)]です。|
+|severity    |string     |O|-|トリガーの深刻度 [[一覧](#user-content-triggerseverity)]です。|
+|hostId      |String255  |O|-|イベントが発生したホストのIDです。|
+|hostName    |String255  |O|-|イベントが発生したホストの名前です。|
+|brief       |String255  |M|-|イベントの説明。Web上に表示される情報です。|
+|extendedInfo|String32767|O|-|briefには書いていない追加の情報を記述できます。|
 
 ```json
 {
@@ -738,10 +737,10 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 ***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
-|:-----------------|:--|:-:|:----------:|:---|
-|hostParents  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください|
-|updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください|
-|lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる|
+|:-----------------|:--|:-:|:----------:|:---|;
+|hostParents  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
+|lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 
 ***hostParentsオブジェクト***
 
@@ -749,8 +748,8 @@ exchangeProfileプロシージャ同士によるプロフィール交換が完�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|childHostId |String255|M|-|VMの子ホストのID|
-|parentHostId|String255|M|-|VMの親ホストのID|
+|childHostId |String255|M|-|VMの子ホストのIDです。|
+|parentHostId|String255|M|-|VMの親ホストのIDです。|
 
 ```json
 {
@@ -792,12 +791,12 @@ HostやTrigger，Event情報の送信処理が行われるたびにHatoholサー
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|lastStatus         |string   |M|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]|
-|failureReason      |String255|M|-|情報取得が失敗した理由|
-|lastSuccessTime    |TimeStamp|M|-|最後に情報取得が成功した時刻。一度も成功していない場合は空文字列をセットして下さい。|
-|lastFailureTime    |TimeStamp|M|-|最後に情報取得が失敗した時刻。一度も失敗していない場合は空文字列をセットして下さい。|
-|numSuccess         |Number   |M|-|HAPが起動してから情報取得に成功した回数|
-|numFailure         |Number   |M|-|HAPが起動してから情報取得に失敗した回数|
+|lastStatus         |string   |M|-|最新のポーリング結果 [[一覧](#user-content-arminfostatus)]です。|
+|failureReason      |String255|M|-|情報取得が失敗した理由です。|
+|lastSuccessTime    |TimeStamp|M|-|最後に情報取得が成功した時刻です。一度も成功していない場合は空文字列をセットして下さい。|
+|lastFailureTime    |TimeStamp|M|-|最後に情報取得が失敗した時刻です。一度も失敗していない場合は空文字列をセットして下さい。|
+|numSuccess         |Number   |M|-|HAPが起動してから情報取得に成功した回数です。|
+|numFailure         |Number   |M|-|HAPが起動してから情報取得に失敗した回数です。|
 
 ```json
 {
@@ -836,7 +835,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostIds|String255配列|O|-|ホストを指定し取得するアイテムを限定します。hostIdsがセットされていない場合は全てのホストが対象となります。|
-|fetchId|String255    |M|-|putItemsプロシージャで使用します。そのputItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|fetchId|String255    |M|-|putItemsプロシージャで使用します。そのputItemsプロシージャがどのfetchItemsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です。|
 
 ```json
 {
@@ -875,11 +874,11 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostId    |String255|M|-|ヒストリーのアイテムが所属しているホストID|
-|itemId    |String255|M|-|ヒストリーのアイテムID|
-|beginTime |TimeStamp|M|-|ヒストリー取得域の始点時刻を指定します|
-|endTime   |TimeStamp|M|-|ヒストリー取得域の終点時刻を指定します|
-|fetchId   |String255|M|-|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|hostId    |String255|M|-|ヒストリーのアイテムが所属しているホストIDです。|
+|itemId    |String255|M|-|ヒストリーのアイテムIDです。|
+|beginTime |TimeStamp|M|-|ヒストリー取得域の始点時刻を指定します。|
+|endTime   |TimeStamp|M|-|ヒストリー取得域の終点時刻を指定します。|
+|fetchId   |String255|M|-|putHistoryプロシージャで使用します。そのputHistoryプロシージャがどのfetchHistoryプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です。|
 
 ```json
 {
@@ -917,7 +916,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostIds|String255配列|O|-|ホストを指定し取得するトリガーを限定します。hostIdsがセットされていない場合は全てのホストが対象となります。|
-|fetchId|String255    |M|-|putTriggersプロシージャで使用します。そのputTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|fetchId|String255    |M|-|putTriggersプロシージャで使用します。そのputTriggersプロシージャがどのfetchTriggersプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です。|
 
 ```json
 {
@@ -955,10 +954,10 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|lastInfo |String32767|M|-|基準となるイベントの情報です|
-|count    |Number   |M|-|取得するイベント件数。最大は1000件です|
-|direction|String255|M|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します|
-|fetchId  |String255|M|-|putEventsプロシージャで使用します。そのputEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかをHatoholサーバーが識別するために必要です|
+|lastInfo |String32767|M|-|基準となるイベントの情報です。|
+|count    |Number   |M|-|取得するイベント件数です。最大は1000件です。|
+|direction|String255|M|-|"ASC"（指定したIDより新しいイベント）または”DESC”(指定したIDより古いイベント)を選択します。|
+|fetchId  |String255|M|-|putEventsプロシージャで使用します。そのputEventsプロシージャがどのfetchEventsプロシージャによる要求に対応したものかどうかをHatoholサーバーが識別するために必要です。|
 
 ```json
 {
@@ -1018,9 +1017,9 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |ステータス|解説|
 |:---------|:---|
-|"INIT"   |初期状態。まだ通信を行っていない|
-|"OK"     |通信に成功している|
-|"NG"|通信に失敗している|
+|"INIT"   |初期状態を表します。まだ通信を行っていない状態です。|
+|"OK"     |通信に成功している状態を表します。|
+|"NG"     |通信に失敗している状態を表します。|
 
 ### ServerType
 
@@ -1047,16 +1046,16 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |ステータス|解説|
 |:---------|:---|
-|"OK""    |通信に成功している|
-|"NG"|通信に失敗している|
-|"UNKNOWN"|状態不明|
+|"OK""    |通信に成功している状態を表します。|
+|"NG"|通信に失敗している状態を表します。|
+|"UNKNOWN"|状態不明を表しています。|
 
 ### updateType
 
 |種類|解説|
 |:---------|:---|
-|"ALL"    |各データ全てを送信します。Hatoholサーバー内の古いデータを削除し，その後送信した全てのデータを登録します|
-|"UPDATED"|アップデートされたデータのみをHatoholサーバーに送信し，同一IDのデータは上書き，初出のデータは新規登録します|
+|"ALL"    |各データ全てを送信します。Hatoholサーバー内の古いデータを削除し，その後送信した全てのデータを登録します。|
+|"UPDATED"|アップデートされたデータのみをHatoholサーバーに送信し，同一IDのデータは上書き，初出のデータは新規登録します。|
 
 ### eventType
 
@@ -1074,10 +1073,10 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |ステータス|解説|
 |:---------|:---|
-|"SUCCESS"|更新が正常に終了しました|
-|"FAILURE" |更新が失敗しました|
+|"SUCCESS"|更新が正常に終了したことを表します。|
+|"FAILURE" |更新が失敗したことを表します。|
 
- - また，putプロシージャのparamsの内容に不備があり，引数が間違っていたなどの理由でエラーを返す場合は，以下の例のように，JSON-RPC2.0で定義されているerrorオブジェクトを用いてエラーを返す必要があります。
+ - また，putプロシージャのparamsの内容に不備があり，引数が間違っていたなどの理由でエラーを返す場合には，以下の例のようにJSON-RPC2.0で定義されているerrorオブジェクトを用いてエラーを返す必要があります。
 
  ```json
 {
@@ -1096,11 +1095,11 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |ステータス|解説|
 |:---------|:---|
-|"SUCCESS"|リクエストの受け入れに成功しました|
-|"ABBREV"|リクエストの間隔が近いため，リクエストの受け入れを省略しました|
-|"FAILURE"|リクエストの受け入れに失敗しました|
+|"SUCCESS"|リクエストの受け入れに成功しました。|
+|"ABBREV"|リクエストの間隔が近いため，リクエストの受け入れを省略しました。|
+|"FAILURE"|リクエストの受け入れに失敗しました。|
 
- - また，fetchプロシージャのparamsの内容に不備があり，引数が間違っていたなどの理由でエラーを返す場合は，以下の例のように，JSON-RPC2.0で定義されているerrorオブジェクトを用いてエラーを返す必要があります。
+ - また，fetchプロシージャのparamsの内容に不備があり，引数が間違っていたなどの理由でエラーを返す場合には，以下の例のようにJSON-RPC2.0で定義されているerrorオブジェクトを用いてエラーを返す必要があります。
 
  ```json
 {
