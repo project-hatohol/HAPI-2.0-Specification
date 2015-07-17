@@ -168,7 +168,7 @@ Hatoholサーバー                                   HAP
 |[fetchHistory](#user-content-fetchhistorymethod)|Hatoholサーバーからのヒストリー取得リクエストを受け入れます。|method|O|
 |[fetchTriggers](#user-content-fetchtriggersmethod)|Hatoholサーバーからのトリガー取得リクエストを受け入れます。|method|O|
 |[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます。|method|O|
-|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります。|notification|M|
+|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfonotification)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります。|notification|M|
 
 ### exchangeProfile(method)
 
@@ -280,8 +280,8 @@ Hatoholサーバー                                   HAP
 
 ### getLastInfo(method)
 
- - プロシージャ名にputが付いているプロシージャの呼び出し時にHatoholサーバーに送信，保存されたlastInfo情報を要求します。取得したlastInfoを用いて，前回までに送信したデータと現在所持しているデータの差分をHatoholサーバーに送信できます。
- - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合，resultオブジェクトの値は空文字として返ってきます。
+ - putプロシージャの呼び出し前に，Hatoholサーバーに送信，保存されたlastInfo情報を要求，取得します。取得したlastInfoを用い，前回までに送信したデータと現在のデータの差分をHatoholサーバーに送信します。
+ - 初回起動時など，HatoholサーバーにlastInfoが保存されていない場合は，resultオブジェクトの値は空文字として返ってきます。
 
 ***リクエスト(params)***
 
@@ -332,7 +332,7 @@ Hatoholサーバー                                   HAP
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
 |items  |object   |M|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
-|fetchId|String255|O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchItemsによるリクエストを受けた場合にのみ、fetchItemsのparams内のfetchIdの値をここに入れてください。|
+|fetchId|String255|O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchItemsのparams内のfetchIdの値をここに入れてください。|
 
 ***itemsオブジェクト***
 
@@ -399,7 +399,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |itemId    |String255 |M|-|取得するイベントのIDです。|
 |samples   |object配列|M|-|ヒストリー情報を構成するサンプルの配列です。詳細は次のテーブルを確認してください。サンプルは、時刻の昇順に並んでいる必要があります。|
-|fetchId   |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryによるリクエストを受けた場合にのみ、fetchHistoryのparams内のfetchIdの値をここに入れてください。|
+|fetchId   |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdの値をここに入れてください。|
 
 ***samplesオブジェクト***
 
@@ -785,7 +785,7 @@ Hatoholサーバー                                   HAP
 
 ### putArmInfo(method)
 
-HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)や[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)，で取得したポーリング時間の2倍（SHOULD）とします。
+HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)や[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfonotification)で取得したポーリング時間の2倍（SHOULD）とします。
 
 ***リクエスト(params)***
 
@@ -886,7 +886,6 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
   "params": {
     "fetchId": 1,
     "beginTime": "20150323151300",
-    "valueType": "INTERGER",
     "itemId": 1,
     "hostId": "1"
   },
