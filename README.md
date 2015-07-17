@@ -156,7 +156,7 @@ Hatoholサーバー                                   HAP
 |[putHostGroupMembership](#user-content-puthostgroupmembershipmethod)|HAPからホストグループ所属情報を受け取り，更新します。|method|O|
 |[putTriggers](#user-content-puttriggersmethod)|HAPからトリガー情報を受け取り，更新します。|method|O|
 |[putEvents](#user-content-puteventsmethod)|HAPからイベント情報を受け取り，更新します。|method|O|
-|[putHostParents](#user-content-puthostparentsmethod)|HAPが監視しているホスト同士のVM親子関係を更新します。|method|O|
+|[putHostParents](#user-content-puthostparentsmethod)|HAPが監視しているホスト同士の親子関係を更新します。|method|O|
 |[putArmInfo](#user-content-putarminfomethod)|HAPの接続ステータスを更新します。|method|M|
 
 ### HAPに実装するプロシージャ
@@ -296,7 +296,7 @@ Hatoholサーバー                                   HAP
 |"hostGroupMembership"|ホストグループの所属情報の最新情報を指定します。|
 |"trigger"            |トリガーの最新情報を指定します。|
 |"event"              |イベントの最新情報を指定します。|
-|"hostParent"         |ホストのVM親子関係の最新情報を指定します。|
+|"hostParent"         |ホストの親子関係の最新情報を指定します。|
 
 ```json
 {
@@ -731,25 +731,25 @@ Hatoholサーバー                                   HAP
 
 ### putHostParents(method)
 
- - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのVM親子関係をHatoholサーバーに送信します。
- - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたVM親子関係をHatoholサーバーに送信します。
+ - Hatoholサーバーとの接続完了時は"ALL"オプションを用い，全てのホストの親子関係をHatoholサーバーに送信します。
+ - "UPDATE"オプションを用いた場合は[getLastInfo](#user-content-getlastinfomethod)プロシージャ，またはHAP自身から呼び出したlastInfoを基に，その時点から現時点までに追加されたホストの親子関係をHatoholサーバーに送信します。
 
 ***リクエスト(params)***
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|;
-|hostParents  |object配列|M|-|VMの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
+|hostParents  |object配列|M|-|ホストの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 
 ***hostParentsオブジェクト***
 
- - VMの親子関係を削除する場合は親ホストIDの値を空文字にすることで，送信した子ホストIDの親子関係をHatoholサーバーから削除することができます。
+ - ホストの親子関係を削除する場合は親ホストIDの値を空文字にすることで，送信した子ホストIDの親子関係をHatoholサーバーから削除することができます。
 
 |オブジェクトの名前|型 |M/O|デフォルト値|解説|
 |:-----------------|:--|:-:|:----------:|:---|
-|childHostId |String255|M|-|VMの子ホストのIDです。|
-|parentHostId|String255|M|-|VMの親ホストのIDです。|
+|childHostId |String255|M|-|子ホストのIDです。|
+|parentHostId|String255|M|-|親ホストのIDです。|
 
 ```json
 {
