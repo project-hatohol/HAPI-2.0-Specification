@@ -696,6 +696,7 @@ Hatoholサーバー                                   HAP
   "id": 1,
   "params": {
     "fetchId": "1",
+    "mayMoreFlag": true,
     "lastInfo": "201504011759",
     "events": [
       {
