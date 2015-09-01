@@ -2,10 +2,10 @@
 
 ## Overview
 
-Hatohol Arm Plugin Interface (HAPI) 2.0 is protocol for information exchange between Hatohol server and Monitoring server plugin.
+Hatohol Arm Plugin Interface (HAPI) 2.0 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
 It is constructed as JSON-RPC appllication on the communication path that is consolidated between them.
 
-The following figure express the above overview.
+The following figure expresses the above overview.
 
 ![overview](../hapi_overview.png)
 
@@ -22,23 +22,25 @@ The following figure express the above overview.
 
 ### Communication path 
 
-Use Advanced Message Queuing Protocol (AMQP) 0.9.1 as communication path.
+Use Advanced Message Queuing Protocol (AMQP) 0.9.1 as a communication channel.
 - AMQP 0.9.1: https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf
 
 ### JSON-RPC
 
-Use JSON-RPC 2.0 as basic protocol of information exchange.
+Use JSON-RPC 2.0 as a basic protocol of information exchange.
 - [JSON-RPC 2.0 (2013-01-04)](http://www.jsonrpc.org/specification)
 - [JSON(RFC4627)](https://www.ietf.org/rfc/rfc4627.txt)
 
-#### Attention
-- Encoding is UTF-8(MUST). Normalization form C(SHOULD). String can escape(MAY).
-- Enough randomness is needed from ID object that is used in request and response(SHOULD).
+### Attention
+
+- Encoding MUST be UTF-8. Normalization form SHOULD be C. String MAY escape.
+- Enough randomness SHOULD be needed from ID object that is used in request and response.
 - Must not use batch request of JSON_RPC in HAPI2.0(MUST NOT).
 - HAPI2.0 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.0 assume Hatohol server and plugin use the above queue name.
 
 ## Operating overview
-The following sequence figure express basic operating of procedures request and response that are exchanged between Hatohol server and Hatohol arm plugin. 
+
+The following sequence figure describes basic operating of procedures request and response that are exchanged between Hatohol server and Hatohol arm plugin. 
 
 ```
 
@@ -119,27 +121,27 @@ The following sequence figure express basic operating of procedures request and 
 ```
 ## Data type
 
- - In this section explains about data type that is defined for Hatohol. They use date type that is defined in the JSON-RPC internally.
+ - In this section explains about data types that are defined for Hatohol. They(the data types) use date type that is defined in the JSON-RPC internally.
 
 |Name|JSON type|description|
 |:---|:---------|:---|
-|TimeStamp|string|This type stores times of day. Use UTC. Format is YYYYMMDDhhmmss.nnnnnnnnn. YYYY, MM, DD, hh, mm, ss, and nnnnnnnnn each express the A.D., Month, Day, hour, minute, second, nano second. Can abbreviate nano second. In case of the above or nano second digits less than nine, insert zero to spare parts(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000).|
-|Boolean|true, false|This type stores boolean. Assign true or false to show authenticity of value.|
-|Number|number|This type stores number type value. Need to keep the number within the 0 and 2147483647.|
-|String255|string|This type stores string type value. Need to keep the number of characters within less than 255 characters.|
-|URI2047|string|This type stores string type value. Need to keep the number of characters within less than 2047 characters(MUST). It match URI that is defined in the RFC3986,RFC6874, and keep octet size  of within lessthan 2047(SHOULD).|
-|String32767|string|This type stores string type value. Need to keep the number of characters within less than 32767 characters.|
+|TimeStamp|string|This type is used to times of day. Time value MUST be stored in UTC. Format is YYYYMMDDhhmmss.nnnnnnnnn. YYYY, MM, DD, hh, mm, ss, and nnnnnnnnn each expresses the A.D., Month, Day, hour, minute, second, nano second. It can abbreviate nano second. If the above or nano second digits is less than nine, it will be inserted zero to fill digit(s)(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000).|
+|Boolean|true, false|This type is used to store boolean value. It can assign true or false to show authenticity of value.|
+|Number|number|This type is used to store number value. It needs to be more than 0 and less than 2147483647.|
+|String255|string|This type is used to store string value. It needs to be the number of characters less than 255 characters.|
+|URI2047|string|This type is used to store string value. It MUST be the number of characters less than 2047. It should satisfy URI requirements which is defined in the RFC3986, RFC6874. And its octet size SHOULD be less than 2047.|
+|String32767|string|This type is used to store string value. It needs to be the number of characters less than 32767 characters.|
 
-In case of all cases, the number of character is counted by UTF-32 code point number after NFC(MUST).
+In any case, the number of character MUST be counted by UTF-32 code point number after applying NFC nomalization.
 
 ## About start up operation
 
- - When start Hatohol server and HAP or restart them, there exchange each profile and usuable procedures to use exchangeProfile. There can optimize procedures based on exchanged information.
+ - Immediatery after starting or restarting Hatohol server and HAP, they exchange usable procedures information with exchangeProfile procedure. There can optimize procedures based on exchanged information.
 
 ## Procedures
 
- - [M/O] is show whether that procedure is Mandatory or Optional. Mandatory procedure can not abbreviate to implement.
- - When does not complate exchange profile yet to use exchangeProfile procedure and get other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE” to result object.
+ - [M/O] indicates whether Mandatory or Optional. Mandatory procedure can not abbreviate to implement.
+ - When does not complete exchange profile yet to use exchangeProfile procedure and get other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE” to result object.
 
 ### Hatohol server procedures
 
@@ -167,11 +169,11 @@ In case of all cases, the number of character is counted by UTF-32 code point nu
 |[fetchHistory](#user-content-fetchhistorymethod)|Accept request to get history from Hatohol server.|method|O|
 |[fetchTriggers](#user-content-fetchtriggersmethod)|Accept request to get trigger from Hatohol server.|method|O|
 |[fetchEvents](#user-content-fetcheventsmethod)|Accept request to get event from Hatohol server.|method|O|
-|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Receive connecting information with Hatohol server and polling interval seconds as notification.|method|M|
+|[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)|Receive connecting information with Hatohol server and polling interval seconds as a notification.|method|M|
 
 ### exchangeProfile(method)
 
- This procedure is had Hatohol server and HAP in common. It uses when start and restart mainly. Please look at the [About start up oetation](#user-content-about-start-up-content).
+Both of Hatohol server and HAP have procedure. This procedure is mainly used after starting and restarting. Please look at the [About start up operation](#user-content-about-start-up-content).
 
 ***Request(params)***
 
@@ -230,12 +232,11 @@ In case of all cases, the number of character is counted by UTF-32 code point nu
 
 ### getMonitoringServerInfo(method)
 
-To inquire myself conecting information and polling interval to Hatohol server per polling interval is the standard motion, but can inquire anytime.
-
+This procedure is mainly used to acquire Hatohol server itself connection and polling interval information. And this procedure can call at the arbitrary point of the time.
 
 ***Request(params)***
 
- getMonitoringServerInfo method does not have arguments. Send a params of request as empty string.
+ getMonitoringServerInfo method does not have arguments. It should request with a empty string parameter.
 
 ```json
 {
@@ -258,7 +259,7 @@ To inquire myself conecting information and polling interval to Hatohol server p
 |password          |String255  |M|-|A pass word of monitoring server.|
 |pollingIntervalSec|Number     |M|-|Polling interval seconds.|
 |retryIntervalSec  |Number     |M|-|Retry interval seconds in case of fail polling.|
-|extendedInfo      |String32767|M|-|Can store your any information.|
+|extendedInfo      |String32767|M|-|This field can store an additional information.|
 
 ```json
 {
@@ -280,9 +281,10 @@ To inquire myself conecting information and polling interval to Hatohol server p
 
 ### getLastInfo(method)
 
-Can send the diffarence between sent data and having data currently to use got lastInfo.
+This procedure is used for getting lastInfo which is stored in a Hatohol server before calling put series procedures.
+Its lastInfo is used for put series procedures to calculate changes current value from previous value.
 
-Such as when start up a plugin, in case of does not saved lastInfo in Hatohol server, get lastInfo as empty string.
+When starting up a plugin and no lastInfo in a Hatohol server, it will return lastInfo as empty string.
 
 ***Request(params)***
 
@@ -312,7 +314,7 @@ Such as when start up a plugin, in case of does not saved lastInfo in Hatohol se
 
 |Object value|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|latest information|String255|M|-|Designate element latest information of to saved in Hatohol server.|
+|latest information|String255|M|-|Designate element latest information of to be saved in Hatohol server.|
 
 ```json
 {
@@ -321,18 +323,18 @@ Such as when start up a plugin, in case of does not saved lastInfo in Hatohol se
   "jsonrpc": "2.0"
 }
 ```
-In this example, receive a timestamp as lastInfo.
+In this example, callee receive a timestamp as a lastInfo.
 
 ### putItems(method)
 
-Standard motion is to send all item information to Hatohol server when complate conect to Hatohol server and get [fetchItems](#user-content-fetchitemsmethod) request from Hatohol server. It has possible that burden to Hatohol server, can not use anytime. 
+Standard behavior is to send all item information to Hatohol server when complete conect to Hatohol server and get [fetchItems](#user-content-fetchitemsmethod) request from Hatohol server. There is a possibility which places a high load on a Hatohol Server, so this procedure forbid to use at the arbitrary point of the time.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|items  |object   |M|-|This is object that stores item information. Look at the following table for details.|
-|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchItems request.
+|items  |object   |M|-|This is an object that stores item information. In more detail, please refer the following table.|
+|fetchId|String255|O|-|This is an ID which corresponds for request from Hatohol server. It should be contain fetchId only if it will be received fetchItems request.|
 
 ***items object***
 
@@ -379,7 +381,7 @@ Standard motion is to send all item information to Hatohol server when complate 
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -391,15 +393,15 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ### putHistory(method)
 
- - When receive [fetchHistory](#user-content-fetchhistorymethod) procedure from Hatohol server, return matched history to conditions. It has possible that burden to Hatohol server, can not use anytime. 
+ - When receive [fetchHistory](#user-content-fetchhistorymethod) procedure from Hatohol server, HAP returns matched history to conditions. It has possible that burden to Hatohol server, can not use anytime. 
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
 |itemId    |String255 |M|-|Id of the got item|
-|samples   |object array|M|-|This is sample array to configure history information. Look at the following table for details. The samples is needed to sort by ascending order of time.|
-|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchHistory request.
+|samples   |object array|M|-|This is sample array to configure history information. In more detail, please refer the following table. The samples is needed to sort by ascending order of time.|
+|fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchHistory request.|
 
 ***samples object***
 
@@ -413,7 +415,6 @@ Receive result as result object value whether sent data has been updated. Look a
   "id": 1,
   "params": {
     "fetchId": "1",
-    cccc
       {
         "time": "20150323113000",
         "value": "exampleValue"
@@ -432,7 +433,7 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -444,24 +445,24 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ### putHosts(method)
 
-Send all hosts information to Hatohol server to use "ALL" option when complate conect to Hatohol server and changed hosts information that saved in internal.
+Send all hosts information to Hatohol server to use "ALL" option when complete conect to Hatohol server and changed hosts information that saved in internal.
 
- In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+When using "UPDATE" option, send difference to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|hosts       |object array|M|-|This is object array that stores hosts information. Look at the following table for details.|
+|hosts       |object array|M|-|This is an object array that stores hosts information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
-|lastInfo    |String32767 |O|-|Insert to here host information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|lastInfo    |String32767 |O|-|Insert to here host information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 
 ***hosts object***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostId  |String255|M|-|Host Id of monitered by monitoring server.|
-|hostName|String255|M|-|Host name of monitored by monitoring server.|
+|hostId  |String255|M|-|Host Id of a host which monitered under monitoring server.|
+|hostName|String255|M|-|Host name of a host which monitored under monitoring server.|
 
 ```json
 {
@@ -483,7 +484,7 @@ Send all hosts information to Hatohol server to use "ALL" option when complate c
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -495,24 +496,24 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ### putHostGroups(method)
 
-Send all host groups information to Hatohol server to use "ALL" option when complate conect to Hatohol server and changed hosts information that saved in internal.
+HAP sends all host groups information to Hatohol server to use "ALL" option when complete conect to Hatohol server and changed hosts information that stored in internal.
 
- In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+When using "UPDATE" option, send difference to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or stored in internal to Hatohol server.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostGroups  |object array|M|-|This is object array that stores host groups information. Look at the following table for details.|
+|hostGroups  |object array|M|-|This is an object array that stores host groups information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
-|lastInfo    |String32767 |O|-|Insert to here host group information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|lastInfo    |String32767 |O|-|Insert to here host group information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 
 ***hostGroups object***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
 |groupId  |String255|M|-|Id of host group.|
-|groupName|String255|M|-|Host grou name of compliant the above group Id.|
+|groupName|String255|M|-|Host group name corresponds the above group Id.|
 
 ```json
 {
@@ -534,7 +535,7 @@ Send all host groups information to Hatohol server to use "ALL" option when comp
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -546,17 +547,17 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ### putHostGroupMembership(method)
 
-Send all host group membership information to Hatohol server to use "ALL" option when complate conect to Hatohol server and changed hosts information that saved in internal.
+Send all host group membership information to Hatohol server to use "ALL" option when complete conect to Hatohol server and changed hosts information that saved in internal.
 
- In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+When using "UPDATE" option, send difference to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostGroupMembership|object array|M|-|This is object array that stores host group membership information. Look at the following table for details.|
+|hostGroupMembership|object array|M|-|This is an object which contains host group membership information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
-|lastInfo    |String32767 |O|-|Insert to here host group membership information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|lastInfo    |String32767 |O|-|Putlatest host group membership information. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 
 ***hostGroupMembership object***
 
@@ -589,7 +590,7 @@ Send all host group membership information to Hatohol server to use "ALL" option
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -601,18 +602,18 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ### putTriggers(method)
 
-Send all triggers information to Hatohol server to use "ALL" option when complate conect to Hatohol server or reseive [fetchTriggers](#user-content-fetchtriggersmethod) procedure from Hatohol server.
+Send all triggers information to Hatohol server to use "ALL" option when complete conect to Hatohol server or reseive [fetchTriggers](#user-content-fetchtriggersmethod) procedure from Hatohol server.
 
- In case of using "UPDATE" option, send diffarence to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
+When using "UPDATE" option, send difference to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|triggers    |object array|M|-|This is object array that stores triggers information. Look at the following table for details.|
+|triggers    |object array|M|-|This is an object array that stores triggers information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
-|lastInfo    |String32767|O|-|Insert to here trigger information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
-|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchTriggers request.
+|lastInfo    |String32767|O|-|Put to here trigger information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
+|fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchTriggers request.
 
 ***triggers object***
 
@@ -622,10 +623,10 @@ Send all triggers information to Hatohol server to use "ALL" option when complat
 |status        |string     |M|-|Status of trigger [[List](#user-content-triggerstatus)].|
 |severity      |string     |M|-|Severity of trigger [[List](#user-content-triggerseverity)].|
 |lastChangeTime|TimeStamp  |M|-|Time of last updated trigger.|
-|hostId        |String255  |M|-|Id of host that is trigger of host belongs.|
-|hostName      |String255  |M|-|Host name of host that is trigger of host belongs.|
+|hostId        |String255  |M|-|An Id of host which belongs to a trigger.|
+|hostName      |String255  |M|-|A host name of host which belongs to a trigger.|
 |brief         |String255  |M|-|Overview of trigger.|
-|extendedInfo  |String32767|M|-|The extra information other than the followings. It uses to show data on WebUI mainly.|
+|extendedInfo  |String32767|M|-|An extra information which is used for the purpose other than the above brief. It is used to show data on WebUI mainly.|
 
 ```json
 {
@@ -654,7 +655,7 @@ Send all triggers information to Hatohol server to use "ALL" option when complat
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -672,7 +673,7 @@ Can send event that duplicates event Id. But, to taken priority existing event o
 
 It has two behavior that are to send voluntary and send as response for fetchEvents.
 
-In case of voluntary, send diffarence from before events to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. When HAP connect first time, lastInfo is nothing, so HAP producer can select to send all existing event or do nothing.
+In case of voluntary, send difference from before events to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. When HAP connect first time, lastInfo is nothing, so HAP producer can select to send all existing event or do nothing.
 
 In case of ahead event from to designate event is nothing, send events object as empty string. 
 
@@ -680,10 +681,10 @@ In case of ahead event from to designate event is nothing, send events object as
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|events     |object array|M|-|This is object array that stores events information. Look at the following table for details.|
-|lastInfo    |String32767|O|-|Insert to here event information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|events     |object array|M|-|This is an object array that stores events information. In more detail, please refer the following table.|
+|lastInfo    |String32767|O|-|Insert to here event information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 |mayMoreFlag|Boolean   |O|-|Only use in case of response to fetchEvents with fetchId. If plugin has remaining events to be transmitted, must change value to true. In case of that, must send event at least one.|
-|fetchId|String255|O|-|This is ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchEvents request.
+|fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, in case of only receive fetchEvents request.|
 
 ***events object***
 
@@ -728,7 +729,7 @@ In case of ahead event from to designate event is nothing, send events object as
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -740,17 +741,17 @@ Receive result as result object value whether sent data has been updated. Look a
 
 ### putHostParents(method)
 
- When HAP complates to connect to Hatohol server,  send all host parent relations to use "ALL" option to Hatohol server.
+ When HAP completes to connect to Hatohol server,  send all host parent relations to use "ALL" option to Hatohol server.
 
-In case of use "UPDATE" option, send diffarence of host parent relations that based on lastInfo that got from [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. 
+In case of use "UPDATE" option, send difference of host parent relations that based on lastInfo that got from [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. 
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostParents  |object array|M|-|This is object array that stores host parent relations information. Look at the following table for details.|
+|hostParents  |object array|M|-|This is an object array that stores host parent relations information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
-|lastInfo    |String32767|O|-|Insert to here host parent relation information of last. This information is result of [getLastInfo](#user-content-getlastinfomethod).|
+|lastInfo    |String32767|O|-|Insert to here host parent relation information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 
 ***hostParents object***
 
@@ -785,7 +786,7 @@ In case of use "UPDATE" option, send diffarence of host parent relations that ba
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -828,7 +829,7 @@ Standard motion is to send after each to send host, trigger, event information t
 
 ***Result(result)***
 
-Receive result as result object value whether sent data has been updated. Look at the [[Values](#user-content-putresult)].
+Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -867,7 +868,7 @@ This procedure request to get item to HAP. HAP must return success or failure of
 
 ***Result(result)***
 
-Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -910,7 +911,7 @@ Assume to get matched history that from beginTime till endTime.
 
 ***Result(result)***
 
-Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -949,7 +950,7 @@ This procedure request to get triggers to HAP. HAP must return success or failur
 
 ***Result(result)***
 
-Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -990,7 +991,7 @@ Can designate "count" value till 1000. If want to request over the event number 
 
 ***Result(result)***
 
-Return result as result object value whether request accept to Hatohol server. Look at the [[Values](#user-content-putresult)].
+Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
