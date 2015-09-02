@@ -3,7 +3,7 @@
 ## Overview
 
 Hatohol Arm Plugin Interface (HAPI) 2.0 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
-It is constructed as JSON-RPC appllication on the communication path that is consolidated between them.
+It is designed as JSON-RPC appllication on the communication path that is consolidated between them.
 
 The following figure expresses the above overview.
 
@@ -33,7 +33,7 @@ Use JSON-RPC 2.0 as a basic protocol of information exchange.
 
 ### Attention
 
-- Encoding MUST be UTF-8. Normalization form SHOULD be C. String MAY escape.
+- Character encoding MUST be UTF-8. Normalization form SHOULD be C. String MAY escape.
 - Enough randomness SHOULD be needed from ID object that is used in request and response.
 - Must not use batch request of JSON_RPC in HAPI2.0(MUST NOT).
 - HAPI2.0 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.0 assume Hatohol server and plugin use the above queue name.
@@ -121,7 +121,7 @@ The following sequence figure describes basic operating of procedures request an
 ```
 ## Data type
 
- - In this section explains about data types that are defined for Hatohol. They(the data types) use date type that is defined in the JSON-RPC internally.
+ - This section describes about data types that are defined for Hatohol. They(the data types) use date type that is defined in the JSON-RPC internally.
 
 |Name|JSON type|description|
 |:---|:---------|:---|
@@ -141,7 +141,7 @@ In any case, the number of character MUST be counted by UTF-32 code point number
 ## Procedures
 
  - [M/O] indicates whether Mandatory or Optional. Mandatory procedure can not abbreviate to implement.
- - When does not complete exchange profile yet to use exchangeProfile procedure and get other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE” to result object.
+ - When does not complete exchange profile yet to use exchangeProfile procedure and get other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE" to result object.
 
 ### Hatohol server procedures
 
@@ -284,7 +284,7 @@ This procedure is mainly used to acquire Hatohol server itself connection and po
 This procedure is used for getting lastInfo which is stored in a Hatohol server before calling put series procedures.
 Its lastInfo is used for put series procedures to calculate changes current value from previous value.
 
-When starting up a plugin and no lastInfo in a Hatohol server, it will return lastInfo as empty string.
+No lastInfo in a Hatohol server, it SHALL return an empty string.
 
 ***Request(params)***
 
@@ -393,7 +393,7 @@ Caller receives result as a result object value whether sent data has been updat
 
 ### putHistory(method)
 
- - When receive [fetchHistory](#user-content-fetchhistorymethod) procedure from Hatohol server, HAP returns matched history to conditions. It has possible that burden to Hatohol server, can not use anytime. 
+ - When receive [fetchHistory](#user-content-fetchhistorymethod) procedure from Hatohol server, HAP returns matched history to conditions. This procedure has possibility that burden to Hatohol server, can not use at the arbitrary point of time. 
 
 ***Request(params)***
 
@@ -741,7 +741,7 @@ Caller receives result as a result object value whether sent data has been updat
 
 ### putHostParents(method)
 
- When HAP completes to connect to Hatohol server,  send all host parent relations to use "ALL" option to Hatohol server.
+When HAP completes to connect to Hatohol server,  send all host parent relations to use "ALL" option to Hatohol server.
 
 In case of use "UPDATE" option, send difference of host parent relations that based on lastInfo that got from [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. 
 
@@ -755,7 +755,7 @@ In case of use "UPDATE" option, send difference of host parent relations that ba
 
 ***hostParents object***
 
- In case of remove host parent relation from Hatohol server, can remove host parent relation that is to sent childHostId by insert empty string to parentHostId.
+When removing host parent relation from Hatohol server, please send hostParent object that contains empty string as parentHostId.
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
@@ -798,7 +798,7 @@ Caller receives result as a result object value whether sent data has been updat
 
 ### putArmInfo(method)
 
-Standard behavior is to send after each to send host, trigger, event information to Hatohol server, but users can send at the arbitrary point of the time. The minimum interval MUST be 1 second. The maximum interval SHOULD be twice of polling interval seconds which is obtained by [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod) and [updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod).
+Standard behavior is to send after each to send host, trigger and event information to Hatohol server, but users can send at the arbitrary point of the time. The minimum interval MUST be 1 second. The maximum interval SHOULD be twice of polling interval seconds which is obtained by [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod) and [updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod).
 
 ***Request(params)***
 
@@ -868,7 +868,7 @@ This procedure requests to obtain item to HAP. HAP MUST return success or failur
 
 ***Result(result)***
 
-Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
+Return a result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -912,7 +912,7 @@ beginTime and endTime contains in params object. History timestamps satisfies gr
 
 ***Result(result)***
 
-Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
+Return a result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -951,7 +951,7 @@ Hatohol server calls this procedure to obtain triggers to HAP. HAP MUST return s
 
 ***Result(result)***
 
-Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
+Return a result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -992,7 +992,7 @@ The maximum value of "count" field in this procedure is 1000. If Hatohol server 
 
 ***Result(result)***
 
-Return result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
+Return a result as a result object value whether request accept to Hatohol server. Refer to the [[Values](#user-content-putresult)].
 
 ```json
 {
@@ -1136,7 +1136,7 @@ If fetch series of procedures' parameters are wrong or invalid and so on, it nee
 ## Getting help 
 If you find a bug in this documentation or would like to propose an improvement, please send a bug report to Hatohol community mailing list. [hatohol-users@sourceforge.net]
 
-When this English specifications differs from Japanese one, latter specifications has priority.
+When this English specifications differ from Japanese ones, latter specifications have priority.
 
 ## Copyright
 Copyright (C)2015 Project Hatohol
