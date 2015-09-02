@@ -667,11 +667,11 @@ Caller receives result as a result object value whether sent data has been updat
 
 ### putEvents(method)
 
-putEvents procedures can send till 1000 events. If want to send over than 1000, send events to separate more than once.
+If users want to send over than 1000 event with putEvents procedure, users should be separate request which contains less than 1000 events and send them.
 
-Can send event that duplicates event Id. But, to taken priority existing event or new event does not define.
+Users can send event which duplicates event id with this procedure.
 
-It has two behavior that are to send voluntary and send as response for fetchEvents.
+This procedure has two behavior. One is sending spontaneously, the other is sending as a response for fetchEvent procedure.
 
 In case of voluntary, send difference from before events to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. When HAP connect first time, lastInfo is nothing, so HAP producer can select to send all existing event or do nothing.
 
@@ -692,14 +692,14 @@ In case of ahead event from to designate event is nothing, send events object as
 |:-----------------|:--|:-:|:----------:|:---|
 |eventId     |String255  |M|-|Id of event.|
 |time        |TimeStamp  |M|-|Time of happened event.|
-|type        |string     |M|-|Type of event.[[一覧](#user-content-eventtype)]|
-|triggerId   |String255  |O|-|Trigger id of ignition this event. It is not mandatory because can do not to assciate trigger and event.|
-|status      |string     |O|-|Status of trigger. [[一覧](#user-content-triggerstatus)]|
-|severity    |string     |O|-|Severity of trigger. [[一覧](#user-content-triggerseverity)]|
+|type        |string     |M|-|Type of event.[[eventType](#user-content-eventtype)]|
+|triggerId   |String255  |O|-|Trigger id of fired this event. This field is not mandatory because event does not associate with trigger in some cases.|
+|status      |string     |O|-|Status of trigger. [[triggerStatus](#user-content-triggerstatus)]|
+|severity    |string     |O|-|Severity of trigger. [[triggerSeverity](#user-content-triggerseverity)]|
 |hostId      |String255  |O|-|Host id of happened event.|
 |hostName    |String255  |O|-|Host name of happened event.|
 |brief       |String255  |M|-|Explanation of event. It is shown by on the WebUI.|
-|extendedInfo|String32767|O|-|Can write a additional information.|
+|extendedInfo|String32767|O|-|This field can store an additional arbitrary information.|
 
 ```json
 {
@@ -798,13 +798,13 @@ Caller receives result as a result object value whether sent data has been updat
 
 ### putArmInfo(method)
 
-Standard motion is to send after each to send host, trigger, event information to Hatohol server, but can send anytime. The minimum interval is 1 second(MUST), The maximum interval is twice of polling interval second that got by the [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod) and [updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod)(SHOULD).
+Standard behavior is to send after each to send host, trigger, event information to Hatohol server, but users can send at the arbitrary point of the time. The minimum interval MUST be 1 second. The maximum interval SHOULD be twice of polling interval seconds which is obtained by [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod) and [updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod).
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|lastStatus         |string   |M|-|Latest polling result. [[一覧](#user-content-arminfostatus)]|
+|lastStatus         |string   |M|-|Latest polling result. [[armInfoStatus](#user-content-arminfostatus)]|
 |failureReason      |String255|M|-|Reason of fail to get information. |
 |lastSuccessTime    |TimeStamp|M|-|Time of latest success to get information. If have not been successful once, set empty string.|
 |lastFailureTime    |TimeStamp|M|-|Time of latest failure to get information. If have not been unsuccessful once, set empty string.|
@@ -841,14 +841,14 @@ Caller receives result as a result object value whether sent data has been updat
 
 ### fetchItems(method)
 
-This procedure request to get item to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched items using a putItems procedure. At that time, need to pass fetchId and hostIds of fetchItems procedure params to putItems procedure.
+This procedure requests to obtain item to HAP. HAP MUST return success or failure to tell accept or not when receiving a request. After that, Send to matched items using a putItems procedure. At that time, need to pass fetchId and hostIds of fetchItems procedure params to putItems procedure.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
-|hostIds|String255 array|O|-|Get triggers of to designate a hosts. If does not designate hostIds, all trigger are targeted.|
-|fetchId|String255    |M|-|Use in putItems procedures. It need to identify the putItems corresponding to the fetchItems.|
+|hostIds|String255 array|O|-|Narrow down host(s) to obtain triggers. If not specifying hostId(s), all trigger should be subject to this procedure.|
+|fetchId|String255    |M|-|This field is used in putItems procedures. It needs to identify the putItems correspondence to the fetchItems by Hatohol server.|
 
 ```json
 {
@@ -880,9 +880,10 @@ Return result as a result object value whether request accept to Hatohol server.
 
 ### fetchHistory(method)
 
-This procedure request to get history to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched history using a putHistory procedure. At that time, need to pass fetchId of fetchHistory procedure params to putHistory procedure.
+This procedure is called when Hatohol server makes a request to HAP for obtaining history. HAP must return success or failure of to accept a that request. After that, Send to matched history using a putHistory procedure. At that time, it needs to pass fetchId which is contained in fetchHistory procedure paramemeters to putHistory procedure.
 
-Assume to get matched history that from beginTime till endTime.
+It assumes to obtain history which satisfies conditions. The condition is described in detail as follows:
+beginTime and endTime contains in params object. History timestamps satisfies grater than beginTime and less than endTime.
 
 ***Request(params)***
 
@@ -892,7 +893,7 @@ Assume to get matched history that from beginTime till endTime.
 |itemId    |String255|M|-|Item Id of history.|
 |beginTime |TimeStamp|M|-|Starting point of history.|
 |endTime   |TimeStamp|M|-|End point of history.|
-|fetchId|String255    |M|-|Use in putHistory procedures. It need to identify the putHistory corresponding to the fetchHistory.|
+|fetchId|String255    |M|-|This field is used in putHistory procedures. It needs to identify the putHistory correspondence to the fetchHistory by Hatohol server.|
 
 ```json
 {
@@ -923,14 +924,14 @@ Return result as a result object value whether request accept to Hatohol server.
 
 ### fetchTriggers(method)
 
-This procedure request to get triggers to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched triggers using a putTriggers procedure. At that time, need to pass fetchId and hostIds of fetchTriggers procedure params to putTriggers procedure.
+Hatohol server calls this procedure to obtain triggers to HAP. HAP MUST return success or failure to tell accept or not when receiving a request. After that, HAP sends to triggers which belongs to host(s) specified with "ALL" option. And then, it needs to pass fetchId which is contained in fetchTriggers procedure paramemeters to putTriggers procedure.
 
 ***Request(params)***
 
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
 |hostIds|String255 array|O|-|Get triggers of to designate a hosts. If does not designate hostIds, all trigger are targeted.|
-|fetchId|String255    |M|-|Use in putTriggers procedures. It need to identify the putTriggers corresponding to the fetchTriggers.|
+|fetchId|String255    |M|-|This field is used in putTriggers procedures. It needs to identify the putTriggers correspondence to the fetchTriggers by Hatohol server:.|
 
 
 ```json
@@ -962,9 +963,9 @@ Return result as a result object value whether request accept to Hatohol server.
 
 ### fetchEvents(method)
 
-This procedure request to get designate number of events that sorted by ascending or descending order to HAP. HAP must return success or failure of to accept a that request. After that, Send to matched event using a putEvents procedure. At that time, need to pass fetchId of fetchEvents procedure params to putEvents procedure.
+This procedure request to HAP to obtain designate number of events which are sorted by ascending or descending order. HAP must return to Hatohol server to tell request result whether success or failure. After that, HAP sends events which satisfies condition to Hatohol server with putEvents procedure. And then, it needs to pass fetchId of fetchEvents procedure params to putEvents procedure.
 
-Can designate "count" value till 1000. If want to request over the event number 1000, separate request to more than once.
+The maximum value of "count" field in this procedure is 1000. If Hatohol server want to request over 1000 events, split the request into two or more to make count field value less than 1000.
 
 ***Request(params)***
 
@@ -972,8 +973,8 @@ Can designate "count" value till 1000. If want to request over the event number 
 |:-----------------|:--|:-:|:----------:|:---|
 |lastInfo |String32767|M|-|Basis of ivent information.|
 |count    |Number   |M|-|Event count of getting.|
-|direction|String255|M|-|Select "ASC"(newer event than designate ID) or ”DESC”(older event that designate ID).|
-|fetchId  |String255|M|-|Use in putEvents procedures. It need to identify the putEvents corresponding to the fetchEvents.|
+|direction|String255|M|-|Select "ASC"(newer event than designate ID) or "DESC"(older event that designate ID).|
+|fetchId  |String255|M|-|This field is used in putEvents procedures. It needs to identify the putEvents correspondence to the fetchEvents by Hatohol server .|
 
 ```json
 {
@@ -1003,11 +1004,11 @@ Return result as a result object value whether request accept to Hatohol server.
 
 ### updateMonitoringServerInfo(notification)
 
- This procedure is sent from Hatohol server when updated monitoring server information. At that time, should update each monitoring server information to restart HAP.
+This procedure is sent from Hatohol server when monitoring server information is updated. At that time, HAP should update each monitoring server information by restarting itself. This is standard behavior.
 
 ***params***
 
-params content is same as the result object of [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod).
+params content is identical to the result object of [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod).
 
 ```json
 {
@@ -1033,15 +1034,15 @@ params content is same as the result object of [getMonitoringServerInfo](#user-c
 
 |Status|Description|
 |:---------|:---|
-|"INIT"   |Initial status. Not communication yes.|
+|"INIT"   |Initial status. This status represents that not communication yet.|
 |"OK"     |Succeed connection.|
 |"NG"     |Fail connection.|
 
 ### ServerType
 
-If you create a HAP, need to define new server type that has UUID other than the following UUIDs.
+If you create a HAP, it needs to define new server type which has no existence UUID as below table.
 
-|名前|UUID|
+|Name|UUID|
 |:---|:---|
 |Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
 |Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
@@ -1071,7 +1072,7 @@ If you create a HAP, need to define new server type that has UUID other than the
 |Type|Description|
 |:---------|:---|
 |"ALL"    |Send all data. Remove old data from hatohol server and regist all sent data.|
-|"UPDATED"|Send only updata data, after that If data ID already exists in Hatohol server, overwrite data and in case of does not exist, initial regist that data.|
+|"UPDATED"|Send only updated data. After that if data ID(s) already exist in Hatohol server, they will be overwritten. Or, if they do not exist in Hatohol Server, they are newly registered in Hatohol server.|
 
 ### eventType
 
@@ -1084,14 +1085,14 @@ If you create a HAP, need to define new server type that has UUID other than the
 
 ### putResult
 
-The following table value are success and failure of to call put procedure. If fail to update database, to recall procedure is standard motion.
+The following table values represent whether success or failure when calling put procedure series. If it fails to update database, recalling procedure is standard behavior.
 
 |Status|Description|
 |:---------|:---|
 |"SUCCESS"|Update is succeed.|
 |"FAILURE" |Update is fail.|
 
- In case of put procedure params wronged and etc..., need to return error that is defined in the JSON_RPC2.0 to HAP as the following example.
+If put series of procedures' parameters are wrong or invalid and so on, it needs to return error which is defined in the JSON RPC 2.0 to HAP as following example:
 
  ```json
 {
@@ -1106,7 +1107,7 @@ The following table value are success and failure of to call put procedure. If f
 
 ### fetchResult
 
-The following table value are success and failure of fetch request. If request fail, to resend request to plugin is standard motion.
+The following table values represent whether success or failure when calling fetch series of procedures. If a request fails, resending request to plugin is standard behavior.
 
 |Status|Description|
 |:---------|:---|
@@ -1114,7 +1115,7 @@ The following table value are success and failure of fetch request. If request f
 |"ABBREV" |Abbreviate to accept a request because request interval a little.| 
 |"FAILURE"|Fail to accept a request.|
 
- In case of fetch procedure params wronged and etc..., need to return error that is defined in the JSON_RPC2.0 to Hatohol server as the following example.
+If fetch series of procedures' parameters are wrong or invalid and so on, it needs to return error which is defined in the JSON RPC 2.0 to HAP as following example:
  
  ```json
 {
@@ -1133,7 +1134,9 @@ The following table value are success and failure of fetch request. If request f
 -->
 
 ## Getting help 
-If you have a problems, send bug reports to Hatohol community mailing list. [hatohol-users@sourceforge.net]
+If you find a bug in this documentation or would like to propose an improvement, please send a bug report to Hatohol community mailing list. [hatohol-users@sourceforge.net]
+
+When this English specifications differs from Japanese one, latter specifications has priority.
 
 ## Copyright
 Copyright (C)2015 Project Hatohol
