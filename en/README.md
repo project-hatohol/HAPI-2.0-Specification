@@ -673,9 +673,9 @@ Users can send event which duplicates event id with this procedure.
 
 This procedure has two behavior. One is sending spontaneously, the other is sending as a response for fetchEvent procedure.
 
-In case of voluntary, send difference from before events to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. When HAP connect first time, lastInfo is nothing, so HAP producer can select to send all existing event or do nothing.
+When sending difference from before events to use lastInfo that got using [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. When HAP connect first time, lastInfo is nothing, so HAP producer can select to send all existing event or do nothing.
 
-In case of ahead event from to designate event is nothing, send events object as empty string. 
+If ahead event from to designate event is nothing, send events object as empty string. 
 
 ***Request(params)***
 
@@ -743,7 +743,7 @@ Caller receives result as a result object value whether sent data has been updat
 
 When HAP completes to connect to Hatohol server,  send all host parent relations to use "ALL" option to Hatohol server.
 
-In case of use "UPDATE" option, send difference of host parent relations that based on lastInfo that got from [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. 
+When using "UPDATE" option, send difference of host parent relations that based on lastInfo that got from [getLastInfo](#user-content-getlastinfomethod) or saved in internal to Hatohol server. 
 
 ***Request(params)***
 
