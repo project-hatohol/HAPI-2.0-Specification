@@ -5,7 +5,7 @@
 Hatohol Arm Plugin Interface (HAPI) 2.0 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
 It is based on JSON-PRC, defines its own methods and types, and provides a typical operation sequence.
 
-The following figure expresses the above overview.
+The following figure depicts the above overview.
 
 ![overview](../hapi_overview.png)
 
@@ -121,11 +121,11 @@ The following sequence figure describes basic operations of procedures request a
 ```
 ## Data type
 
- - This section describes about data types that are defined for Hatohol. They(the data types) use date type that is defined in the JSON-RPC internally.
+ - This section describes about data types that are defined for Hatohol. They are defined and used in JSON-RPC internally.
 
 |Name|JSON type|description|
 |:---|:---------|:---|
-|TimeStamp|string|This type is used to times of day. Time value MUST be stored in UTC. Format is YYYYMMDDhhmmss.nnnnnnnnn. YYYY, MM, DD, hh, mm, ss, and nnnnnnnnn each expresses the A.D., Month, Day, hour, minute, second, nano second. It can abbreviate nano second. If the above or nano second digits is less than nine, it will be inserted zero to fill digit(s)(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000).|
+|TimeStamp|string|This type is used to store times of day. Time value MUST be stored in UTC. Format is YYYYMMDDhhmmss.nnnnnnnnn. YYYY, MM, DD, hh, mm, ss, and nnnnnnnnn each expresses the A.D., Month, Day, hour, minute, second, nano second. It can abbreviate nano second. If the above or nano second digits is less than nine, it will be inserted zero to fill digit(s)(Ex.100 -> 100.000000000, 100.1234 -> 100.123400000).|
 |Boolean|true, false|This type is used to store boolean value. It can assign true or false to show authenticity of value.|
 |Number|number|This type is used to store number value. It needs to be more than 0 and less than 2147483647.|
 |String255|string|This type is used to store string value. It needs to be the number of characters less than 255 characters.|
@@ -136,12 +136,12 @@ In any case, the number of character MUST be counted by UTF-32 code point number
 
 ## About start up operation
 
- - Immediatery after starting or restarting Hatohol server and HAP, they exchange usable procedures information with exchangeProfile procedure. There can optimize procedures based on exchanged information.
+ - Immediatery after starting or restarting Hatohol server and HAP, they exchange available procedures information with exchangeProfile procedure. If you call a unavailable procedure, the connection partner returns error object with -32601 which means "The method does not exist / is not available." in the JSON-RPC 2.0 specification.
 
 ## Procedures
 
  - [M/O] indicates whether Mandatory or Optional. Mandatory procedure can not abbreviate to implement.
- - When does not complete exchange profile yet to use exchangeProfile procedure and get other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE" to result object.
+ - When not completing exchange profile with exchangeProfile procedure yet and call other procedures, it must return [putResult](#user-content-putresult) response that is inserted "FAILURE" to result object.
 
 ### Hatohol server procedures
 
