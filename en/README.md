@@ -1134,7 +1134,7 @@ If fetch series of procedures' parameters are wrong or invalid and so on, it nee
 -->
 
 ## Getting help 
-If you find a bug in this documentation or would like to propose an improvement, please send a bug report to Hatohol community mailing list. [hatohol-users@sourceforge.net]
+If you find a bug in this documentation or would like to propose an improvement, please send a bug report to Hatohol community mailing list. [hatohol-users@lists.sourceforge.net]
 
 When this English specifications differ from Japanese ones, latter specifications have priority.
 
