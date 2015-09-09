@@ -1117,7 +1117,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 -->
 
 ## 連絡先
-不明点についてはHatoholコミュニティにお問い合わせください。[hatohol-users@sourceforge.net]
+不明点についてはHatoholコミュニティにお問い合わせください。[hatohol-users@lists.osdn.me]
 
 ## 著作権
 Copyright (C)2015 Project Hatohol
