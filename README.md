@@ -135,7 +135,7 @@ Hatoholサーバー                                   HAP
 
 ## 起動時の動作について
 
- - HAPやHatoholサーバーの起動，または再起動直後に自身と接続相手が使用可能なプロシージャの一覧をexchangeProfileプロシージャを用いて交換します。この情報を基に，互いが使用するプロシージャの最適化を行うことができます。
+ - HAPやHatoholサーバーの起動，または再起動直後に自身と接続相手が使用可能なプロシージャの一覧をexchangeProfileプロシージャを用いて交換します。使用可能ではないプロシージャを呼び出したとき、通信先はエラーオブジェクトとともに-32601のエラーコードを返します。このエラーコードはJSON-RPC 2.0の仕様書の中で、"The method does not exist / is not available."と意味づけられています。
 
 ## プロシージャ
 
@@ -1117,7 +1117,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 -->
 
 ## 連絡先
-不明点についてはHatoholコミュニティにお問い合わせください。[hatohol-users@sourceforge.net]
+不明点、また改善の提案についてはHatoholコミュニティにお問い合わせください。[hatohol-users@lists.osdn.me]
 
 ## 著作権
 Copyright (C)2015 Project Hatohol
