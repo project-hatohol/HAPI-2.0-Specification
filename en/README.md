@@ -356,7 +356,7 @@ Standard behavior is to send all item information to Hatohol server when complet
     "items": [
       {
         "unit": "example unit",
-        "itemGroupName": "example name",
+        "itemGroupName": ["example name"],
         "lastValue": "example value",
         "lastValueTime": "20150410175500",
         "brief": "example brief",
@@ -365,7 +365,7 @@ Standard behavior is to send all item information to Hatohol server when complet
       },
       {
         "unit": "example unit",
-        "itemGroupName": "example name",
+        "itemGroupName": ["example name", "network", "building-E1"],
         "lastValue": "example value",
         "lastValueTime": "201504101755",
         "brief": "example brief",
