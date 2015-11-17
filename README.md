@@ -354,7 +354,7 @@ Hatoholサーバー                                   HAP
     "items": [
       {
         "unit": "example unit",
-        "itemGroupName": "example name",
+        "itemGroupName": ["example name"],
         "lastValue": "example value",
         "lastValueTime": "20150410175500",
         "brief": "example brief",
@@ -363,7 +363,7 @@ Hatoholサーバー                                   HAP
       },
       {
         "unit": "example unit",
-        "itemGroupName": "example name",
+        "itemGroupName": ["example name", "network", "building-E1"],
         "lastValue": "example value",
         "lastValueTime": "201504101755",
         "brief": "example brief",
