@@ -1,8 +1,8 @@
-# Hatohol Arm Plugin Interface 2.0 仕様書(2015/04/16)
+# Hatohol Arm Plugin Interface 2.1 仕様書(2016/03/25)
 
 ## 概要
 
-Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
+Hatohol Arm Plugin Interface (HAPI) 2.1 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
 両者の間に確立された通信路上で実装されるJSON-RPCのアプリケーションとして構築されます。
 
 以下の図は，上記概要を図で表したものです。
@@ -34,8 +34,8 @@ Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サー
 #### 注意事項
 - 文字エンコードはUTF-8とします(MUST)。NFC正規化すべきです(SHOULD)。文字列はエスケープ表現してもかまいません(MAY)。
 - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です(SHOULD)。
-- HAPI2.0では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
-- HAPI2.0では，AMQPのキュー名を動的に生成し使用することを想定していません。Hatoholサーバーと通信を行う際に使用するキューの名前は，予めユーザーが決めておきHatoholサーバー側，プラグイン側の両者がそのキュー名を使用することを想定しています。
+- HAPI2.1では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
+- HAPI2.1では，AMQPのキュー名を動的に生成し使用することを想定していません。Hatoholサーバーと通信を行う際に使用するキューの名前は，予めユーザーが決めておきHatoholサーバー側，プラグイン側の両者がそのキュー名を使用することを想定しています。
 
 ## 動作概要
 

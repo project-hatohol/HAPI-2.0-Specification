@@ -1,8 +1,8 @@
-# Arm Plugin Interface 2.0 Specification(2015/04/16)
+# Arm Plugin Interface 2.1 Specification(2016/03/25)
 
 ## Overview
 
-Hatohol Arm Plugin Interface (HAPI) 2.0 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
+Hatohol Arm Plugin Interface (HAPI) 2.1 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
 It is based on JSON-PRC, defines its own methods and types, and provides a typical operation sequence.
 
 The following figure depicts the above overview.
@@ -35,8 +35,8 @@ Use JSON-RPC 2.0 as a basic protocol of information exchange.
 
 - Character encoding MUST be UTF-8. Normalization form SHOULD be C. String MAY escape.
 - Enough randomness SHOULD be needed from ID object that is used in request and response.
-- Must not use batch request of JSON_RPC in HAPI2.0(MUST NOT).
-- HAPI2.0 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.0 assume Hatohol server and plugin use the above queue name.
+- Must not use batch request of JSON_RPC in HAPI2.1(MUST NOT).
+- HAPI2.1 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.1 assume Hatohol server and plugin use the above queue name.
 
 ## Operating overview
 
