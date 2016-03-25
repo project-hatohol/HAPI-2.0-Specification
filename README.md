@@ -1162,4 +1162,4 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 不明点、また改善の提案についてはHatoholコミュニティにお問い合わせください。[hatohol-users@lists.osdn.me]
 
 ## 著作権
-Copyright (C)2015 Project Hatohol
+Copyright (C)2015-2016 Project Hatohol
