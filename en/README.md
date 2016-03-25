@@ -1,8 +1,8 @@
-# Arm Plugin Interface 2.0 Specification(2015/04/16)
+# Arm Plugin Interface 2.1 Specification(2016/03/25)
 
 ## Overview
 
-Hatohol Arm Plugin Interface (HAPI) 2.0 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
+Hatohol Arm Plugin Interface (HAPI) 2.1 is the protocol for information exchange between Hatohol server and Monitoring server plugins.
 It is based on JSON-PRC, defines its own methods and types, and provides a typical operation sequence.
 
 The following figure depicts the above overview.
@@ -35,8 +35,8 @@ Use JSON-RPC 2.0 as a basic protocol of information exchange.
 
 - Character encoding MUST be UTF-8. Normalization form SHOULD be C. String MAY escape.
 - Enough randomness SHOULD be needed from ID object that is used in request and response.
-- Must not use batch request of JSON_RPC in HAPI2.0(MUST NOT).
-- HAPI2.0 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.0 assume Hatohol server and plugin use the above queue name.
+- Must not use batch request of JSON_RPC in HAPI2.1(MUST NOT).
+- HAPI2.1 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2.1 assume Hatohol server and plugin use the above queue name.
 
 ## Operating overview
 
@@ -98,22 +98,30 @@ The following sequence figure describes basic operations of procedures request a
     |<----------fetchItems(Response)---------------|
     |<------------putItems(Request)----------------|
     |-------------putItems(Response)-------------->|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |-----------fetchHistory(Request)------------->|
     |<----------fetchHistory(Response)-------------|
     |<------------putHistory(Request)--------------|
     |-------------putHistory(Response)------------>|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |-----------fetchTriggers(Request)------------>|
     |<----------fetchTriggers(Response)------------|
     |<-----------putTriggers(Request)--------------|
     |                Use "ALL"option               |
     |-----------putTriggers(Response)------------->|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |-------------fetchEvents(Request)------------>|
     |<------------fetchEvents(Response)------------|
     |<------------putEvents(Request)---------------|
     |-------------putEvents(Response)------------->|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |--updateMonitoringServerInfo(notification)--->|
     |                                              |
@@ -158,6 +166,7 @@ In any case, the number of character MUST be counted by UTF-32 code point number
 |[putTriggers](#user-content-puttriggersmethod)|Receive triggers view from HAP and update it.|method|O|
 |[putEvents](#user-content-puteventsmethod)|Receive events view from HAP and update it.|method|O|
 |[putHostParents](#user-content-puthostparentsmethod)|Receive host parent relations view from HAP and update it.|method|O|
+|[finishPut](#user-content-finishputmethod)|Notify to nothing put procedure that is responce of fetch procedure.|method|M|
 |[putArmInfo](#user-content-putarminfomethod)|Receive connecting status of HAP and update it.|method|M|
 
 ### HAP procedures
@@ -796,6 +805,37 @@ Caller receives result as a result object value whether sent data has been updat
 }
 ```
 
+### finishPut(method)
+
+HAP can divides put procedure that is responce of fetch procedure.finishPut notifies to finish sending all messages to Hatohol Server.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": 10,
+  },
+  "method": "finishPut",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
 ### putArmInfo(method)
 
 Standard behavior is to send after each to send host, trigger and event information to Hatohol server, but users can send at the arbitrary point of the time. The minimum interval MUST be 1 second. The maximum interval SHOULD be twice of polling interval seconds which is obtained by [getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod) and [updateMonitoringServerInfo](#user-content-updatemonitoringserverinfomethod).
@@ -1044,9 +1084,11 @@ If you create a HAP, it needs to define new server type which has no existence U
 
 |Name|UUID|
 |:---|:---|
-|Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
-|Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
-|Ceilometer|aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Zabbix           |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
+|Nagios NDOUtils  |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
+|Nagios Livestatus|6f024e3e-a2cd-11e5-bfc7-d43d7e3146fb|
+|Ceilometer       |aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Fluentd          |d91ba1cb-a64a-4072-b2b8-2f91bcae1818|
 
 ### triggerSeverity
 
@@ -1139,4 +1181,4 @@ If you find a bug in this documentation or propose an improvement, please contac
 When this English specifications differ from Japanese ones, latter specifications have priority.
 
 ## Copyright
-Copyright (C)2015 Project Hatohol
+Copyright (C)2015-2016 Project Hatohol

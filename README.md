@@ -1,8 +1,8 @@
-# Hatohol Arm Plugin Interface 2.0 仕様書(2015/04/16)
+# Hatohol Arm Plugin Interface 2.1 仕様書(2016/03/25)
 
 ## 概要
 
-Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
+Hatohol Arm Plugin Interface (HAPI) 2.1 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
 両者の間に確立された通信路上で実装されるJSON-RPCのアプリケーションとして構築されます。
 
 以下の図は，上記概要を図で表したものです。
@@ -34,8 +34,8 @@ Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サー
 #### 注意事項
 - 文字エンコードはUTF-8とします(MUST)。NFC正規化すべきです(SHOULD)。文字列はエスケープ表現してもかまいません(MAY)。
 - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です(SHOULD)。
-- HAPI2.0では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
-- HAPI2.0では，AMQPのキュー名を動的に生成し使用することを想定していません。Hatoholサーバーと通信を行う際に使用するキューの名前は，予めユーザーが決めておきHatoholサーバー側，プラグイン側の両者がそのキュー名を使用することを想定しています。
+- HAPI2.1では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
+- HAPI2.1では，AMQPのキュー名を動的に生成し使用することを想定していません。Hatoholサーバーと通信を行う際に使用するキューの名前は，予めユーザーが決めておきHatoholサーバー側，プラグイン側の両者がそのキュー名を使用することを想定しています。
 
 ## 動作概要
 
@@ -97,22 +97,30 @@ Hatoholサーバー                                   HAP
     |<----------fetchItems(レスポンス)-------------|
     |<------------putItems(リクエスト)-------------|
     |-------------putItems(レスポンス)------------>|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |-----------fetchHistory(リクエスト)---------->|
     |<----------fetchHistory(レスポンス)-----------|
     |<------------putHistory(リクエスト)-----------|
     |-------------putHistory(レスポンス)---------->|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |-----------fetchTriggers(リクエスト)--------->|
     |<----------fetchTriggers(レスポンス)----------|
     |<----------putTriggers(リクエスト)------------|
     |            "ALL"オプションを使用する         |
     |-----------putTriggers(レスポンス)----------->|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |-------------fetchEvents(リクエスト)--------->|
     |<------------fetchEvents(レスポンス)----------|
     |<------------putEvents(リクエスト)------------|
     |-------------putEvents(レスポンス)----------->|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |------updateMonitoringServerInfo(通知)------->|
     |                                              |
@@ -157,6 +165,7 @@ Hatoholサーバー                                   HAP
 |[putTriggers](#user-content-puttriggersmethod)|HAPからトリガー情報を受け取り，更新します。|method|O|
 |[putEvents](#user-content-puteventsmethod)|HAPからイベント情報を受け取り，更新します。|method|O|
 |[putHostParents](#user-content-puthostparentsmethod)|HAPが監視しているホスト同士の親子関係を更新します。|method|O|
+|[finishPut](#user-content-finishputmethod)|fetchプロシージャに対するputプロシージャがそれ以降ないことを明示します。|method|M|
 |[putArmInfo](#user-content-putarminfomethod)|HAPの接続ステータスを更新します。|method|M|
 
 ### HAPに実装するプロシージャ
@@ -784,6 +793,37 @@ Hatoholサーバー                                   HAP
 }
 ```
 
+### finishPut(method)
+
+HAPはHatoholサーバーからのfetchプロシージャによるリクエストに対して，putプロシージャを用いレスポンスを返します。その際メッセージを分割して送信することがあります。finishPutはそれらの分割したメッセージを全て送り終えたことを通知するプロシージャです。
+
+***リクエスト(params)***
+
+|オブジェクトの名前|型 |M/O|デフォルト値|解説|
+|:-----------------|:--|:-:|:----------:|:---|
+|fetchId     |String255 |M|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": 114
+  },
+  "method": "finishPut",
+  "jsonrpc": "2.0"
+}
+```
+
+***リザルト(result)***
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
 ### putArmInfo(method)
 
 HostやTrigger，Event情報の送信処理が行われるたびにHatoholサーバーに送信することを標準的な動作としますが，任意に送信してもかまいません。最小間隔は１秒（MUST），最大間隔は[getMonitoringServerInfo](#user-content-getmonitoringserverinfomethod)や[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfonotification)で取得したポーリング時間の2倍（SHOULD）とします。
@@ -1027,9 +1067,11 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |名前|UUID|
 |:---|:---|
-|Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
-|Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
-|Ceilometer|aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Zabbix           |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
+|Nagios NDOUtils  |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
+|Nagios Livestatus|6f024e3e-a2cd-11e5-bfc7-d43d7e3146fb|
+|Ceilometer       |aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Fluentd          |d91ba1cb-a64a-4072-b2b8-2f91bcae1818|
 
 ### triggerSeverity
 
@@ -1120,4 +1162,4 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 不明点、また改善の提案についてはHatoholコミュニティにお問い合わせください。[hatohol-users@lists.osdn.me]
 
 ## 著作権
-Copyright (C)2015 Project Hatohol
+Copyright (C)2015-2016 Project Hatohol
