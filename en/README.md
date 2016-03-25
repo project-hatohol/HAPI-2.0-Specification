@@ -1084,9 +1084,11 @@ If you create a HAP, it needs to define new server type which has no existence U
 
 |Name|UUID|
 |:---|:---|
-|Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
-|Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
-|Ceilometer|aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Zabbix           |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
+|Nagios NDOUtils  |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
+|Nagios Livestatus|6f024e3e-a2cd-11e5-bfc7-d43d7e3146fb|
+|Ceilometer       |aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Fluentd          |d91ba1cb-a64a-4072-b2b8-2f91bcae1818|
 
 ### triggerSeverity
 
