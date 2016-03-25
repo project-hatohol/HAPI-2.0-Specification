@@ -97,22 +97,30 @@ Hatoholサーバー                                   HAP
     |<----------fetchItems(レスポンス)-------------|
     |<------------putItems(リクエスト)-------------|
     |-------------putItems(レスポンス)------------>|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |-----------fetchHistory(リクエスト)---------->|
     |<----------fetchHistory(レスポンス)-----------|
     |<------------putHistory(リクエスト)-----------|
     |-------------putHistory(レスポンス)---------->|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |-----------fetchTriggers(リクエスト)--------->|
     |<----------fetchTriggers(レスポンス)----------|
     |<----------putTriggers(リクエスト)------------|
     |            "ALL"オプションを使用する         |
     |-----------putTriggers(レスポンス)----------->|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |-------------fetchEvents(リクエスト)--------->|
     |<------------fetchEvents(レスポンス)----------|
     |<------------putEvents(リクエスト)------------|
     |-------------putEvents(レスポンス)----------->|
+    |<-----------finishPut(リクエスト)-------------|
+    |------------finishPut(レスポンス)------------>|
     |                                              |
     |------updateMonitoringServerInfo(通知)------->|
     |                                              |
@@ -157,6 +165,7 @@ Hatoholサーバー                                   HAP
 |[putTriggers](#user-content-puttriggersmethod)|HAPからトリガー情報を受け取り，更新します。|method|O|
 |[putEvents](#user-content-puteventsmethod)|HAPからイベント情報を受け取り，更新します。|method|O|
 |[putHostParents](#user-content-puthostparentsmethod)|HAPが監視しているホスト同士の親子関係を更新します。|method|O|
+|[finishPut](#user-content-finishputmethod)|fetchプロシージャに対するputプロシージャがそれ以降ないことを明示します。|method|M|
 |[putArmInfo](#user-content-putarminfomethod)|HAPの接続ステータスを更新します。|method|M|
 
 ### HAPに実装するプロシージャ
@@ -770,6 +779,37 @@ Hatoholサーバー                                   HAP
     ]
   },
   "method": "putHostParent",
+  "jsonrpc": "2.0"
+}
+```
+
+***リザルト(result)***
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### finishPut(method)
+
+HAPはHatoholサーバーからのfetchプロシージャによるリクエストに対して，putプロシージャを用いレスポンスを返します。その際メッセージを分割して送信することがあります。finishPutはそれらの分割したメッセージを全て送り終えたことを通知するプロシージャです。
+
+***リクエスト(params)***
+
+|オブジェクトの名前|型 |M/O|デフォルト値|解説|
+|:-----------------|:--|:-:|:----------:|:---|
+|fetchId     |String255 |M|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": 114
+  },
+  "method": "finishPut",
   "jsonrpc": "2.0"
 }
 ```

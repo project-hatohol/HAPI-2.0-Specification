@@ -98,22 +98,30 @@ The following sequence figure describes basic operations of procedures request a
     |<----------fetchItems(Response)---------------|
     |<------------putItems(Request)----------------|
     |-------------putItems(Response)-------------->|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |-----------fetchHistory(Request)------------->|
     |<----------fetchHistory(Response)-------------|
     |<------------putHistory(Request)--------------|
     |-------------putHistory(Response)------------>|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |-----------fetchTriggers(Request)------------>|
     |<----------fetchTriggers(Response)------------|
     |<-----------putTriggers(Request)--------------|
     |                Use "ALL"option               |
     |-----------putTriggers(Response)------------->|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |-------------fetchEvents(Request)------------>|
     |<------------fetchEvents(Response)------------|
     |<------------putEvents(Request)---------------|
     |-------------putEvents(Response)------------->|
+    |<------------finishPut(Request)---------------|
+    |-------------finishPut(Responce)------------->|
     |                                              |
     |--updateMonitoringServerInfo(notification)--->|
     |                                              |
@@ -158,6 +166,7 @@ In any case, the number of character MUST be counted by UTF-32 code point number
 |[putTriggers](#user-content-puttriggersmethod)|Receive triggers view from HAP and update it.|method|O|
 |[putEvents](#user-content-puteventsmethod)|Receive events view from HAP and update it.|method|O|
 |[putHostParents](#user-content-puthostparentsmethod)|Receive host parent relations view from HAP and update it.|method|O|
+|[finishPut](#user-content-finishputmethod)|Notify to nothing put procedure that is responce of fetch procedure.|method|M|
 |[putArmInfo](#user-content-putarminfomethod)|Receive connecting status of HAP and update it.|method|M|
 
 ### HAP procedures
@@ -787,6 +796,37 @@ When removing host parent relation from Hatohol server, please send hostParent o
 ***Result(result)***
 
 Caller receives result as a result object value whether sent data has been updated. Refer to the [[Values](#user-content-putresult)].
+
+```json
+{
+  "id": 1,
+  "result": "SUCCESS",
+  "jsonrpc": "2.0"
+}
+```
+
+### finishPut(method)
+
+HAP can divides put procedure that is responce of fetch procedure.finishPut notifies to finish sending all messages to Hatohol Server.
+
+***Request(params)***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server.|
+
+```json
+{
+  "id": 1,
+  "params": {
+    "fetchId": 10,
+  },
+  "method": "finishPut",
+  "jsonrpc": "2.0"
+}
+```
+
+***Result(result)***
 
 ```json
 {
