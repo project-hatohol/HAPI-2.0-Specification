@@ -1141,4 +1141,4 @@ If you find a bug in this documentation or propose an improvement, please contac
 When this English specifications differ from Japanese ones, latter specifications have priority.
 
 ## Copyright
-Copyright (C)2015 Project Hatohol
+Copyright (C)2015-2016 Project Hatohol
