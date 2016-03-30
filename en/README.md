@@ -335,9 +335,7 @@ Standard behavior is to send all item information to Hatohol server when complet
 |:-----------------|:--|:-:|:----------:|:---|
 |items  |object   |M|-|This is an object that stores item information. In more detail, please refer the following table.|
 |fetchId|String255|O|-|This is an ID which corresponds for request from Hatohol server. It should be contain fetchId only if it will be received fetchItems request.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***items object***
 
@@ -405,9 +403,7 @@ Caller receives result as a result object value whether sent data has been updat
 |itemId    |String255 |M|-|Id of the got item|
 |samples   |object array|M|-|This is sample array to configure history information. In more detail, please refer the following table. The samples is needed to sort by ascending order of time.|
 |fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, when receiving fetchHistory request.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***samples object***
 
@@ -462,9 +458,7 @@ When using "UPDATE" option, send difference to use lastInfo that got using [getL
 |hosts       |object array|M|-|This is an object array that stores hosts information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
 |lastInfo    |String32767 |O|-|Insert to here host information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***hosts object***
 
@@ -516,9 +510,7 @@ When using "UPDATE" option, send difference to use lastInfo that got using [getL
 |hostGroups  |object array|M|-|This is an object array that stores host groups information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
 |lastInfo    |String32767 |O|-|Insert to here host group information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***hostGroups object***
 
@@ -570,9 +562,7 @@ When using "UPDATE" option, send difference to use lastInfo that got using [getL
 |hostGroupMembership|object array|M|-|This is an object which contains host group membership information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
 |lastInfo    |String32767 |O|-|Put latest host group membership information. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***hostGroupMembership object***
 
@@ -629,9 +619,7 @@ When using "UPDATE" option, send difference to use lastInfo that got using [getL
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
 |lastInfo    |String32767|O|-|Put to here trigger information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 |fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, when receiving fetchTriggers request.
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***triggers object***
 
@@ -703,9 +691,7 @@ If ahead event from to designate event is nothing, send events object as empty s
 |lastInfo    |String32767|O|-|Insert to here event information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
 |mayMoreFlag|Boolean   |O|-|Only use in case of response to fetchEvents with fetchId. If plugin has remaining events to be transmitted, must change value to true. In case of that, must send event at least one.|
 |fetchId|String255|O|-|This is an ID that indicates whether response for request from Hatohol server. Insert fetchId value to this object, when receiving fetchEvents request.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***events object***
 
@@ -773,9 +759,7 @@ When using "UPDATE" option, send difference of host parent relations that based 
 |hostParents  |object array|M|-|This is an object array that stores host parent relations information. In more detail, please refer the following table.|
 |updateType|string    |M|-|Select sending option that match the situation from [[List](#user-content-updatetype)].|
 |lastInfo    |String32767|O|-|Insert to here host parent relation information of last. A result of [getLastInfo](#user-content-getlastinfomethod) is constructed from this information.|
-|isLast   |Boolean |O|-|When you divide a request and send, it is inserted. You set bool whether it request last of one.|
-|serialId |Number  |O|-|When you divide a request and send, it is inserted. You write the number of in the divided requests.|
-|requestId|Number  |O|-|When you divide a request and send, it is inserted. You use same number in the all divided requests.|
+|divideInfo  |object|O|-|When you divide a request and send, it is inserted. Refer to the [[divideInfo](#divideinfo)].|
 
 ***hostParents object***
 
@@ -1154,6 +1138,15 @@ If fetch series of procedures' parameters are wrong or invalid and so on, it nee
 }
  ```
 
+### divideInfo
+
+***divideInfo object***
+
+|Object name|Type |M/O|Default value|Description|
+|:-----------------|:--|:-:|:----------:|:---|
+|isLast   |Boolean  |M|-|You set bool whether it request last of one.|
+|serialId |Number   |M|-|You write the number of in the divided requests. Start number is 0 and increase by 1.|
+|requestId|String255|M|-|You use same number in the all divided requests. You should not use same number in other request a some time.|
 
 <!--
 ## Revision history

@@ -333,9 +333,7 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |items  |object   |M|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |fetchId|String255|O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchItemsのparams内のfetchIdの値をここに入れてください。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 
 ***itemsオブジェクト***
@@ -404,9 +402,7 @@ Hatoholサーバー                                   HAP
 |itemId    |String255 |M|-|取得するイベントのIDです。|
 |samples   |object配列|M|-|ヒストリー情報を構成するサンプルの配列です。詳細は次のテーブルを確認してください。サンプルは、時刻の昇順に並んでいる必要があります。|
 |fetchId   |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdの値をここに入れてください。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***samplesオブジェクト***
 
@@ -461,9 +457,7 @@ Hatoholサーバー                                   HAP
 |hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostsオブジェクト***
 
@@ -514,9 +508,7 @@ Hatoholサーバー                                   HAP
 |hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になります。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostGroupsオブジェクト***
 
@@ -567,9 +559,7 @@ Hatoholサーバー                                   HAP
 |hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostGroupMembershipオブジェクト***
 
@@ -626,9 +616,7 @@ Hatoholサーバー                                   HAP
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 |fetchId     |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersによるリクエストを受けた場合にのみ、fetchTriggersのparams内のfetchIdの値をここに入れてください。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***triggersオブジェクト***
 
@@ -694,9 +682,7 @@ Hatoholサーバー                                   HAP
 |lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存されます。|
 |mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャに対するレスポンスとしてputEventsプロシージャを用いる場合のみ，fetchIdと合わせてparamsに挿入してください。<br>指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。<br>この値をtrueにする場合，最低限イベントを1件は送信する必要があります。|
 |fetchId    |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsによるリクエストを受けた場合にのみ、fetchEventsのparams内のfetchIdの値をここに入れてください。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***eventsオブジェクト***
 
@@ -764,9 +750,7 @@ Hatoholサーバー                                   HAP
 |hostParents  |object配列|M|-|ホストの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
-|isLast   |Boolean  |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの最後か否か記してください。|
-|serialId |Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエストの何番目かを記してください。|
-|requestId|Number   |O|-|リクエストを分割して送信する場合に使用します。分割したリクエスト内で同じ値を使用してください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostParentsオブジェクト***
 
@@ -1138,6 +1122,17 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
   "jsonrpc": "2.0"
 }
  ```
+
+### divideInfo
+
+***divideInfoオブジェクト***
+
+|オブジェクトの名前|型 |M/O|デフォルト値|解説|
+|:-----------------|:--|:-:|:----------:|:---|
+|isLast   |Boolean  |O|-|分割したリクエストの最後か否かを記してください。|
+|serialId |Number   |O|-|分割したリクエストの何番目かを記してください。0から始め,1ずつ増やしていってください。|
+|requestId|String255|O|-|分割したリクエスト内で同じ値を使用してください。一度使用したrequestIdはしばらく使用しないでください。|
+
 
 <!--
 ## 改版履歴
