@@ -36,7 +36,7 @@ Use JSON-RPC 2.0 as a basic protocol of information exchange.
 - Character encoding MUST be UTF-8. Normalization form SHOULD be C. String MAY escape.
 - Enough randomness SHOULD be needed from ID object that is used in request and response.
 - Must not use batch request of JSON_RPC in HAPI2(MUST NOT).
-- HAPI2 does not assume to generate and use AMQP queue name dynamically. The user need to dicide queue name that is used when contanct to Hatohol server. HAPI2 assume Hatohol server and plugin use the above queue name.
+- HAPI2 does not assume to generate and use AMQP queue name dynamically. You need to decide queue name that is used when contanct to Hatohol server. HAPI2 assume Hatohol server and plugin use the above queue name.
 
 ## Operating overview
 
