@@ -1140,6 +1140,8 @@ If fetch series of procedures' parameters are wrong or invalid and so on, it nee
 
 ### divideInfo
 
+In case of you use divideInfo with lastInfo, the lastInfo is saved if isLast is True. But if isLast is False, the lastInfo is destroyed.
+
 ***divideInfo object***
 
 |Object name|Type |M/O|Default value|Description|
