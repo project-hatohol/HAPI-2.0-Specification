@@ -1125,7 +1125,7 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 ### divideInfo
 
-lastInfoと併用した場合、isLastフラグがTrueとなっているプロシージャのlastInfoのみがHatoholサーバーに保存され、isLastがFalseとなっているプロシージャ内のlastIndoは破棄されます。
+lastInfoと併用した場合、isLastフラグがTrueとなっているプロシージャのlastInfoのみがHatoholサーバーに保存され、isLastがFalseとなっているプロシージャ内のlastInfoは無視されます。
 
 ***divideInfoオブジェクト***
 
