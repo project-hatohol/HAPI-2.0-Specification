@@ -1147,7 +1147,7 @@ When of you use divideInfo with lastInfo, the lastInfo is saved if isLast is Tru
 |Object name|Type |M/O|Default value|Description|
 |:-----------------|:--|:-:|:----------:|:---|
 |isLast   |Boolean  |M|-|You set bool whether it request last of one.|
-|serialId |Number   |M|-|You write the number of in the divided requests. Start number is 0 and increase by 1.|
+|serialId |Number   |M|-|You write the ID of in the divided requests. Start number is 0 and increase by 1.|
 |requestId|String255|M|-|You use same number in the all divided requests. You should not use same number in other request a some time.|
 
 <!--
