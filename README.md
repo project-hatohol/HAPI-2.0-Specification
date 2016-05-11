@@ -1,8 +1,8 @@
-# Hatohol Arm Plugin Interface 2.0 仕様書(2015/04/16)
+# Hatohol Arm Plugin Interface 2.1 仕様書(2016/03/25)
 
 ## 概要
 
-Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
+Hatohol Arm Plugin Interface 2.1(以下HAPI2と記す) は，Hatoholサーバーと監視サーバープラグイン間の情報交換のためのプロトコルです。
 両者の間に確立された通信路上で実装されるJSON-RPCのアプリケーションとして構築されます。
 
 以下の図は，上記概要を図で表したものです。
@@ -34,8 +34,8 @@ Hatohol Arm Plugin Interface (HAPI) 2.0 は，Hatoholサーバーと監視サー
 #### 注意事項
 - 文字エンコードはUTF-8とします(MUST)。NFC正規化すべきです(SHOULD)。文字列はエスケープ表現してもかまいません(MAY)。
 - リクエスト・レスポンスで使用するIDオブジェクトの値には，十分なランダム性が必要です(SHOULD)。
-- HAPI2.0では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
-- HAPI2.0では，AMQPのキュー名を動的に生成し使用することを想定していません。Hatoholサーバーと通信を行う際に使用するキューの名前は，予めユーザーが決めておきHatoholサーバー側，プラグイン側の両者がそのキュー名を使用することを想定しています。
+- HAPI2では，JSON-RPCのバッチリクエストを使用してはなりません(MUST NOT)。
+- HAPI2では，AMQPのキュー名を動的に生成し使用することを想定していません。Hatoholサーバーと通信を行う際に使用するキューの名前は，予めユーザーが決めておきHatoholサーバー側，プラグイン側の両者がそのキュー名を使用することを想定しています。
 
 ## 動作概要
 
@@ -333,6 +333,8 @@ Hatoholサーバー                                   HAP
 |:-----------------|:--|:-:|:----------:|:---|
 |items  |object   |M|-|アイテム情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |fetchId|String255|O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchItemsのparams内のfetchIdの値をここに入れてください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
+
 
 ***itemsオブジェクト***
 
@@ -400,6 +402,7 @@ Hatoholサーバー                                   HAP
 |itemId    |String255 |M|-|取得するイベントのIDです。|
 |samples   |object配列|M|-|ヒストリー情報を構成するサンプルの配列です。詳細は次のテーブルを確認してください。サンプルは、時刻の昇順に並んでいる必要があります。|
 |fetchId   |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchHistoryのparams内のfetchIdの値をここに入れてください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***samplesオブジェクト***
 
@@ -454,6 +457,7 @@ Hatoholサーバー                                   HAP
 |hosts       |object配列|M|-|ホスト情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767 |O|-|最後に送信したホストの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostsオブジェクト***
 
@@ -504,6 +508,7 @@ Hatoholサーバー                                   HAP
 |hostGroups  |object配列|M|-|ホストグループ情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最後に送信したホストグループの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になります。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostGroupsオブジェクト***
 
@@ -554,6 +559,7 @@ Hatoholサーバー                                   HAP
 |hostGroupMembership|object配列|M|-|ホストグループ所属情報を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType       |string    |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo           |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostGroupMembershipオブジェクト***
 
@@ -610,6 +616,7 @@ Hatoholサーバー                                   HAP
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最新トリガーの情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
 |fetchId     |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchTriggersによるリクエストを受けた場合にのみ、fetchTriggersのparams内のfetchIdの値をここに入れてください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***triggersオブジェクト***
 
@@ -675,6 +682,7 @@ Hatoholサーバー                                   HAP
 |lastInfo   |String32767|O|-|イベントを送信する際，次回イベントを送信する際の基準となる情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。しかし，mayMoreFlagの値がtrueとなっている場合，この値はHatoholのDBへは保存されずHatoholサーバープロセスに一時的に保存されます。|
 |mayMoreFlag|Boolean   |O|-|fetchEventsプロシージャに対するレスポンスとしてputEventsプロシージャを用いる場合のみ，fetchIdと合わせてparamsに挿入してください。<br>指定された件数に満たない件数のイベントを送信し，送信すべきイベントがまだ残っている可能性がある場合に値をtrueとしてください。<br>この値をtrueにする場合，最低限イベントを1件は送信する必要があります。|
 |fetchId    |String255 |O|-|Hatoholサーバーから送られたどのリクエストに対するレスポンスであるかを示すIDです。fetchEventsによるリクエストを受けた場合にのみ、fetchEventsのparams内のfetchIdの値をここに入れてください。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***eventsオブジェクト***
 
@@ -742,6 +750,7 @@ Hatoholサーバー                                   HAP
 |hostParents  |object配列|M|-|ホストの親子関係を格納するオブジェクトを配置します。詳細は次のテーブルを確認してください。|
 |updateType|String255 |M|-|送信オプション[[一覧](#user-content-updatetype)]の中から状況に応じた送信オプションを選択してください。|
 |lastInfo    |String32767|O|-|最後に送信したホストグループ所属情報の情報を送信する。この情報が[getLastInfo](#user-content-getlastinfomethod)の返り値になる。|
+|divideInfo|object|O|-|リクエストを分割して送信する場合に使用します。詳細については[[divideInfo](#divideinfo)]を参照してください。|
 
 ***hostParentsオブジェクト***
 
@@ -1027,9 +1036,11 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 
 |名前|UUID|
 |:---|:---|
-|Zabbix    |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
-|Nagios    |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
-|Ceilometer|aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Zabbix           |8e632c14-d1f7-11e4-8350-d43d7e3146fb|
+|Nagios NDOUtils  |902d955c-d1f7-11e4-80f9-d43d7e3146fb|
+|Nagios Livestatus|6f024e3e-a2cd-11e5-bfc7-d43d7e3146fb|
+|Ceilometer       |aa25a332-d1f7-11e4-80b4-d43d7e3146fb|
+|Fluentd          |d91ba1cb-a64a-4072-b2b8-2f91bcae1818|
 
 ### triggerSeverity
 
@@ -1112,6 +1123,19 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 }
  ```
 
+### divideInfo
+
+lastInfoと併用した場合、isLastフラグがTrueとなっているプロシージャのlastInfoのみがHatoholサーバーに保存され、isLastがFalseとなっているプロシージャ内のlastInfoは無視されます。
+
+***divideInfoオブジェクト***
+
+|オブジェクトの名前|型 |M/O|デフォルト値|解説|
+|:-----------------|:--|:-:|:----------:|:---|
+|isLast   |Boolean  |M|-|分割したリクエストの最後か否かを記してください。|
+|serialId |Number   |M|-|分割したリクエストのIDを記してください。0から始め,1ずつ増やしていってください。|
+|requestId|String255|M|-|分割したリクエスト内で同じ値を使用してください。一度使用したrequestIdはしばらく使用しないでください。|
+
+
 <!--
 ## 改版履歴
 -->
@@ -1120,4 +1144,4 @@ Hatoholサーバーがアイテム情報を要求しているときにHAPに送�
 不明点、また改善の提案についてはHatoholコミュニティにお問い合わせください。[hatohol-users@lists.osdn.me]
 
 ## 著作権
-Copyright (C)2015 Project Hatohol
+Copyright (C)2015-2016 Project Hatohol
