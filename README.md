@@ -170,6 +170,8 @@ Hatoholサーバー                                   HAP
 |[fetchEvents](#user-content-fetcheventsmethod)|Hatoholサーバーからのイベント取得リクエストを受け入れます。|method|O|
 |[updateMonitoringServerInfo](#user-content-updatemonitoringserverinfonotification)|Hatoholサーバーとの接続情報やポーリング間隔情報を通知として受け取ります。|notification|M|
 
+exchangeProfileプロシージャ同士によるプロフィール交換がしていない状態で，Hatoholサーバーからfetchプロシージャ，またupdateMonitoringServerInfoプロシージャによるリクエストや通知が届いた場合は，[putResult](#user-content-putresult)形式のレスポンスのresultオブジェクトを”FAILURE”とし，Hatoholサーバーに返答しなければなりません。
+
 ### exchangeProfile(method)
 
  - Hatoholサーバー，HAP両者に共通するプロシージャです。主に初期起動時，再起動時に使用することを標準的な動作とします。詳細については[起動時の動作について](#user-content-起動時の動作について)をご覧ください。
